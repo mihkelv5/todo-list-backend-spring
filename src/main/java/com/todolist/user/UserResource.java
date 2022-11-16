@@ -2,9 +2,7 @@ package com.todolist.user;
 
 import com.todolist.models.AuthenticationRequest;
 import com.todolist.models.AuthenticationResponse;
-import com.todolist.task.Task;
 import com.todolist.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,7 +42,8 @@ public class UserResource {
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        //return ResponseEntity.ok(new AuthenticationResponse(jwt)); // example that can be used, left for future references
+        return new ResponseEntity<>(new AuthenticationResponse(jwt), HttpStatus.OK);
 
     }
 

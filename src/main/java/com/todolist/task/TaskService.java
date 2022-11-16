@@ -38,6 +38,10 @@ public class TaskService {
     }
 
 
+    List<Task> findTasksByEvent(String event) {
+        return taskrepository.findTasksByEvent(event);
+    }
+
     @Transactional
     void deleteTask(Long id) throws IOException {
         taskrepository.deleteTaskById(id);

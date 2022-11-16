@@ -11,5 +11,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findTasksByDate (Date date);
 
+    List<Task> findTasksByEvent (String event);
+
     void deleteTaskById(Long id);
 }

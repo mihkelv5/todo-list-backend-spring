@@ -41,6 +41,12 @@ public class TaskResource {
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
+    @GetMapping("/findByEvent/{event}")
+    public ResponseEntity<List<Task>> getTasksByEvent(@PathVariable("event") String event){
+        List<Task> taskList = taskService.findTasksByEvent(event);
+        return new ResponseEntity<>(taskList, HttpStatus.OK);
+    }
+
     @PutMapping("/update")
     public ResponseEntity<Task> updatePost(@RequestBody Task task){
         Task updatePost = taskService.addTask(task);
@@ -59,6 +65,7 @@ public class TaskResource {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
 
 }

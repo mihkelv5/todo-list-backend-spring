@@ -15,14 +15,16 @@ public class Task implements Serializable {
     private Date date;
     @Column(nullable = false)
     private boolean isComplete;
+    private String event;
 
     public Task() {}
 
-    public Task(Long id, String task, Date date, boolean isComplete) {
+    public Task(Long id, String task, Date date, boolean isComplete, String event) {
         this.id = id;
         this.task = task;
         this.date = date;
         this.isComplete = isComplete;
+        this.event = event;
     }
 
 
@@ -57,5 +59,13 @@ public class Task implements Serializable {
 
     public void setComplete(boolean complete) {
         isComplete = complete;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
     }
 }
