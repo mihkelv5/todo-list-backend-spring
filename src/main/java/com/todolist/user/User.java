@@ -1,18 +1,21 @@
 package com.todolist.user;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
 
+    @Column(unique = true)
     private String username;
     private String password;
     private boolean enabled;
     private String roles;
+
 
     public User(String username, String password, boolean enabled, String roles ) {
 

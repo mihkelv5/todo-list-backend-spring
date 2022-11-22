@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/todo")
+@RequestMapping(path = "/task")
 public class TaskResource {
 
     private final TaskService taskService;

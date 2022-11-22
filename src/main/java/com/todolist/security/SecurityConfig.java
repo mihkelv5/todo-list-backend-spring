@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
@@ -30,17 +31,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeHttpRequests()
-                .antMatchers("/addUser").permitAll()
+        http
+                .csrf().disable()
+                .cors().and()
+                .authorizeHttpRequests()
+                .antMatchers("/user/register").permitAll()
                 .antMatchers("/todo/**").hasAnyRole("ADMIN")
-                .antMatchers("/authenticate").permitAll().anyRequest().authenticated()
+                .antMatchers("/user/login").permitAll().anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 
     @Bean
     public PasswordEncoder getPasswordEncoder(){

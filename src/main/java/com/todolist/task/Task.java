@@ -16,15 +16,19 @@ public class Task implements Serializable {
     @Column(nullable = false)
     private boolean isComplete;
     private String event;
+    private int xLocation;
+    private int yLocation;
 
     public Task() {}
 
-    public Task(Long id, String task, Date date, boolean isComplete, String event) {
+    public Task(Long id, String task, Date date, boolean isComplete, String event, int xLocation, int yLocation) {
         this.id = id;
         this.task = task;
         this.date = date;
         this.isComplete = isComplete;
         this.event = event;
+        this.xLocation = xLocation;
+        this.yLocation = yLocation;
     }
 
 
@@ -67,5 +71,21 @@ public class Task implements Serializable {
 
     public void setEvent(String event) {
         this.event = event;
+    }
+
+    public int getxLocation() {
+        return xLocation;
+    }
+
+    public void setxLocation(int xLocation) {
+        this.xLocation = xLocation;
+    }
+
+    public int getyLocation() {
+        return yLocation;
+    }
+
+    public void setyLocation(int yLocation) {
+        this.yLocation = yLocation;
     }
 }

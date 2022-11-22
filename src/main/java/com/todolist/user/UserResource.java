@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(path = "/user")
 public class UserResource {
     private final AuthenticationManager authenticationManager;
     private final MyUserDetailsService userDetailsService;
@@ -29,7 +30,7 @@ public class UserResource {
         return "Hello, welcome";
     }
 
-    @PostMapping(value = "/authenticate")
+    @PostMapping(value = "/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(
@@ -47,7 +48,7 @@ public class UserResource {
 
     }
 
-    @PostMapping("/addUser")
+    @PostMapping("/register")
     public ResponseEntity<User> addTask(@RequestBody User user) {
         user.setId(null);
         user.setPassword(new BCryptPasswordEncoder(5).encode(user.getPassword()));
