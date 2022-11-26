@@ -1,7 +1,8 @@
 package com.todolist.filters;
 
+import com.todolist.constant.SecurityConstant;
 import com.todolist.user.MyUserDetailsService;
-import com.todolist.util.JwtUtil;
+import com.todolist.util.JwtUtilOld;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,9 +22,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final MyUserDetailsService userDetailsService;
 
-    private final JwtUtil jwtUtil;
+    private final JwtUtilOld jwtUtil;
 
-    public JwtRequestFilter(MyUserDetailsService userDetailsService, JwtUtil jwtUtil) {
+    public JwtRequestFilter(MyUserDetailsService userDetailsService, JwtUtilOld jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
     }
@@ -33,16 +34,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
 
-        final String authorizationHeader = request.getHeader("Authorization");
+        final String authorizationHeader = request.getHeader(SecurityConstant.AUTHORIZATION);
 
         String username = null;
         String jwt = null;
-        if(request.getMethod().equalsIgnoreCase("OPTIONS")){
+        if(request.getMethod().equalsIgnoreCase(SecurityConstant.OPTIONS_HTTP_METHOD)){
             response.setStatus(HttpStatus.OK.value());
         } else {
 
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                jwt = authorizationHeader.substring(7);
+            if (authorizationHeader != null && authorizationHeader.startsWith(SecurityConstant.TOKEN_PREFIX)) {
+                jwt = authorizationHeader.substring(SecurityConstant.TOKEN_PREFIX.length());
                 username = jwtUtil.extractUsername(jwt);
             }
 

@@ -1,5 +1,8 @@
 package com.todolist.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.todolist.user.User;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -10,7 +13,8 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false, nullable = false)
     private Long id;
-    private String task;
+    private String title;
+    private String description;
     @Temporal(TemporalType.DATE)
     private Date date;
     @Column(nullable = false)
@@ -19,11 +23,15 @@ public class Task implements Serializable {
     private int xLocation;
     private int yLocation;
 
+
+
+
     public Task() {}
 
-    public Task(Long id, String task, Date date, boolean isComplete, String event, int xLocation, int yLocation) {
+    public Task(Long id, String title, String description, Date date, boolean isComplete, String event, int xLocation, int yLocation) {
         this.id = id;
-        this.task = task;
+        this.title = title;
+        this.description = description;
         this.date = date;
         this.isComplete = isComplete;
         this.event = event;
@@ -41,12 +49,12 @@ public class Task implements Serializable {
         this.id = id;
     }
 
-    public String getTask() {
-        return task;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTask(String task) {
-        this.task = task;
+    public void setTitle(String task) {
+        this.title = task;
     }
 
     public Date getDate() {
@@ -88,4 +96,13 @@ public class Task implements Serializable {
     public void setyLocation(int yLocation) {
         this.yLocation = yLocation;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }

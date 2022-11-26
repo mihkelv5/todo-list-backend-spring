@@ -2,9 +2,12 @@ package com.todolist.user;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +28,21 @@ public class MyUserDetailsService implements UserDetailsService {
         return new MyUserPrincipal(user);
     }
 
-    User addUser(User user){
+    User getUser(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    void addUser(User user){
+        userRepository.save(user);
+    }
+
+    User updateUser(User user){
         return userRepository.save(user);
     }
+
+
+
+
+
+
 }

@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 
@@ -17,10 +18,6 @@ public class TaskResource {
         this.taskService = taskService;
     }
 
-    @GetMapping("/test")
-    public String home(){
-        return("<h1>test page</h1>");
-    }
 
     @GetMapping("/all")
     public ResponseEntity<List<Task>> getAllTasks(){
@@ -32,6 +29,7 @@ public class TaskResource {
     public ResponseEntity<Task> addTask(@RequestBody Task task){
         task.setId(null);
         Task newTask = taskService.addTask(task);
+        System.out.println("addTask");
         return new ResponseEntity<>(newTask, HttpStatus.CREATED);
     }
 
@@ -48,9 +46,15 @@ public class TaskResource {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Task> updatePost(@RequestBody Task task){
+    public ResponseEntity<Task> updateTask(@RequestBody Task task){
         Task updatePost = taskService.addTask(task);
         return new ResponseEntity<>(updatePost, HttpStatus.OK);
+    }
+
+    @PutMapping("/moveTask")
+    public ResponseEntity<Task> moveTaskById(@RequestBody Task task){
+        Task newTask = taskService.moveTask(task);
+        return new ResponseEntity<>(newTask, HttpStatus.OK);
     }
 
     @PutMapping("/complete/{id}")
@@ -60,11 +64,14 @@ public class TaskResource {
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable("id") Long id) throws IOException {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
 
 

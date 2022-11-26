@@ -1,8 +1,9 @@
 package com.todolist.user;
 
+import com.todolist.constant.SecurityConstant;
 import com.todolist.models.AuthenticationRequest;
-import com.todolist.models.AuthenticationResponse;
-import com.todolist.util.JwtUtil;
+import com.todolist.util.JwtUtilOld;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserResource {
     private final AuthenticationManager authenticationManager;
     private final MyUserDetailsService userDetailsService;
-    private final JwtUtil jwtTokenUtil;
+    private final JwtUtilOld jwtTokenUtil;
 
-    public UserResource(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, JwtUtil jwtTokenUtil) {
+    public UserResource(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, JwtUtilOld jwtTokenUtil) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -37,23 +38,31 @@ public class UserResource {
                     new UsernamePasswordAuthenticationToken(
                             authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
+
             throw new Exception("Incorrect username or password", e);
         }
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-
-        //return ResponseEntity.ok(new AuthenticationResponse(jwt)); // example that can be used, left for future references
-        return new ResponseEntity<>(new AuthenticationResponse(jwt), HttpStatus.OK);
-
+        final User user = userDetailsService.getUser(authenticationRequest.getUsername());
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set(SecurityConstant.JWT_TOKEN_HEADER, jwt);
+        return ResponseEntity.ok().headers(responseHeaders).body(user);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> addTask(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
         user.setId(null);
         user.setPassword(new BCryptPasswordEncoder(5).encode(user.getPassword()));
-        User newUser = userDetailsService.addUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        userDetailsService.addUser(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestBody User user){
+        user.setId(null);
+        User updatedUser = userDetailsService.updateUser(user);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
 

@@ -1,5 +1,7 @@
 package com.todolist.task;
 
+import com.todolist.user.User;
+import com.todolist.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +14,13 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskrepository;
+    private final UserRepository userRepository;
 
 
     @Autowired
-    public TaskService(TaskRepository taskrepository) {
+    public TaskService(TaskRepository taskrepository, UserRepository userRepository) {
         this.taskrepository = taskrepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -25,7 +29,12 @@ public class TaskService {
         return taskrepository.findTaskById(id);
     }
 
+
     Task addTask(Task task){
+        return taskrepository.save(task);
+    }
+
+    Task moveTask(Task task){
         return taskrepository.save(task);
     }
 

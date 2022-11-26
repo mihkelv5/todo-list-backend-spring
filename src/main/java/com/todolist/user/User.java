@@ -1,7 +1,11 @@
 package com.todolist.user;
 
+import com.todolist.task.Task;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User implements Serializable {
@@ -17,8 +21,9 @@ public class User implements Serializable {
     private String roles;
 
 
-    public User(String username, String password, boolean enabled, String roles ) {
 
+
+    public User(String username, String password, boolean enabled, String roles) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
@@ -27,8 +32,6 @@ public class User implements Serializable {
 
     public User() {
     }
-
-
 
     public String getUsername() {
         return username;
