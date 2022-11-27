@@ -14,13 +14,13 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskrepository;
-    private final UserRepository userRepository;
+
 
 
     @Autowired
-    public TaskService(TaskRepository taskrepository, UserRepository userRepository) {
+    public TaskService(TaskRepository taskrepository) {
         this.taskrepository = taskrepository;
-        this.userRepository = userRepository;
+
     }
 
 

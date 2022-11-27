@@ -1,8 +1,5 @@
 package com.todolist.task;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.todolist.user.User;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -23,12 +20,14 @@ public class Task implements Serializable {
     private int xLocation;
     private int yLocation;
 
+    private String color;
+
 
 
 
     public Task() {}
 
-    public Task(Long id, String title, String description, Date date, boolean isComplete, String event, int xLocation, int yLocation) {
+    public Task(Long id, String title, String description, Date date, boolean isComplete, String event, int xLocation, int yLocation, String color) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -37,6 +36,7 @@ public class Task implements Serializable {
         this.event = event;
         this.xLocation = xLocation;
         this.yLocation = yLocation;
+        this.color = color;
     }
 
 
@@ -105,4 +105,11 @@ public class Task implements Serializable {
         this.description = description;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

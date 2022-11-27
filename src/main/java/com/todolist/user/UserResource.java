@@ -54,7 +54,11 @@ public class UserResource {
     public ResponseEntity<User> addUser(@RequestBody User user) {
         user.setId(null);
         user.setPassword(new BCryptPasswordEncoder(5).encode(user.getPassword()));
-        userDetailsService.addUser(user);
+        try {
+            userDetailsService.addUser(user);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
