@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/task")
+@RequestMapping(path = "/api/task")
 public class TaskResource {
 
     private final TaskService taskService;
