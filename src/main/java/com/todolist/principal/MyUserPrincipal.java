@@ -1,6 +1,7 @@
-package com.todolist.user;
+package com.todolist.principal;
 
 
+import com.todolist.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,9 @@ public class MyUserPrincipal implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+    public Long getId(){
+        return user.getId();
+    }
     @Override
     public String getPassword() {
         return user.getPassword();

@@ -1,8 +1,8 @@
-package com.todolist.filters;
+package com.todolist.filter;
 
 import com.todolist.constant.SecurityConstant;
-import com.todolist.user.MyUserDetailsService;
-import com.todolist.util.JwtUtilOld;
+import com.todolist.service.MyUserDetailsService;
+import com.todolist.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,9 +22,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final MyUserDetailsService userDetailsService;
 
-    private final JwtUtilOld jwtUtil;
+    private final JwtUtil jwtUtil;
 
-    public JwtRequestFilter(MyUserDetailsService userDetailsService, JwtUtilOld jwtUtil) {
+    public JwtRequestFilter(MyUserDetailsService userDetailsService, JwtUtil jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
     }
@@ -44,12 +44,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             if (authorizationHeader != null && authorizationHeader.startsWith(SecurityConstant.TOKEN_PREFIX)) {
                 jwt = authorizationHeader.substring(SecurityConstant.TOKEN_PREFIX.length());
-                username = jwtUtil.extractUsername(jwt);
+                username = jwtUtil.getSubject(jwt);
             }
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (jwtUtil.validateToken(jwt, userDetails)) {
+                if (jwtUtil.isTokenValid(username, jwt)) {
 
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

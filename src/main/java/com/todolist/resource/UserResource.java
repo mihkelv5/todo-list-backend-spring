@@ -1,15 +1,18 @@
-package com.todolist.user;
+package com.todolist.resource;
 
 import com.todolist.constant.SecurityConstant;
-import com.todolist.models.AuthenticationRequest;
-import com.todolist.util.JwtUtilOld;
+import com.todolist.model.AuthenticationRequest;
+import com.todolist.principal.MyUserPrincipal;
+import com.todolist.service.MyUserDetailsService;
+import com.todolist.model.User;
+import com.todolist.service.UserService;
+import com.todolist.util.JwtUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +21,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserResource {
     private final AuthenticationManager authenticationManager;
     private final MyUserDetailsService userDetailsService;
-    private final JwtUtilOld jwtTokenUtil;
+    private final UserService userService;
+    private final JwtUtil jwtTokenUtil;
 
-    public UserResource(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, JwtUtilOld jwtTokenUtil) {
+    public UserResource(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, UserService userService, JwtUtil jwtTokenUtil) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
@@ -41,10 +46,11 @@ public class UserResource {
 
             throw new Exception("Incorrect username or password", e);
         }
-        final UserDetails userDetails = userDetailsService
+        final MyUserPrincipal userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-        final User user = userDetailsService.getUser(authenticationRequest.getUsername());
+        User user = userService.getUser(authenticationRequest.getUsername());
+        user.setTasks(null);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(SecurityConstant.JWT_TOKEN_HEADER, jwt);
         return ResponseEntity.ok().headers(responseHeaders).body(user);
@@ -55,7 +61,7 @@ public class UserResource {
         user.setId(null);
         user.setPassword(new BCryptPasswordEncoder(5).encode(user.getPassword()));
         try {
-            userDetailsService.addUser(user);
+            userService.addUser(user);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -65,9 +71,7 @@ public class UserResource {
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user){
         user.setId(null);
-        User updatedUser = userDetailsService.updateUser(user);
+        User updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
-
-
 }

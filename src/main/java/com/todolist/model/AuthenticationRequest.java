@@ -1,4 +1,4 @@
-package com.todolist.models;
+package com.todolist.model;
 
 public class AuthenticationRequest {
     private String username;

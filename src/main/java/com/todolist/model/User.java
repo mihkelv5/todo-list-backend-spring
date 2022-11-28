@@ -1,10 +1,7 @@
-package com.todolist.user;
-
-import com.todolist.task.Task;
+package com.todolist.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,16 +17,18 @@ public class User implements Serializable {
     private boolean enabled;
     private String roles;
 
-    
+    @OneToMany(mappedBy = "user")
+    private List<Task> tasks;
 
 
 
 
-    public User(String username, String password, boolean enabled, String roles) {
+    public User(String username, String password, boolean enabled, String roles, List<Task> tasks) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
+        this.tasks = tasks;
     }
 
     public User() {
@@ -73,5 +72,13 @@ public class User implements Serializable {
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

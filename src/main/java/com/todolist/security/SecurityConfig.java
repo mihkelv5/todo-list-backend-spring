@@ -1,7 +1,7 @@
 package com.todolist.security;
 
-import com.todolist.filters.JwtRequestFilter;
-import com.todolist.user.MyUserDetailsService;
+import com.todolist.filter.JwtRequestFilter;
+import com.todolist.service.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -38,9 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .csrf().disable()
                 .cors().and()
                 .authorizeHttpRequests()
-                .antMatchers("/user/register").permitAll()
-                .antMatchers("/task/**").hasAnyRole("ADMIN")
-                .antMatchers("/user/login").permitAll().anyRequest().authenticated()
+                .antMatchers("/api/user/register").permitAll()
+                .antMatchers("/api/task/**").hasAnyRole("USER")
+                .antMatchers("/api/user/login").permitAll().anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

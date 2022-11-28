@@ -1,7 +1,8 @@
-package com.todolist.task;
+package com.todolist.service;
 
-import com.todolist.user.User;
-import com.todolist.user.UserRepository;
+import com.todolist.model.Task;
+import com.todolist.model.User;
+import com.todolist.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,29 +31,34 @@ public class TaskService {
     }
 
 
-    Task addTask(Task task){
+    public Task addTask(Task task, User user){
+
+        task.setUser(user);
+
         return taskrepository.save(task);
     }
 
-    Task moveTask(Task task){
+    public Task moveTask(Task task){
         return taskrepository.save(task);
     }
 
-    List<Task> findAllTasks() {
+    public List<Task> findAllTasks() {
         return taskrepository.findAll();
     }
 
-    List<Task> findTaskByDate(Date date) {
+    public List<Task> findTaskByDate(Date date) {
         return taskrepository.findTasksByDate(date);
     }
 
-
-    List<Task> findTasksByEvent(String event) {
+    public List<Task> findTasksByUser(User user) {
+        return taskrepository.findTasksByUser(user);
+    }
+    public List<Task> findTasksByEvent(String event) {
         return taskrepository.findTasksByEvent(event);
     }
 
     @Transactional
-    void deleteTask(Long id) throws IOException {
+    public void deleteTask(Long id) throws IOException {
         taskrepository.deleteTaskById(id);
     }
 
