@@ -32,14 +32,14 @@ public class TaskService {
 
 
     public Task addTask(Task task, User user){
-
         task.setUser(user);
-
         return taskrepository.save(task);
     }
 
-    public Task moveTask(Task task){
-        return taskrepository.save(task);
+    public Task moveTask(Long id, int xLocation, int yLocation){
+        Task task = this.taskrepository.findTaskById(id);
+        task.setCoordinates(xLocation, yLocation);
+        return this.taskrepository.save(task);
     }
 
     public List<Task> findAllTasks() {

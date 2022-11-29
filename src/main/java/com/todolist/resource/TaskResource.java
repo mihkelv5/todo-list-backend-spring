@@ -6,11 +6,11 @@ import com.todolist.service.TaskService;
 import com.todolist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -67,10 +67,11 @@ public class TaskResource {
         return new ResponseEntity<>(updatePost, HttpStatus.OK);
     }
 
-    @PutMapping("/moveTask")
-    public ResponseEntity<Task> moveTaskById(@RequestBody Task task){
-        Task newTask = taskService.moveTask(task);
-        return new ResponseEntity<>(newTask, HttpStatus.OK); //TODO:make that moving tasks does not make user "null".
+    //TODO: Probably updating a single task would be smarter, just merge with last method in the front end
+    @PutMapping("/moveTask/{id}")
+    public ResponseEntity<Task> moveTaskById(@PathVariable Long id, @RequestBody int[] coordinates){
+        Task newTask = taskService.moveTask(id, coordinates[0], coordinates[1]);
+        return new ResponseEntity<>(newTask, HttpStatus.OK);
     }
 
     @PutMapping("/complete/{id}")
@@ -87,10 +88,10 @@ public class TaskResource {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     @GetMapping("/user/{id}/tasks")
     public ResponseEntity<List<Task>> getTasksByUser(@PathVariable("id") Long id){
-        User user = userService.getCurrentUser();
+        User user = userService.findUserById(id);
+        //User user = userService.getCurrentUser();
         List<Task> tasks = taskService.findTasksByUser(user);
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }

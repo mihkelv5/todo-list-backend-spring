@@ -99,17 +99,16 @@ public class Task implements Serializable {
         return xLocation;
     }
 
-    public void setxLocation(int xLocation) {
+    public void setCoordinates(int xLocation, int yLocation) {
         this.xLocation = xLocation;
+        this.yLocation = yLocation;
     }
 
     public int getyLocation() {
         return yLocation;
     }
 
-    public void setyLocation(int yLocation) {
-        this.yLocation = yLocation;
-    }
+
 
     public String getDescription() {
         return description;
