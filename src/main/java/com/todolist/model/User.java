@@ -1,8 +1,12 @@
 package com.todolist.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class User implements Serializable {
@@ -17,18 +21,20 @@ public class User implements Serializable {
     private boolean enabled;
     private String roles;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<Task> tasks;
+    private Set<Task> tasks = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "eventUsers")
+    private Set<Event> events = new HashSet<>();
 
 
-
-
-    public User(String username, String password, boolean enabled, String roles, List<Task> tasks) {
+    public User(String username, String password, boolean enabled, String roles) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
-        this.tasks = tasks;
     }
 
     public User() {
@@ -74,11 +80,19 @@ public class User implements Serializable {
         this.roles = roles;
     }
 
-    public List<Task> getTasks() {
+    public Set<Task> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List<Task> tasks) {
+    public void setTasks(Set<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 }

@@ -58,7 +58,7 @@ public class UserResource {
 
     @PostMapping("/register")
     public ResponseEntity<User> addUser(@RequestBody User user) {
-        user.setId(null);
+        //user.setId(null);
         user.setPassword(new BCryptPasswordEncoder(5).encode(user.getPassword()));
         try {
             userService.addUser(user);

@@ -1,7 +1,9 @@
 package com.todolist.service;
 
+import com.todolist.model.Event;
 import com.todolist.model.Task;
 import com.todolist.model.User;
+import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,13 +17,14 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskrepository;
+    private final EventRepository eventRepository;
 
 
 
     @Autowired
-    public TaskService(TaskRepository taskrepository) {
+    public TaskService(TaskRepository taskrepository, EventRepository eventRepository) {
         this.taskrepository = taskrepository;
-
+        this.eventRepository = eventRepository;
     }
 
 
@@ -33,6 +36,11 @@ public class TaskService {
 
     public Task addTask(Task task, User user){
         task.setUser(user);
+        return taskrepository.save(task);
+    }
+
+    public Task addTaskWithEvent(Long eventId, Task task){
+        task.setEventId(eventId);
         return taskrepository.save(task);
     }
 
@@ -53,8 +61,8 @@ public class TaskService {
     public List<Task> findTasksByUser(User user) {
         return taskrepository.findTasksByUser(user);
     }
-    public List<Task> findTasksByEvent(String event) {
-        return taskrepository.findTasksByEvent(event);
+    public List<Task> findTasksByEvent(Long eventId) {
+        return taskrepository.findTasksByEventId(eventId);
     }
 
     @Transactional

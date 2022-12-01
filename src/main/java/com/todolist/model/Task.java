@@ -19,7 +19,7 @@ public class Task implements Serializable {
     private Date date;
     @Column(nullable = false)
     private boolean isComplete;
-    private String event;
+    private Long eventId;
     private int xLocation;
     private int yLocation;
 
@@ -41,13 +41,13 @@ public class Task implements Serializable {
 
     public Task() {}
 
-    public Task(Long id, String title, String description, Date date, boolean isComplete, String event, int xLocation, int yLocation, String color) {
+    public Task(Long id, String title, String description, Date date, boolean isComplete, Long eventId, int xLocation, int yLocation, String color) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
         this.isComplete = isComplete;
-        this.event = event;
+        this.eventId = eventId;
         this.xLocation = xLocation;
         this.yLocation = yLocation;
         this.color = color;
@@ -87,25 +87,25 @@ public class Task implements Serializable {
         isComplete = complete;
     }
 
-    public String getEvent() {
-        return event;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setEvent(String event) {
-        this.event = event;
+    public void setEventId(Long event_id) {
+        this.eventId = event_id;
     }
 
     public int getxLocation() {
         return xLocation;
     }
 
+    public int getyLocation() {
+        return yLocation;
+    }
+
     public void setCoordinates(int xLocation, int yLocation) {
         this.xLocation = xLocation;
         this.yLocation = yLocation;
-    }
-
-    public int getyLocation() {
-        return yLocation;
     }
 
 
@@ -125,4 +125,6 @@ public class Task implements Serializable {
     public void setColor(String color) {
         this.color = color;
     }
+
+
 }

@@ -28,10 +28,25 @@ public class TaskResource {
     }
 
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Task>> getAllTasks(){
-        List<Task> tasks = taskService.findAllTasks();
+    @GetMapping("/user/{id}/tasks")
+    public ResponseEntity<List<Task>> getTasksByUser(@PathVariable("id") Long id){
+        User user = userService.findUserById(id);
+
+        List<Task> tasks = taskService.findTasksByUser(user);
         return new ResponseEntity<>(tasks, HttpStatus.OK);
+    }
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<Task> getTaskById(@PathVariable("id") Long id){
+        Task task = taskService.findTaskById(id);
+        return new ResponseEntity<>(task, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/findByEvent/{eventId}")
+    public ResponseEntity<List<Task>> getTasksByEvent(@PathVariable("eventId") Long eventId){
+        List<Task> taskList = taskService.findTasksByEvent(eventId);
+        return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -48,39 +63,18 @@ public class TaskResource {
         }
     }
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") Long id){
-        Task task = taskService.findTaskById(id);
-        return new ResponseEntity<>(task, HttpStatus.OK);
+    @PostMapping("/add/event/{eventId}")
+    public ResponseEntity<?> addTaskWithEvent(@PathVariable("eventId") Long eventId, @RequestBody Task task){
+        Task newTask = this.taskService.addTaskWithEvent(eventId, task);
+        return new ResponseEntity<Task>(newTask, HttpStatus.CREATED);
     }
 
-    @GetMapping("/findByEvent/{event}")
-    public ResponseEntity<List<Task>> getTasksByEvent(@PathVariable("event") String event){
-        List<Task> taskList = taskService.findTasksByEvent(event);
-        return new ResponseEntity<>(taskList, HttpStatus.OK);
-    }
 
-    @PutMapping("/update")
-    public ResponseEntity<Task> updateTask(@RequestBody Task task){
-        User user = userService.getCurrentUser();
-        Task updatePost = taskService.addTask(task, user);
-        return new ResponseEntity<>(updatePost, HttpStatus.OK);
-    }
-
-    //TODO: Probably updating a single task would be smarter, just merge with last method in the front end
     @PutMapping("/moveTask/{id}")
     public ResponseEntity<Task> moveTaskById(@PathVariable Long id, @RequestBody int[] coordinates){
         Task newTask = taskService.moveTask(id, coordinates[0], coordinates[1]);
         return new ResponseEntity<>(newTask, HttpStatus.OK);
     }
-
-    @PutMapping("/complete/{id}")
-    public ResponseEntity<Task> completeTaskById(@PathVariable Long id){
-        Task task = taskService.findTaskById(id);
-        task.setComplete(!task.isComplete());
-        return new ResponseEntity<>(task, HttpStatus.OK);
-    }
-
     @Transactional
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable("id") Long id) throws IOException {
@@ -88,13 +82,25 @@ public class TaskResource {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/user/{id}/tasks")
-    public ResponseEntity<List<Task>> getTasksByUser(@PathVariable("id") Long id){
-        User user = userService.findUserById(id);
-        //User user = userService.getCurrentUser();
-        List<Task> tasks = taskService.findTasksByUser(user);
+
+    //endpoints not used in front end
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Task>> getAllTasks(){
+        List<Task> tasks = taskService.findAllTasks();
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
+    @PutMapping("/update")
+    public ResponseEntity<Task> updateTask(@RequestBody Task task){
+        User user = userService.getCurrentUser();
+        Task updatePost = taskService.addTask(task, user);
+        return new ResponseEntity<>(updatePost, HttpStatus.OK);
+    }
 
-
+    @PutMapping("/complete/{id}")
+    public ResponseEntity<Task> completeTaskById(@PathVariable Long id){
+        Task task = taskService.findTaskById(id);
+        task.setComplete(!task.isComplete()); //bad implementation due to multiple requests may overwrite each other
+        return new ResponseEntity<>(task, HttpStatus.OK);
+    }
 }
