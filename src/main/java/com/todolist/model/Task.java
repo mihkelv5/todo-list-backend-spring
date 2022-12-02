@@ -48,7 +48,7 @@ public class Task implements Serializable {
         this.date = date;
         this.isComplete = isComplete;
         this.eventId = eventId;
-        this.xLocation = xLocation;
+        this.xLocation = xLocation; //TODO: locations should be saved in map in event and user classes instead.
         this.yLocation = yLocation;
         this.color = color;
     }

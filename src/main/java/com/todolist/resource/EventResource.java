@@ -2,6 +2,7 @@ package com.todolist.resource;
 
 import com.todolist.model.Event;
 import com.todolist.service.EventService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,14 +24,15 @@ public class EventResource {
         return ResponseEntity.ok(event);
     }
 
-    @GetMapping("/findByUser/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<Event>> findEventsByUserId(@PathVariable("userId") Long id){
         List<Event> events = this.eventService.findEventsByUser(id);
-        return ResponseEntity.ok(events);
+        return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
     @PostMapping("/add")
     public ResponseEntity<Event> addEvent(@RequestBody Event event){
+        //eventService automatically registers the jwt holder as a user
         Event addedEvent = this.eventService.addEvent(event);
         return ResponseEntity.ok(addedEvent);
     }

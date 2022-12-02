@@ -39,8 +39,9 @@ public class TaskService {
         return taskrepository.save(task);
     }
 
-    public Task addTaskWithEvent(Long eventId, Task task){
+    public Task addTaskWithEvent(Long eventId, Task task, User user){
         task.setEventId(eventId);
+        task.setUser(user);
         return taskrepository.save(task);
     }
 

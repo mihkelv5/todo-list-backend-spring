@@ -65,7 +65,9 @@ public class TaskResource {
 
     @PostMapping("/add/event/{eventId}")
     public ResponseEntity<?> addTaskWithEvent(@PathVariable("eventId") Long eventId, @RequestBody Task task){
-        Task newTask = this.taskService.addTaskWithEvent(eventId, task);
+        User user = userService.getCurrentUser();
+        task.setId(null);
+        Task newTask = this.taskService.addTaskWithEvent(eventId, task, user);
         return new ResponseEntity<Task>(newTask, HttpStatus.CREATED);
     }
 
