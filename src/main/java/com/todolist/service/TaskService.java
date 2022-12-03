@@ -50,6 +50,7 @@ public class TaskService {
         task.setDate(updatedTask.getDate());
         task.setComplete(updatedTask.isComplete());
         task.setDescription(updatedTask.getDescription());
+        task.setColor(updatedTask.getColor());
         return taskRepository.save(task);
 
     }
@@ -80,7 +81,7 @@ public class TaskService {
     }
 
     @Transactional
-    public void deleteTask(Long id) throws IOException {
+    public void deleteTask(Long id) {
         taskRepository.deleteTaskById(id);
     }
 
