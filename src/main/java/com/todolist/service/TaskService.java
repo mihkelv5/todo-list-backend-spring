@@ -62,6 +62,10 @@ public class TaskService {
     public List<Task> findTasksByUser(User user) {
         return taskrepository.findTasksByUser(user);
     }
+
+    public List<Task> findTasksByUserWhereEventNull(User user){
+        return taskrepository.findTasksByUserAndEventIdIsNull(user);
+    }
     public List<Task> findTasksByEvent(Long eventId) {
         return taskrepository.findTasksByEventId(eventId);
     }

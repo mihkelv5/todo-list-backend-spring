@@ -28,11 +28,18 @@ public class TaskResource {
     }
 
 
-    @GetMapping("/user/{id}/tasks")
+    @GetMapping("/user/{id}/all")
     public ResponseEntity<List<Task>> getTasksByUser(@PathVariable("id") Long id){
         User user = userService.findUserById(id);
 
         List<Task> tasks = taskService.findTasksByUser(user);
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{id}/own")
+    public ResponseEntity<List<Task>> getTasksByUserWhereEventNull(@PathVariable("id") Long id){
+        User user = userService.findUserById(id);
+        List<Task> tasks = taskService.findTasksByUserWhereEventNull(user);
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
