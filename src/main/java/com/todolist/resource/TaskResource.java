@@ -50,7 +50,7 @@ public class TaskResource {
     }
 
 
-    @GetMapping("/findByEvent/{eventId}")
+    @GetMapping("/event/{eventId}")
     public ResponseEntity<List<Task>> getTasksByEvent(@PathVariable("eventId") Long eventId){
         List<Task> taskList = taskService.findTasksByEvent(eventId);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
