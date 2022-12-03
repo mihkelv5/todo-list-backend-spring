@@ -99,10 +99,9 @@ public class TaskResource {
         List<Task> tasks = taskService.findAllTasks();
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
-    @PutMapping("/update")
-    public ResponseEntity<Task> updateTask(@RequestBody Task task){
-        User user = userService.getCurrentUser();
-        Task updatePost = taskService.addTask(task, user);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Task> updateTask(@PathVariable("id") Long taskId, @RequestBody Task task){
+        Task updatePost = taskService.updateTask(taskId, task);
         return new ResponseEntity<>(updatePost, HttpStatus.OK);
     }
 

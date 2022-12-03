@@ -30,14 +30,6 @@ public class Task implements Serializable {
     @JsonIgnore
     private User user;
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
 
     public Task() {}
 
@@ -127,4 +119,12 @@ public class Task implements Serializable {
     }
 
 
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

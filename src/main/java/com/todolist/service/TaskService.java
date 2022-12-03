@@ -1,6 +1,5 @@
 package com.todolist.service;
 
-import com.todolist.model.Event;
 import com.todolist.model.Task;
 import com.todolist.model.User;
 import com.todolist.repository.EventRepository;
@@ -16,65 +15,74 @@ import java.util.List;
 @Service
 public class TaskService {
 
-    private final TaskRepository taskrepository;
+    private final TaskRepository taskRepository;
     private final EventRepository eventRepository;
 
 
 
     @Autowired
     public TaskService(TaskRepository taskrepository, EventRepository eventRepository) {
-        this.taskrepository = taskrepository;
+        this.taskRepository = taskrepository;
         this.eventRepository = eventRepository;
     }
 
 
 
     public Task findTaskById(Long id) {
-        return taskrepository.findTaskById(id);
+        return taskRepository.findTaskById(id);
     }
 
 
     public Task addTask(Task task, User user){
         task.setUser(user);
-        return taskrepository.save(task);
+        return taskRepository.save(task);
     }
 
     public Task addTaskWithEvent(Long eventId, Task task, User user){
         task.setEventId(eventId);
         task.setUser(user);
-        return taskrepository.save(task);
+        return taskRepository.save(task);
+    }
+
+    public Task updateTask(Long dataBaseTaskId, Task updatedTask) {
+        Task task = taskRepository.findTaskById(dataBaseTaskId);
+        task.setTitle(updatedTask.getTitle());
+        task.setDate(updatedTask.getDate());
+        task.setComplete(updatedTask.isComplete());
+        task.setDescription(updatedTask.getDescription());
+        return taskRepository.save(task);
+
     }
 
     public Task moveTask(Long id, int xLocation, int yLocation){
-        Task task = this.taskrepository.findTaskById(id);
+        Task task = this.taskRepository.findTaskById(id);
         task.setCoordinates(xLocation, yLocation);
-        return this.taskrepository.save(task);
+        return this.taskRepository.save(task);
     }
 
     public List<Task> findAllTasks() {
-        return taskrepository.findAll();
+        return taskRepository.findAll();
     }
 
     public List<Task> findTaskByDate(Date date) {
-        return taskrepository.findTasksByDate(date);
+        return taskRepository.findTasksByDate(date);
     }
 
     public List<Task> findTasksByUser(User user) {
-        return taskrepository.findTasksByUser(user);
+        return taskRepository.findTasksByUser(user);
+    }
+    public List<Task> findTasksByUserWhereEventNull(User user){
+        return taskRepository.findTasksByUserAndEventIdIsNull(user);
     }
 
-    public List<Task> findTasksByUserWhereEventNull(User user){
-        return taskrepository.findTasksByUserAndEventIdIsNull(user);
-    }
     public List<Task> findTasksByEvent(Long eventId) {
-        return taskrepository.findTasksByEventId(eventId);
+        return taskRepository.findTasksByEventId(eventId);
     }
 
     @Transactional
     public void deleteTask(Long id) throws IOException {
-        taskrepository.deleteTaskById(id);
+        taskRepository.deleteTaskById(id);
     }
-
 
 
 }
