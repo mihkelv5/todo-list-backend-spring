@@ -47,4 +47,9 @@ public class EventService {
         event.registerUserToEvent(user);
         return this.eventRepository.save(event);
     }
+
+    public List<User> findUsersByEvent(Long eventId) {
+        Event event = this.eventRepository.findEventById(eventId);
+        return userService.findUsersByEvent(event);
+    }
 }

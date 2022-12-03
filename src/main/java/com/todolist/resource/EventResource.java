@@ -1,6 +1,7 @@
 package com.todolist.resource;
 
 import com.todolist.model.Event;
+import com.todolist.model.User;
 import com.todolist.service.EventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,12 @@ public class EventResource {
     public ResponseEntity<List<Event>> findEventsByUserId(@PathVariable("userId") Long id){
         List<Event> events = this.eventService.findEventsByUser(id);
         return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @GetMapping("/{eventId}/users")
+    public ResponseEntity<List<User>> findUsersByEventId(@PathVariable("eventId") Long eventId){
+        List<User> users = this.eventService.findUsersByEvent(eventId);
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping("/add")

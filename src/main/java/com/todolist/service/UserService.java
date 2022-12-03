@@ -1,22 +1,27 @@
 package com.todolist.service;
 
+import com.todolist.model.Event;
 import com.todolist.model.User;
 import com.todolist.principal.MyUserPrincipal;
+import com.todolist.repository.EventRepository;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
 
+
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+
     }
 
     public User getUser(String username) {
@@ -33,6 +38,10 @@ public class UserService {
 
     public User findUserById(long id){
         return userRepository.findUserById(id);
+    }
+
+    public List<User> findUsersByEvent(Event event) {
+        return userRepository.findUsersByEvents(event);
     }
 
 

@@ -12,8 +12,9 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String title;
+
+    private String description;
 
     @ManyToMany
     @JoinTable(
@@ -28,9 +29,10 @@ public class Event {
     public Event() {
     }
 
-    public Event(Long id, String title) {
+    public Event(Long id, String title, String description) {
         this.id = id;
         this.title = title;
+        this.description = description;
     }
 
     public Long getId() {
@@ -63,5 +65,13 @@ public class Event {
 
     public void removeUserFromEvent(User user){
         this.eventUsers.remove(user);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

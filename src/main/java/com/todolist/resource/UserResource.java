@@ -74,4 +74,6 @@ public class UserResource {
         User updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
+
+
 }
