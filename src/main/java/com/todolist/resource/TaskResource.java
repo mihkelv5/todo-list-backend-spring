@@ -6,11 +6,9 @@ import com.todolist.service.TaskService;
 import com.todolist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -62,7 +60,6 @@ public class TaskResource {
             User user = userService.getCurrentUser();
             task.setId(null);
             Task newTask = taskService.addTask(task, user);
-            System.out.println("addTask");
             return new ResponseEntity<>(newTask, HttpStatus.CREATED);
 
         }catch (NullPointerException e){
@@ -75,7 +72,7 @@ public class TaskResource {
         User user = userService.getCurrentUser();
         task.setId(null);
         Task newTask = this.taskService.addTaskWithEvent(eventId, task, user);
-        return new ResponseEntity<Task>(newTask, HttpStatus.CREATED);
+        return new ResponseEntity<>(newTask, HttpStatus.CREATED);
     }
 
 
@@ -86,7 +83,7 @@ public class TaskResource {
     }
     @Transactional
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable("id") Long id) throws IOException {
+    public ResponseEntity<?> deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
