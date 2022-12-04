@@ -20,6 +20,7 @@ public class Task implements Serializable {
     @Column(nullable = false)
     private boolean isComplete;
     private Long eventId;
+    private String eventName;
     private int xLocation;
     private int yLocation;
 
@@ -85,6 +86,14 @@ public class Task implements Serializable {
 
     public void setEventId(Long event_id) {
         this.eventId = event_id;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
     public int getxLocation() {
