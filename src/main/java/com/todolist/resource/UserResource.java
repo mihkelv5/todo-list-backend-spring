@@ -2,8 +2,8 @@ package com.todolist.resource;
 
 import com.todolist.constant.SecurityConstant;
 import com.todolist.model.AuthenticationRequest;
-import com.todolist.principal.MyUserPrincipal;
-import com.todolist.service.MyUserDetailsService;
+import com.todolist.principal.UserPrincipalImpl;
+import com.todolist.service.UserDetailsServiceImpl;
 import com.todolist.model.User;
 import com.todolist.service.UserService;
 import com.todolist.util.JwtUtil;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api/user")
 public class UserResource {
     private final AuthenticationManager authenticationManager;
-    private final MyUserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final UserService userService;
     private final JwtUtil jwtTokenUtil;
 
-    public UserResource(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, UserService userService, JwtUtil jwtTokenUtil) {
+    public UserResource(AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService, UserService userService, JwtUtil jwtTokenUtil) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.userService = userService;
@@ -46,7 +46,7 @@ public class UserResource {
 
             throw new Exception("Incorrect username or password", e);
         }
-        final MyUserPrincipal userDetails = userDetailsService
+        final UserPrincipalImpl userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
         User user = userService.getUser(authenticationRequest.getUsername());
@@ -75,5 +75,12 @@ public class UserResource {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+
+    @GetMapping("/{userId}/event/{eventId}")
+    public ResponseEntity<Boolean> isUserInEvent(
+            @PathVariable("userId") Long userId, @PathVariable("eventId") Long eventId){
+        boolean isUserInEvent = this.userService.isUserInEventId(userId, eventId);
+        return ResponseEntity.ok(isUserInEvent);
+    }
 
 }

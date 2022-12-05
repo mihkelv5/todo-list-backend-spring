@@ -5,6 +5,7 @@ import com.todolist.model.User;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -52,4 +53,6 @@ public class EventService {
         Event event = this.eventRepository.findEventById(eventId);
         return userService.findUsersByEvent(event);
     }
+
+
 }

@@ -11,11 +11,11 @@ import java.util.Collection;
 
 import java.util.stream.Collectors;
 
-public class MyUserPrincipal implements UserDetails {
+public class UserPrincipalImpl implements UserDetails {
 
     private final User user;
 
-    public MyUserPrincipal(User user) {
+    public UserPrincipalImpl(User user) {
         this.user = user;
     }
 

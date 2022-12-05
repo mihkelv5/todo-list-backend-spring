@@ -12,6 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findUserById(Long id);
 
+    boolean existsUserByEventsIdAndId(Long eventId, Long userId);
     List<User> findUsersByEvents(Event event);
 
 }

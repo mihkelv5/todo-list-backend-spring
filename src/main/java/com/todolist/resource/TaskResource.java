@@ -103,9 +103,8 @@ public class TaskResource {
     }
 
     @PutMapping("/complete/{id}")
-    public ResponseEntity<Task> completeTaskById(@PathVariable Long id){
-        Task task = taskService.findTaskById(id);
-        task.setComplete(!task.isComplete()); //bad implementation due to multiple requests may overwrite each other
-        return new ResponseEntity<>(task, HttpStatus.OK);
+    public ResponseEntity<Task> completeTaskById(@PathVariable("id") Long id, @RequestBody boolean isComplete){
+        Task newTask = this.taskService.completeTask(id, isComplete);
+        return ResponseEntity.ok(newTask);
     }
 }

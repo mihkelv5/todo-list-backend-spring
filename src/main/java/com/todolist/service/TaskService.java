@@ -64,6 +64,18 @@ public class TaskService {
         return this.taskRepository.save(task);
     }
 
+
+
+    public Task completeTask(Long id, Boolean isComplete){
+        Task task = taskRepository.findTaskById(id);
+        if(task != null){
+            task.setComplete(isComplete);
+            taskRepository.save(task);
+
+        }
+        return task;
+    }
+
     public List<Task> findAllTasks() {
         return taskRepository.findAll();
     }
