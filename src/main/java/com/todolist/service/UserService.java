@@ -16,14 +16,12 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final EventRepository eventRepository;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, EventRepository eventRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
 
-        this.eventRepository = eventRepository;
     }
 
     public User getUser(String username) {
@@ -54,13 +52,13 @@ public class UserService {
         return user.orElseGet(User::new);
     }
 
-    public boolean isUserInEvent(User user, Long eventId){
-        Long userId = user.getId();
-        return userRepository.existsUserByEventsIdAndId(userId, eventId);
+    public boolean isUserInEvent(String username, Long eventId){
+        return userRepository.existsUserByEventsIdAndUsername(eventId, username);
+
     }
 
     public boolean isUserInEventId(Long userId, Long eventId){ //dummy method for testing
-        Event event = eventRepository.findEventById(eventId);
+
         return userRepository.existsUserByEventsIdAndId(eventId, userId);
     }
 }

@@ -1,8 +1,10 @@
+
 package com.todolist.security;
 
 
 import com.todolist.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.Filter;
-
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig{
 
@@ -36,8 +38,8 @@ public class SecurityConfig{
                 authorize
                         .antMatchers("/api/user/register").permitAll()
                         .antMatchers("/api/task/**").hasAnyRole("USER")
-                        .mvcMatchers("/api/event/{eventId}/**").hasAnyRole("USER")
-                        //.access("@EventGuard.isUserInEvent(authentication, #eventId)")
+                        .mvcMatchers("/api/event/find/{eventId}").access("@webSecurity.check(authentication, #eventId)")
+                        .antMatchers("/api/event/**").hasAnyRole("USER")
                         .antMatchers("/api/user/login").permitAll().anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

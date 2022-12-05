@@ -76,7 +76,7 @@ public class UserResource {
     }
 
 
-    @GetMapping("/{userId}/event/{eventId}")
+    @GetMapping("/{userId}/event/{eventId}") //for development purposes
     public ResponseEntity<Boolean> isUserInEvent(
             @PathVariable("userId") Long userId, @PathVariable("eventId") Long eventId){
         boolean isUserInEvent = this.userService.isUserInEventId(userId, eventId);
