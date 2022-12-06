@@ -1,7 +1,9 @@
 package com.todolist.resource;
 
 import com.todolist.model.Event;
+import com.todolist.model.EventInvitation;
 import com.todolist.model.User;
+import com.todolist.service.EventInvitationService;
 import com.todolist.service.EventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ import java.util.List;
 public class EventResource {
 
     private final EventService eventService;
+    private final EventInvitationService eventInvitationService;
 
-    public EventResource(EventService eventService) {
+    public EventResource(EventService eventService, EventInvitationService eventInvitationService) {
         this.eventService = eventService;
+        this.eventInvitationService = eventInvitationService;
     }
 
     @GetMapping("/find/{id}")
@@ -50,5 +54,23 @@ public class EventResource {
         return ResponseEntity.ok(event);
     }
 
+    @PutMapping("/{eventId}/invite/{userId}")
+    public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("userId") Long userId) {
+        boolean inviteSuccess = this.eventInvitationService.inviteUserToEvent(eventId, userId);
+        if(inviteSuccess) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.unprocessableEntity().build();
+    }
 
+    @GetMapping("/invites/{userId}")
+    public ResponseEntity<List<EventInvitation>> getUserEventInvitations(@PathVariable("userId") Long userId){
+        List<EventInvitation> eventInvitationList = this.eventInvitationService.findUserInvitations(userId);
+        return ResponseEntity.ok(eventInvitationList);
+    }
+
+    @PutMapping("/accept/{invitationId}")
+    public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") Long invitationId) {
+        return this.eventInvitationService.acceptInvite(invitationId);
+    }
 }

@@ -31,6 +31,10 @@ public class User implements Serializable {
     @ManyToMany(mappedBy = "eventUsers")
     private Set<Event> events = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "invitedUser")
+    private Set<EventInvitation> eventInvitations = new HashSet<>();
+
 
     public User(String username, String password, boolean enabled, String roles) {
         this.username = username;
@@ -96,5 +100,13 @@ public class User implements Serializable {
 
     public void setEvents(Set<Event> events) {
         this.events = events;
+    }
+
+    public Set<EventInvitation> getEventInvitations() {
+        return eventInvitations;
+    }
+
+    public void setEventInvitations(Set<EventInvitation> eventInvitations) {
+        this.eventInvitations = eventInvitations;
     }
 }

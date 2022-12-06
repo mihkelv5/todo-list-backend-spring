@@ -32,6 +32,8 @@ public class Task implements Serializable {
     private User user;
 
 
+
+
     public Task() {}
 
     public Task(Long id, String title, String description, Date date, boolean isComplete, Long eventId, int xLocation, int yLocation, String color) {
@@ -136,4 +138,5 @@ public class Task implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
+
 }

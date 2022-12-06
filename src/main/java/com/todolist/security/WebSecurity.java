@@ -14,7 +14,7 @@ public class WebSecurity {
         this.userService = userService;
     }
 
-    public boolean check(Authentication authentication, Long eventId) {
+    public boolean checkIfUserInEvent(Authentication authentication, Long eventId) {
         return userService.isUserInEvent(authentication.getName(), eventId);
     }
 }

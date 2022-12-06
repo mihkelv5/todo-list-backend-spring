@@ -54,7 +54,6 @@ public class UserService {
 
     public boolean isUserInEvent(String username, Long eventId){
         return userRepository.existsUserByEventsIdAndUsername(eventId, username);
-
     }
 
     public boolean isUserInEventId(Long userId, Long eventId){ //dummy method for testing

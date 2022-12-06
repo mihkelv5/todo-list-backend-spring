@@ -38,7 +38,7 @@ public class SecurityConfig{
                 authorize
                         .antMatchers("/api/user/register").permitAll()
                         .antMatchers("/api/task/**").hasAnyRole("USER")
-                        .mvcMatchers("/api/event/find/{eventId}").access("@webSecurity.check(authentication, #eventId)")
+                        .mvcMatchers("/api/event/find/{eventId}").access("@webSecurity.checkIfUserInEvent(authentication, #eventId)")
                         .antMatchers("/api/event/**").hasAnyRole("USER")
                         .antMatchers("/api/user/login").permitAll().anyRequest().authenticated());
 
