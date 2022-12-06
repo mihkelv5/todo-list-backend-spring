@@ -3,7 +3,6 @@ package com.todolist.service;
 import com.todolist.model.Event;
 import com.todolist.model.User;
 import com.todolist.principal.UserPrincipalImpl;
-import com.todolist.repository.EventRepository;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

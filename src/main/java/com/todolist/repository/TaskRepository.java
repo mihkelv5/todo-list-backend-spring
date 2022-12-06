@@ -9,15 +9,15 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    Task findTaskById (Long id);
+    Task findTaskById(Long id);
 
-    List<Task> findTasksByDate (Date date);
+    List<Task> findTasksByDate(Date date);
 
-    List<Task> findTasksByUser (User user);
+    List<Task> findTasksByUser(User user);
 
-    List<Task> findTasksByUserAndEventIdIsNull (User user);
+    List<Task> findTasksByUserAndEventIdIsNull(User user);
 
-    List<Task> findTasksByEventId (Long id);
+    List<Task> findTasksByEventId(Long id);
 
     void deleteTaskById(Long id);
 

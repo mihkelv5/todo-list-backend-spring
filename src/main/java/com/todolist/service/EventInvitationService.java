@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -16,10 +17,10 @@ import java.util.Objects;
 @Service
 public class EventInvitationService {
 
-    EventInvitationRepository eventInvitationRepository;
-    EventRepository eventRepository;
-    UserService userService;
-    private EventService eventService;
+    private final EventInvitationRepository eventInvitationRepository;
+    private final EventRepository eventRepository;
+    private final UserService userService;
+    private final EventService eventService;
 
     public EventInvitationService(EventInvitationRepository eventInvitationRepository, UserService userService, EventRepository eventRepository, EventService eventService) {
         this.eventInvitationRepository = eventInvitationRepository;
@@ -28,29 +29,31 @@ public class EventInvitationService {
         this.eventService = eventService;
     }
 
-    public List<EventInvitation> findUserInvitations (Long userId) {
-        User user = this.userService.findUserById(userId);
+    public List<EventInvitation> findUserInvitations (String username) {
+        User user = this.userService.getUser(username);
        //return this.eventInvitationRepository.findAllEventInvitationsByIsAccepted(false);
         return this.eventInvitationRepository.findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(user, new Date(), false);
     }
 
-    public boolean inviteUserToEvent(Long eventId, Long userId) {
-        User user = this.userService.getCurrentUser();
-        User invitedUser = this.userService.findUserById(userId);
 
-        if(Objects.equals(userId, user.getId())) return false; //users cannot invite themselves
-
-        if(!this.userService.isUserInEvent(invitedUser.getUsername(), eventId)
-        && this.userService.isUserInEvent(user.getUsername(), eventId)){
-            User requester = this.userService.getCurrentUser();
-            EventInvitation invitation = new EventInvitation();
-            invitation.setRequesterUsername(requester.getUsername());
-            invitation.setInvitedUser(invitedUser);
-            invitation.setEventId(eventId);
-            this.eventInvitationRepository.save(invitation);
-            return true;
+    public ResponseEntity<?> inviteUserToEvent (Long eventId, String username){
+        User invitedUser = this.userService.getUser(username);
+        User requester = this.userService.getCurrentUser();
+        if(Objects.equals(username, requester.getUsername())) {
+            return ResponseEntity.badRequest().body("You cannot invite yourself");
         }
-        return false;
+        if(this.userService.isUserInEvent(username, eventId)){
+            return ResponseEntity.badRequest().body("User " + username + " is already joined the event!");
+        }
+        if(this.eventInvitationRepository.existsByInvitedUserAndEventIdAndExpirationDateIsAfter(invitedUser, eventId, new Date())){
+            return ResponseEntity.badRequest().body("User " + username + "is already invited to the event!");
+        }
+        EventInvitation invitation = new EventInvitation();
+        invitation.setRequesterUsername(requester.getUsername());
+        invitation.setInvitedUser(invitedUser);
+        invitation.setEventId(eventId);
+        this.eventInvitationRepository.save(invitation);
+        return  ResponseEntity.ok().body("User " + username + " invited to event!");
     }
 
     public ResponseEntity<?> acceptInvite(Long invitationId){ //TODO: ask if this is a good practice
@@ -66,15 +69,25 @@ public class EventInvitationService {
             //shouldn't occur unless someone sends data straight to backend, and should be filtered before?
         }
         //TODO: delete invitation/set state to accepted
-        Event event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getId());
+        Event event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
         if(event != null){
             invitation.accept();
             this.eventInvitationRepository.save(invitation);
             return ResponseEntity.ok(event);
         }
         return ResponseEntity.unprocessableEntity().body("Something went wrong"); //should be 500 code? Do I want to show it to client?
-
     }
 
+    @Transactional
+    public ResponseEntity<?> declineInvite(Long invitationId){
+        EventInvitation invitation = this.eventInvitationRepository.findEventInvitationById(invitationId);
+        User user = this.userService.getCurrentUser();
+        if(!Objects.equals(user.getUsername(), invitation.getInvitedUser().getUsername())) {
+            return ResponseEntity.badRequest().body("You cannot decline other users invitation");
+            //shouldn't occur unless someone sends data straight to backend, and should be filtered before?
+        }
+        this.eventInvitationRepository.deleteEventInvitationById(invitationId);
+        return ResponseEntity.ok().body("Request deleted");
+    }
 
 }

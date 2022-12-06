@@ -21,7 +21,7 @@ public class EventInvitation implements Serializable {
     @Column(nullable = false, name = "is_accepted")
     private boolean isAccepted;
     @Column(nullable = false)
-    private boolean isRejected;
+    private boolean isBlocked;
     @Column(nullable = false)
     private Date expirationDate;
 
@@ -35,7 +35,7 @@ public class EventInvitation implements Serializable {
         calendar.add(Calendar.DATE, 14);
         this.expirationDate = calendar.getTime();
         this.isAccepted = false;
-        this.isRejected = false;
+        this.isBlocked = false;
     }
 
     public EventInvitation(Long id, String requesterUsername, Long eventId, boolean isAccepted, boolean isRejected, Date expirationDate, User invitedUser) {
@@ -43,7 +43,7 @@ public class EventInvitation implements Serializable {
         this.requesterUsername = requesterUsername;
         this.eventId = eventId;
         this.isAccepted = isAccepted;
-        this.isRejected = isRejected;
+        this.isBlocked = isRejected;
         this.expirationDate = expirationDate;
         this.invitedUser = invitedUser;
     }
@@ -92,11 +92,11 @@ public class EventInvitation implements Serializable {
         this.invitedUser = invitedUser;
     }
 
-    public boolean isRejected() {
-        return isRejected;
+    public boolean isBlocked() {
+        return isBlocked;
     }
 
-    public void reject() {
-        this.isRejected = true;
+    public void blockInvite() {
+        this.isBlocked = true;
     }
 }

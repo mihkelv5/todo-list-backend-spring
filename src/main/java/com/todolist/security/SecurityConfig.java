@@ -36,11 +36,11 @@ public class SecurityConfig{
         http.csrf().disable().cors().and()
                 .authorizeRequests(authorize ->
                 authorize
-                        .antMatchers("/api/user/register").permitAll()
-                        .antMatchers("/api/task/**").hasAnyRole("USER")
+                        .mvcMatchers("/api/user/register").permitAll()
+                        .mvcMatchers("/api/task/**").hasAnyRole("USER")
                         .mvcMatchers("/api/event/find/{eventId}").access("@webSecurity.checkIfUserInEvent(authentication, #eventId)")
-                        .antMatchers("/api/event/**").hasAnyRole("USER")
-                        .antMatchers("/api/user/login").permitAll().anyRequest().authenticated());
+                        .mvcMatchers("/api/event/**").hasAnyRole("USER")
+                        .mvcMatchers("/api/user/login").permitAll().anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

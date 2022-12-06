@@ -2,9 +2,9 @@ package com.todolist.resource;
 
 import com.todolist.constant.SecurityConstant;
 import com.todolist.model.AuthenticationRequest;
+import com.todolist.model.User;
 import com.todolist.principal.UserPrincipalImpl;
 import com.todolist.service.UserDetailsServiceImpl;
-import com.todolist.model.User;
 import com.todolist.service.UserService;
 import com.todolist.util.JwtUtil;
 import org.springframework.http.HttpHeaders;

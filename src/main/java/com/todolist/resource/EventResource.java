@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -23,13 +24,13 @@ public class EventResource {
         this.eventInvitationService = eventInvitationService;
     }
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<Event> findEventById(@PathVariable("id") Long id){
-        Event event = this.eventService.findEventById(id);
+    @GetMapping("/find/{eventId}")
+    public ResponseEntity<Event> findEventById(@PathVariable("eventId") Long eventId){
+        Event event = this.eventService.findEventById(eventId);
         return ResponseEntity.ok(event);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{userId}") //can be done with current user
     public ResponseEntity<List<Event>> findEventsByUserId(@PathVariable("userId") Long id){
         List<Event> events = this.eventService.findEventsByUser(id);
         return new ResponseEntity<>(events, HttpStatus.OK);
@@ -48,29 +49,37 @@ public class EventResource {
         return ResponseEntity.ok(addedEvent);
     }
 
-    @PutMapping("{eventId}/register/{userId}")
-    public ResponseEntity<?> registerUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("userId") Long userId) {
-        Event event = this.eventService.saveUserToEvent(eventId, userId);
+    @PutMapping("/update")
+    public ResponseEntity<Event> updateEvent(@RequestBody Event event) {
+        Event updatedEvent = this.eventService.updateEvent(event);
+        System.out.println(updatedEvent.getTitle());
+        return ResponseEntity.ok(updatedEvent);
+    }
+
+    @PutMapping("{eventId}/register/{username}")
+    public ResponseEntity<?> registerUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("username") String username) {
+        Event event = this.eventService.saveUserToEvent(eventId, username);
         return ResponseEntity.ok(event);
     }
 
-    @PutMapping("/{eventId}/invite/{userId}")
-    public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("userId") Long userId) {
-        boolean inviteSuccess = this.eventInvitationService.inviteUserToEvent(eventId, userId);
-        if(inviteSuccess) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.unprocessableEntity().build();
+    @PutMapping("/invite/{eventId}/user/{username}")
+    public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("username") String username) {
+        return this.eventInvitationService.inviteUserToEvent(eventId, username);
     }
 
-    @GetMapping("/invites/{userId}")
-    public ResponseEntity<List<EventInvitation>> getUserEventInvitations(@PathVariable("userId") Long userId){
-        List<EventInvitation> eventInvitationList = this.eventInvitationService.findUserInvitations(userId);
+    @GetMapping("/invite/{username}/get/all") //TODO: make filter so only invited user can see the invitations
+    public ResponseEntity<List<EventInvitation>> getUserEventInvitations(@PathVariable("username") String username){
+        List<EventInvitation> eventInvitationList = this.eventInvitationService.findUserInvitations(username);
         return ResponseEntity.ok(eventInvitationList);
     }
 
-    @PutMapping("/accept/{invitationId}")
+    @PutMapping("/invite/accept/{invitationId}") //TODO: filter so only invited user can accept the invitation
     public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") Long invitationId) {
         return this.eventInvitationService.acceptInvite(invitationId);
+    }
+    @Transactional
+    @DeleteMapping("/invite/decline/{invitationId}")
+    public ResponseEntity<?> declineEventInvitation(@PathVariable("invitationId") Long invitationId){
+        return this.eventInvitationService.declineInvite(invitationId);
     }
 }

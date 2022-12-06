@@ -5,10 +5,8 @@ import com.todolist.model.User;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +16,13 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public EventService(EventRepository eventRepository, UserService userService) {
+    public EventService(EventRepository eventRepository, UserService userService, UserRepository userRepository) {
         this.eventRepository = eventRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public Event findEventById(Long id){
@@ -42,8 +42,16 @@ public class EventService {
         return this.eventRepository.save(event);
     }
 
-    public Event saveUserToEvent(Long eventId, Long userId){
-        User user = this.userService.findUserById(userId);
+    public Event updateEvent(Event event){
+        Event oldEvent = this.eventRepository.findEventById(event.getId());
+        oldEvent.setTitle(event.getTitle());
+        oldEvent.setDescription(event.getDescription());
+        eventRepository.save(oldEvent);
+        return oldEvent;
+    }
+
+    public Event saveUserToEvent(Long eventId, String username){
+        User user = this.userRepository.findByUsername(username);
         Event event = this.eventRepository.findEventById(eventId);
         event.registerUserToEvent(user);
         return this.eventRepository.save(event);
