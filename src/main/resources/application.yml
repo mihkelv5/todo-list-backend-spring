@@ -11,7 +11,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/todoList
     username: MihkelVaino
-    password: Mysqliparool1
+    password: Mysql123
   jpa:
     hibernate:
       ddl-auto: update
