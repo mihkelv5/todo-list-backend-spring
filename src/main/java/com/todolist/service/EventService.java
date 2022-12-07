@@ -5,8 +5,10 @@ import com.todolist.model.User;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,5 +64,9 @@ public class EventService {
         return userService.findUsersByEvent(event);
     }
 
+    @Transactional
+    public void deleteEventById(Long eventId) {
+        this.eventRepository.deleteEventById(eventId);
+    }
 
 }

@@ -33,7 +33,7 @@ public class EventResource {
     @GetMapping("/user/{userId}") //can be done with current user
     public ResponseEntity<List<Event>> findEventsByUserId(@PathVariable("userId") Long id){
         List<Event> events = this.eventService.findEventsByUser(id);
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        return ResponseEntity.ok(events);
     }
 
     @GetMapping("/{eventId}/users")
@@ -52,8 +52,14 @@ public class EventResource {
     @PutMapping("/update")
     public ResponseEntity<Event> updateEvent(@RequestBody Event event) {
         Event updatedEvent = this.eventService.updateEvent(event);
-        System.out.println(updatedEvent.getTitle());
         return ResponseEntity.ok(updatedEvent);
+    }
+
+    @Transactional
+    @DeleteMapping("delete/{eventId}")
+    public ResponseEntity<?> deleteEvent(@PathVariable Long eventId){
+        this.eventService.deleteEventById(eventId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("{eventId}/register/{username}")
@@ -61,6 +67,8 @@ public class EventResource {
         Event event = this.eventService.saveUserToEvent(eventId, username);
         return ResponseEntity.ok(event);
     }
+
+
 
     @PutMapping("/invite/{eventId}/user/{username}")
     public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("username") String username) {
