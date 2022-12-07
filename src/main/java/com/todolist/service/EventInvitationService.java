@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,14 +31,15 @@ public class EventInvitationService {
     }
 
     public List<EventInvitation> findUserInvitations (String username) {
-        User user = this.userService.getUser(username);
+        User user = this.userService.findUserByUsername(username);
        //return this.eventInvitationRepository.findAllEventInvitationsByIsAccepted(false);
         return this.eventInvitationRepository.findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(user, new Date(), false);
     }
 
 
     public ResponseEntity<?> inviteUserToEvent (Long eventId, String username){
-        User invitedUser = this.userService.getUser(username);
+        Event event = this.eventService.findEventById(eventId);
+        User invitedUser = this.userService.findUserByUsername(username);
         User requester = this.userService.getCurrentUser();
         if(Objects.equals(username, requester.getUsername())) {
             return ResponseEntity.badRequest().body("You cannot invite yourself");
@@ -52,8 +54,11 @@ public class EventInvitationService {
         invitation.setRequesterUsername(requester.getUsername());
         invitation.setInvitedUser(invitedUser);
         invitation.setEventId(eventId);
+        invitation.setEventName(event.getTitle());
         this.eventInvitationRepository.save(invitation);
-        return  ResponseEntity.ok().body("User " + username + " invited to event!");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("success", "User " + username + " invited to event!");
+        return  ResponseEntity.ok().body(map);
     }
 
     public ResponseEntity<?> acceptInvite(Long invitationId){ //TODO: ask if this is a good practice

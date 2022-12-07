@@ -23,7 +23,7 @@ public class UserService {
 
     }
 
-    public User getUser(String username) {
+    public User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
@@ -55,8 +55,13 @@ public class UserService {
         return userRepository.existsUserByEventsIdAndUsername(eventId, username);
     }
 
-    public boolean isUserInEventId(Long userId, Long eventId){ //dummy method for testing
 
-        return userRepository.existsUserByEventsIdAndId(eventId, userId);
+
+    public List<String> findUsersByUsernameContains() {
+        return this.userRepository.findAllUsernames();
+    }
+
+    public List<String> userSearchNoEvent(Long eventId) {
+        return this.userRepository.findUsersNotInEvent(eventId);
     }
 }

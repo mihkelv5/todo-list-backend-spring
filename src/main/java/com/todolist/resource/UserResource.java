@@ -16,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/user")
 public class UserResource {
@@ -49,7 +51,7 @@ public class UserResource {
         final UserPrincipalImpl userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-        User user = userService.getUser(authenticationRequest.getUsername());
+        User user = userService.findUserByUsername(authenticationRequest.getUsername());
         user.setTasks(null);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(SecurityConstant.JWT_TOKEN_HEADER, jwt);
@@ -75,12 +77,17 @@ public class UserResource {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+    @GetMapping("/search/all") //DEFINITELY must be changed to a POJO
+    public ResponseEntity<List<String>> userSearch(){
+        List<String> matchingUsers = this.userService.findUsersByUsernameContains();
+        return ResponseEntity.ok(matchingUsers);
+    }
 
-    @GetMapping("/{userId}/event/{eventId}") //for development purposes
-    public ResponseEntity<Boolean> isUserInEvent(
-            @PathVariable("userId") Long userId, @PathVariable("eventId") Long eventId){
-        boolean isUserInEvent = this.userService.isUserInEventId(userId, eventId);
-        return ResponseEntity.ok(isUserInEvent);
+
+    @GetMapping("/search/{eventId}") //DEFINITELY must be changed to a POJO
+    public ResponseEntity<List<String>> userSearchNoEvent(@PathVariable Long eventId){
+        List<String> matchingUsers = this.userService.userSearchNoEvent(eventId);
+        return ResponseEntity.ok(matchingUsers);
     }
 
 }

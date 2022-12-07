@@ -31,8 +31,8 @@ public class EventService {
         return this.eventRepository.findEventById(id);
     }
 
-    public List<Event> findEventsByUser(Long userId){
-        User user = this.userService.findUserById(userId);
+    public List<Event> findEventsByUser(String username){
+        User user = this.userService.findUserByUsername(username);
         Set<User> users = new HashSet<>();
         users.add(user);
         return eventRepository.findEventsByEventUsersIn(users);

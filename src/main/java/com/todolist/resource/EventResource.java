@@ -17,11 +17,11 @@ import java.util.List;
 public class EventResource {
 
     private final EventService eventService;
-    private final EventInvitationService eventInvitationService;
 
-    public EventResource(EventService eventService, EventInvitationService eventInvitationService) {
+
+    public EventResource(EventService eventService) {
         this.eventService = eventService;
-        this.eventInvitationService = eventInvitationService;
+
     }
 
     @GetMapping("/find/{eventId}")
@@ -30,9 +30,9 @@ public class EventResource {
         return ResponseEntity.ok(event);
     }
 
-    @GetMapping("/user/{userId}") //can be done with current user
-    public ResponseEntity<List<Event>> findEventsByUserId(@PathVariable("userId") Long id){
-        List<Event> events = this.eventService.findEventsByUser(id);
+    @GetMapping("/user/{username}") //can be done with current user
+    public ResponseEntity<List<Event>> findEventsByUserId(@PathVariable("username") String username){
+        List<Event> events = this.eventService.findEventsByUser(username);
         return ResponseEntity.ok(events);
     }
 
@@ -69,25 +69,4 @@ public class EventResource {
     }
 
 
-
-    @PutMapping("/invite/{eventId}/user/{username}")
-    public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("username") String username) {
-        return this.eventInvitationService.inviteUserToEvent(eventId, username);
-    }
-
-    @GetMapping("/invite/{username}/get/all") //TODO: make filter so only invited user can see the invitations
-    public ResponseEntity<List<EventInvitation>> getUserEventInvitations(@PathVariable("username") String username){
-        List<EventInvitation> eventInvitationList = this.eventInvitationService.findUserInvitations(username);
-        return ResponseEntity.ok(eventInvitationList);
-    }
-
-    @PutMapping("/invite/accept/{invitationId}") //TODO: filter so only invited user can accept the invitation
-    public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") Long invitationId) {
-        return this.eventInvitationService.acceptInvite(invitationId);
-    }
-    @Transactional
-    @DeleteMapping("/invite/decline/{invitationId}")
-    public ResponseEntity<?> declineEventInvitation(@PathVariable("invitationId") Long invitationId){
-        return this.eventInvitationService.declineInvite(invitationId);
-    }
 }

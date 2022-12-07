@@ -18,6 +18,17 @@ public class EventInvitation implements Serializable {
     private String requesterUsername;
     @Column(nullable = false)
     private Long eventId;
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    @Column(nullable = false)
+    private String eventName;
     @Column(nullable = false, name = "is_accepted")
     private boolean isAccepted;
     @Column(nullable = false)

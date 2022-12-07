@@ -14,8 +14,11 @@ public class WebSecurity {
         this.userService = userService;
     }
 
-    public boolean checkIfUserInEvent(Authentication authentication, Long eventId) {
-        return userService.isUserInEvent(authentication.getName(), eventId);
+    public boolean checkIfUserInEvent(Authentication authentication, String eventId) {
+        if(eventId.matches("[0-9]+")){
+            return userService.isUserInEvent(authentication.getName(), Long.valueOf(eventId));
+        }
+        return false;
     }
 
 
