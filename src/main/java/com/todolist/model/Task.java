@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name= "Task")
@@ -31,8 +33,12 @@ public class Task implements Serializable {
     @JsonIgnore
     private User user;
 
+    @ManyToMany
+    @JsonIgnore
+    private Set<User> assignedUsers = new HashSet<>();
 
-
+    @Transient
+    private Set<String> assignedUsernames = new HashSet<>();
 
     public Task() {}
 
@@ -139,4 +145,23 @@ public class Task implements Serializable {
         this.user = user;
     }
 
+    public Set<User> getAssignedUsers() {
+        return assignedUsers;
+    }
+
+    public void addAssignedUser(User assignedUser) {
+        this.assignedUsers.add(assignedUser);
+    }
+
+    public void removeAssignedUser(User assignedUser) {
+        this.assignedUsers.remove(assignedUser);
+    }
+
+    public Set<String> getAssignedUsernames() {
+        return assignedUsernames;
+    }
+
+    public void setAssignedUsernames(Set<String> assignedUsername) {
+        this.assignedUsernames = assignedUsername;
+    }
 }

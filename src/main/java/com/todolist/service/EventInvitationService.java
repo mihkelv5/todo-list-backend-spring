@@ -74,7 +74,6 @@ public class EventInvitationService {
             return ResponseEntity.badRequest().body("You cannot accept other users invitation");
             //shouldn't occur unless someone sends data straight to backend, and should be filtered before?
         }
-        //TODO: delete invitation/set state to accepted
         Event event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
 
         //if everything goes correctly

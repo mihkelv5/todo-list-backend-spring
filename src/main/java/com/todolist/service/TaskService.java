@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -18,13 +19,18 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final EventRepository eventRepository;
 
+    private final EventService eventService;
+    private final UserService userService;
+
 
 
     @Autowired
-    public TaskService(TaskRepository taskrepository, EventRepository eventRepository) {
+    public TaskService(TaskRepository taskrepository, EventRepository eventRepository, EventService eventService, UserService userService) {
         this.taskRepository = taskrepository;
 
         this.eventRepository = eventRepository;
+        this.eventService = eventService;
+        this.userService = userService;
     }
 
 
@@ -85,10 +91,12 @@ public class TaskService {
     }
 
     public List<Task> findTasksByUser(User user) {
-        return taskRepository.findTasksByUser(user);
+        List<Task> tasks = taskRepository.findTasksByUser(user);
+        return assignUsernamesToTasks(tasks);
     }
     public List<Task> findTasksByUserWhereEventNull(User user){
-        return taskRepository.findTasksByUserAndEventIdIsNull(user);
+        List<Task> tasks =  taskRepository.findTasksByUserAndEventIdIsNull(user);
+        return assignUsernamesToTasks(tasks);
     }
 
     public List<Task> findTasksByEvent(Long eventId) {
@@ -100,5 +108,40 @@ public class TaskService {
         taskRepository.deleteTaskById(id);
     }
 
+    public boolean assignUserToTask(String username, Long taskId) {
+        try {
+            User user = this.userService.findUserByUsername(username);
+            Task task = this.taskRepository.findTaskById(taskId);
+            task.addAssignedUser(user);
+            this.taskRepository.save(task);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
 
+    public boolean removeUserFromTask(String username, Long taskId){
+        try{
+            User user = this.userService.findUserByUsername(username);
+            Task task = this.taskRepository.findTaskById(taskId);
+            task.removeAssignedUser(user);
+            this.taskRepository.save(task);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public List<Task> findUserTasksWithAssignedUsernamesAndEventId(String username, Long eventId){
+        User user = this.userService.findUserByUsername(username);
+        List<Task> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
+        return assignUsernamesToTasks(tasks);
+    }
+
+    public List<Task> assignUsernamesToTasks(List<Task> tasks){
+        tasks.forEach(task -> {
+            task.setAssignedUsernames(task.getAssignedUsers().stream().map(User::getUsername).collect(Collectors.toSet()));
+        });
+        return tasks;
+    }
 }

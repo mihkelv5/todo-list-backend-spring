@@ -41,6 +41,26 @@ public class TaskResource {
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
+    @PutMapping("/assign/{username}/task/{taskId}")
+    //TODO: filter that checks that user that assigns other user is admin in event the task is in. (needs admin system)
+    public ResponseEntity<?> assignUserToTask(@PathVariable String username, @PathVariable Long taskId){
+        this.taskService.assignUserToTask(username, taskId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/dismiss/{username}/task/{taskId}")
+    public ResponseEntity<?> dismissUserFromTask(@PathVariable String username, @PathVariable Long taskId){
+        this.taskService.removeUserFromTask(username, taskId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/event/{eventId}/assigned/{username}")
+    public ResponseEntity<List<Task>> getTasksByAssignedUserWithEvent(@PathVariable Long eventId, @PathVariable String username){
+        List<Task> tasks = this.taskService.findUserTasksWithAssignedUsernamesAndEventId(username, eventId); //fix that username and eventId positions aren't changed
+        return ResponseEntity.ok(tasks);
+    }
+
+
     @GetMapping("/find/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable("id") Long id){
         Task task = taskService.findTaskById(id);
@@ -54,6 +74,14 @@ public class TaskResource {
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
+    @PostMapping("/add/event/{eventId}")
+    public ResponseEntity<?> addTaskWithEvent(@PathVariable("eventId") Long eventId, @RequestBody Task task){
+        User user = userService.getCurrentUser();
+        task.setId(null);
+        Task newTask = this.taskService.addTaskWithEvent(eventId, task, user);
+        return new ResponseEntity<>(newTask, HttpStatus.CREATED);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Task> addTask(@RequestBody Task task){
         try {
@@ -65,14 +93,6 @@ public class TaskResource {
         }catch (NullPointerException e){
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
-    }
-
-    @PostMapping("/add/event/{eventId}")
-    public ResponseEntity<?> addTaskWithEvent(@PathVariable("eventId") Long eventId, @RequestBody Task task){
-        User user = userService.getCurrentUser();
-        task.setId(null);
-        Task newTask = this.taskService.addTaskWithEvent(eventId, task, user);
-        return new ResponseEntity<>(newTask, HttpStatus.CREATED);
     }
 
 
@@ -107,4 +127,8 @@ public class TaskResource {
         Task newTask = this.taskService.completeTask(id, isComplete);
         return ResponseEntity.ok(newTask);
     }
+
+
+
+
 }

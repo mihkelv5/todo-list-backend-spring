@@ -32,7 +32,7 @@ public class InviteResource {
         return ResponseEntity.ok(eventInvitationList);
     }
     @Transactional
-    @PutMapping("/accept/{invitationId}") //TODO: filter so only invited user can accept the invitation
+    @PutMapping("/accept/{invitationId}")
     public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") Long invitationId) {
         return this.eventInvitationService.acceptInvite(invitationId);
     }
