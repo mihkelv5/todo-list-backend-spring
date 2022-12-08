@@ -19,14 +19,6 @@ public class EventInvitation implements Serializable {
     @Column(nullable = false)
     private Long eventId;
 
-    public String getEventName() {
-        return eventName;
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
-
     @Column(nullable = false)
     private String eventName;
     @Column(nullable = false, name = "is_accepted")
@@ -35,7 +27,6 @@ public class EventInvitation implements Serializable {
     private boolean isBlocked;
     @Column(nullable = false)
     private Date expirationDate;
-
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
@@ -109,5 +100,13 @@ public class EventInvitation implements Serializable {
 
     public void blockInvite() {
         this.isBlocked = true;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 }

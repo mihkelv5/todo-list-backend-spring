@@ -2,10 +2,10 @@ package com.todolist.service;
 
 import com.todolist.model.Event;
 import com.todolist.model.User;
+import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,12 +17,14 @@ import java.util.Set;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final EventInvitationRepository eventInvitationRepository;
     private final UserService userService;
     private final UserRepository userRepository;
 
     @Autowired
-    public EventService(EventRepository eventRepository, UserService userService, UserRepository userRepository) {
+    public EventService(EventRepository eventRepository, EventInvitationRepository eventInvitationRepository, UserService userService, UserRepository userRepository) {
         this.eventRepository = eventRepository;
+        this.eventInvitationRepository = eventInvitationRepository;
         this.userService = userService;
         this.userRepository = userRepository;
     }
@@ -67,6 +69,7 @@ public class EventService {
     @Transactional
     public void deleteEventById(Long eventId) {
         this.eventRepository.deleteEventById(eventId);
+        this.eventInvitationRepository.deleteAllByEventId(eventId);
     }
 
 }

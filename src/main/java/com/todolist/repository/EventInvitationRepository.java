@@ -21,4 +21,6 @@ public interface EventInvitationRepository extends JpaRepository<EventInvitation
 
     public EventInvitation findEventInvitationByIdAndExpirationDateIsAfter (Long eventId, Date date);
 
+    public void deleteAllByEventId(Long eventId);
+
 }

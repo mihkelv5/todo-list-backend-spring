@@ -61,7 +61,8 @@ public class EventInvitationService {
         return  ResponseEntity.ok().body(map);
     }
 
-    public ResponseEntity<?> acceptInvite(Long invitationId){ //TODO: ask if this is a good practice
+    @Transactional
+    public ResponseEntity<?> acceptInvite(Long invitationId){ //This method is badly written
         EventInvitation invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
         User user = this.userService.getCurrentUser();
 
@@ -75,11 +76,13 @@ public class EventInvitationService {
         }
         //TODO: delete invitation/set state to accepted
         Event event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
+
+        //if everything goes correctly
         if(event != null){
-            invitation.accept();
-            this.eventInvitationRepository.save(invitation);
+            this.eventInvitationRepository.deleteEventInvitationById(invitationId);
             return ResponseEntity.ok(event);
         }
+        this.eventInvitationRepository.deleteEventInvitationById(invitationId);
         return ResponseEntity.unprocessableEntity().body("Something went wrong"); //should be 500 code? Do I want to show it to client?
     }
 
@@ -92,7 +95,9 @@ public class EventInvitationService {
             //shouldn't occur unless someone sends data straight to backend, and should be filtered before?
         }
         this.eventInvitationRepository.deleteEventInvitationById(invitationId);
-        return ResponseEntity.ok().body("Request deleted");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("success", "Request deleted");
+        return ResponseEntity.ok().body(map);
     }
 
 }
