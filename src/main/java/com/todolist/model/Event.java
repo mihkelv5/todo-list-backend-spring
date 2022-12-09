@@ -25,7 +25,8 @@ public class Event {
     @JsonIgnore
     private Set<User> eventUsers = new HashSet<>();
 
-
+    @Transient
+    private Set<String> eventUsernames = new HashSet<>();
     public Event() {
     }
 
@@ -73,5 +74,13 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<String> getEventUsernames() {
+        return eventUsernames;
+    }
+
+    public void setEventUsernames(Set<String> eventUsernames) {
+        this.eventUsernames = eventUsernames;
     }
 }

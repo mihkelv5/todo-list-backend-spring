@@ -41,7 +41,7 @@ public class TaskResource {
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
-    @PutMapping("/assign/{username}/task/{taskId}")
+/*    @PutMapping("/assign/{username}/task/{taskId}")
     //TODO: filter that checks that user that assigns other user is admin in event the task is in. (needs admin system)
     public ResponseEntity<?> assignUserToTask(@PathVariable String username, @PathVariable Long taskId){
         this.taskService.assignUserToTask(username, taskId);
@@ -52,6 +52,12 @@ public class TaskResource {
     public ResponseEntity<?> dismissUserFromTask(@PathVariable String username, @PathVariable Long taskId){
         this.taskService.removeUserFromTask(username, taskId);
         return ResponseEntity.ok().build();
+    }*/
+
+    @PutMapping("/assign/{taskId}")
+    public ResponseEntity<Task> assignUsersToTask(@PathVariable Long taskId, @RequestBody List<String> usernames){
+        Task task = this.taskService.assignUsersToTask(taskId, usernames);
+        return ResponseEntity.ok(task);
     }
 
     @GetMapping("/event/{eventId}/assigned/{username}")

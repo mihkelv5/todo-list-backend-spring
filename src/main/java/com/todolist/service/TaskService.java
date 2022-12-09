@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -100,36 +102,18 @@ public class TaskService {
     }
 
     public List<Task> findTasksByEvent(Long eventId) {
-        return taskRepository.findTasksByEventId(eventId);
+        List<Task> tasks = taskRepository.findTasksByEventId(eventId);
+        return assignUsernamesToTasks(tasks);
     }
 
     @Transactional
-    public void deleteTask(Long id) {
-        taskRepository.deleteTaskById(id);
+    public void deleteTask(Long taskId) {
+        taskRepository.deleteTaskById(taskId);
     }
 
-    public boolean assignUserToTask(String username, Long taskId) {
-        try {
-            User user = this.userService.findUserByUsername(username);
-            Task task = this.taskRepository.findTaskById(taskId);
-            task.addAssignedUser(user);
-            this.taskRepository.save(task);
-            return true;
-        } catch (Exception e){
-            return false;
-        }
-    }
+    @Transactional
+    public void deleteAllTasksByEventId(Long eventId){
 
-    public boolean removeUserFromTask(String username, Long taskId){
-        try{
-            User user = this.userService.findUserByUsername(username);
-            Task task = this.taskRepository.findTaskById(taskId);
-            task.removeAssignedUser(user);
-            this.taskRepository.save(task);
-            return true;
-        } catch (Exception e){
-            return false;
-        }
     }
 
     public List<Task> findUserTasksWithAssignedUsernamesAndEventId(String username, Long eventId){
@@ -141,7 +125,20 @@ public class TaskService {
     public List<Task> assignUsernamesToTasks(List<Task> tasks){
         tasks.forEach(task -> {
             task.setAssignedUsernames(task.getAssignedUsers().stream().map(User::getUsername).collect(Collectors.toSet()));
+            task.setOwnerUsername(task.getUser().getUsername());
         });
         return tasks;
+    }
+
+    public Task assignUsersToTask(Long taskId, List<String> usernames) {
+        Task task = this.taskRepository.findTaskById(taskId);
+        Set<User> userSet = new HashSet<>();
+        usernames.forEach(username -> {
+            User user = this.userService.findUserByUsername(username); //TODO: should maybe do one call to db?
+            userSet.add(user);
+        });
+        task.setAssignedUsers(userSet);
+        this.taskRepository.save(task);
+        return task;
     }
 }

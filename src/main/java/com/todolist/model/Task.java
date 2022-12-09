@@ -32,6 +32,8 @@ public class Task implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private User user;
+    @Transient
+    private String ownerUsername;
 
     @ManyToMany
     @JsonIgnore
@@ -149,12 +151,16 @@ public class Task implements Serializable {
         return assignedUsers;
     }
 
-    public void addAssignedUser(User assignedUser) {
-        this.assignedUsers.add(assignedUser);
+    public void setAssignedUsers(Set<User> assignedUsers) {
+        this.assignedUsers = assignedUsers;
     }
 
-    public void removeAssignedUser(User assignedUser) {
-        this.assignedUsers.remove(assignedUser);
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
     }
 
     public Set<String> getAssignedUsernames() {

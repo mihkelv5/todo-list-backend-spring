@@ -20,7 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsUserByEventsIdAndUsername(Long eventId, String username);
 
-
     List<User> findUsersByEvents(Event event);
     @Query("SELECT u.username FROM User u WHERE :eventId NOT IN (SELECT eu.id FROM u.events eu) AND :eventId NOT IN (SELECT ei.eventId FROM u.eventInvitations ei)")
     List<String> findUsersNotInEvent(@Param("eventId") Long eventId);
