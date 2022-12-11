@@ -96,7 +96,7 @@ public class TaskController {
 
 
     @PutMapping("/moveTask/{taskId}")
-    @PreAuthorize("@preAuthFilter.checkIfUserInTask(#taskId)")
+    @PreAuthorize("@preAuthFilter.checkIfUserCanMoveTask(#taskId)")
     public ResponseEntity<Task> moveTaskById(@PathVariable Long taskId, @RequestBody int[] coordinates){
         Task newTask = taskService.moveTask(taskId, coordinates[0], coordinates[1]);
         return new ResponseEntity<>(newTask, HttpStatus.OK);

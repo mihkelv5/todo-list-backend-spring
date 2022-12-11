@@ -27,6 +27,7 @@ public class InviteController {
     }
 
     @PostMapping("/event/{eventId}/user/{username}")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("username") String username) {
         return this.eventInvitationService.inviteUserToEvent(eventId, username);
     }

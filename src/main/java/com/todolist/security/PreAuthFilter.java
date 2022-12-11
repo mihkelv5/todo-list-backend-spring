@@ -1,5 +1,6 @@
 package com.todolist.security;
 
+import com.todolist.model.Task;
 import com.todolist.service.EventInvitationService;
 import com.todolist.service.TaskService;
 import com.todolist.service.UserService;
@@ -9,12 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PreAuthFilter {
 
-    final
-    UserService userService;
-    final
-    EventInvitationService invitationService;
-    final
-    TaskService taskService;
+    private final UserService userService;
+    private final EventInvitationService invitationService;
+    private final TaskService taskService;
 
     public PreAuthFilter(UserService userService, EventInvitationService invitationService, TaskService taskService) {
         this.userService = userService;
@@ -50,5 +48,10 @@ public class PreAuthFilter {
             return this.taskService.isUserTaskCreator(Long.valueOf(taskId));
         }
         return false;
+    }
+
+    public boolean checkIfUserCanMoveTask(Long taskId) {
+        Task task = this.taskService.findTaskById(taskId);
+        return checkIfUserInTask(String.valueOf(taskId)) || checkIfUserInEvent(String.valueOf(task.getEventId()));
     }
 }

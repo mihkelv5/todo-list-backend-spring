@@ -5,6 +5,7 @@ import com.todolist.model.User;
 import com.todolist.service.EventService;
 import com.todolist.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -25,6 +26,7 @@ public class EventController {
     }
 
     @GetMapping("/find/{eventId}")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<Event> findEventById(@PathVariable("eventId") Long eventId){
         Event event = this.eventService.findEventById(eventId);
         return ResponseEntity.ok(event);
@@ -38,6 +40,7 @@ public class EventController {
     }
 
     @GetMapping("/{eventId}/users")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<List<User>> findUsersByEventId(@PathVariable("eventId") Long eventId){
         List<User> users = this.eventService.findUsersByEvent(eventId);
         return ResponseEntity.ok(users);
@@ -51,6 +54,7 @@ public class EventController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#event.id)") //TODO: Admin system for events
     public ResponseEntity<Event> updateEvent(@RequestBody Event event) {
         Event updatedEvent = this.eventService.updateEvent(event);
         return ResponseEntity.ok(updatedEvent);
@@ -58,14 +62,15 @@ public class EventController {
 
     @Transactional
     @DeleteMapping("delete/{eventId}")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)") //TODO: Admin system for events
     public ResponseEntity<?> deleteEvent(@PathVariable Long eventId){
         this.eventService.deleteEventById(eventId);
         return ResponseEntity.ok().build();
     }
 
 
-    //for development
-    @PutMapping("{eventId}/register/{username}")
+
+    @PutMapping("{eventId}/register/{username}") //for development, will be removed in production
     public ResponseEntity<?> registerUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("username") String username) {
         Event event = this.eventService.saveUserToEvent(eventId, username);
         return ResponseEntity.ok(event);

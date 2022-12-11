@@ -5,6 +5,7 @@ import com.todolist.model.User;
 import com.todolist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class UserController {
 
 
     @GetMapping("/event/{eventId}/all")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<List<String>> userSearchNoEvent(@PathVariable Long eventId){
         List<String> matchingUsers = this.userService.userSearchNoEvent(eventId);
         return ResponseEntity.ok(matchingUsers);
