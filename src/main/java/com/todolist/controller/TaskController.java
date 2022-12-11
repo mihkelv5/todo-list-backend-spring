@@ -49,7 +49,7 @@ public class TaskController {
     }
 
     @GetMapping("/event/{eventId}/user")
-    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#authentication, #eventId)")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<List<Task>> getTasksByAssignedUserWithEvent(@PathVariable Long eventId){
         User user = this.userService.getCurrentUser();
         List<Task> tasks = this.taskService.findUserTasksWithAssignedUsernamesAndEventId(user, eventId); //fix that username and eventId positions aren't changed
@@ -58,6 +58,7 @@ public class TaskController {
 
 
     @GetMapping("/find/{taskId}")
+    @PreAuthorize("@preAuthFilter.checkIfUserInTask(#taskId)")
     public ResponseEntity<Task> getTaskById(@PathVariable("taskId") Long taskId){
         Task task = taskService.findTaskById(taskId);
         return new ResponseEntity<>(task, HttpStatus.OK);
@@ -65,12 +66,14 @@ public class TaskController {
 
 
     @GetMapping("/event/{eventId}")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<List<Task>> getTasksByEvent(@PathVariable("eventId") Long eventId){
         List<Task> taskList = taskService.findTasksByEvent(eventId);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
     @PostMapping("/add/event/{eventId}")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<?> addTaskWithEvent(@PathVariable("eventId") Long eventId, @RequestBody Task task){
         User user = userService.getCurrentUser();
         task.setId(null);
@@ -93,6 +96,7 @@ public class TaskController {
 
 
     @PutMapping("/moveTask/{taskId}")
+    @PreAuthorize("@preAuthFilter.checkIfUserInTask(#taskId)")
     public ResponseEntity<Task> moveTaskById(@PathVariable Long taskId, @RequestBody int[] coordinates){
         Task newTask = taskService.moveTask(taskId, coordinates[0], coordinates[1]);
         return new ResponseEntity<>(newTask, HttpStatus.OK);
@@ -106,6 +110,7 @@ public class TaskController {
 
 
     @PutMapping("/update/{taskId}")
+    @PreAuthorize("@preAuthFilter.checkIfUserCreatedTask(#taskId)")
     public ResponseEntity<Task> updateTask(@PathVariable("taskId") Long taskId, @RequestBody Task task){
         Task updatePost = taskService.updateTask(taskId, task);
         return new ResponseEntity<>(updatePost, HttpStatus.OK);

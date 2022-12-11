@@ -56,7 +56,8 @@ public class UserService {
         return user.orElseGet(User::new);
     }
 
-    public boolean isUserInEvent(String username, Long eventId){
+    public boolean isUserInEvent(Long eventId){
+        String username = this.getCurrentUser().getUsername();
         return userRepository.existsUserByEventsIdAndUsername(eventId, username);
     }
 
