@@ -109,10 +109,6 @@ public class TaskService {
         taskRepository.deleteTaskById(taskId);
     }
 
-    @Transactional
-    public void deleteAllTasksByEventId(Long eventId){
-
-    }
 
     public List<Task> findUserTasksWithAssignedUsernamesAndEventId(User user, Long eventId){
         List<Task> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
@@ -129,13 +125,15 @@ public class TaskService {
 
     public Task assignUsersToTask(Long taskId, List<String> usernames) {
         Task task = this.taskRepository.findTaskById(taskId);
-        Set<User> userSet = new HashSet<>();
-        usernames.forEach(username -> {
-            User user = this.userService.findUserByUsername(username); //TODO: should maybe do one call to db?
-            userSet.add(user);
-        });
+        Set<String> usernameSet = new HashSet<>(usernames);
+        Set<User> userSet = this.userService.findAllUsersByUsernameSet(usernameSet);
         task.setAssignedUsers(userSet);
         this.taskRepository.save(task);
         return task;
+    }
+
+    public boolean isUserTaskCreatorOrAssignedToTask(Long taskId){
+        User user = this.userService.getCurrentUser();
+        return this.taskRepository.existsTaskByIdAndUserOrIdAndAssignedUsers(taskId, user,taskId, user);
     }
 }

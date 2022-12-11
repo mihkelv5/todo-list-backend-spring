@@ -6,7 +6,6 @@ import com.todolist.service.EventInvitationService;
 import com.todolist.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -15,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/invite")
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class InviteController {
 
 
@@ -43,13 +41,13 @@ public class InviteController {
     //preauthorize with currentUser
     @Transactional
     @PutMapping("/accept/{invitationId}")
-    @PreAuthorize("@webSecurity.checkIfUserIsInvited(authentication, #invitationId)")
+    @PreAuthorize("@preAuthFilter.checkIfUserIsInvited(authentication, #invitationId)")
     public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") Long invitationId) {
         return this.eventInvitationService.acceptInvite(invitationId);
     }
     @Transactional
     @DeleteMapping("/decline/{invitationId}")
-    @PreAuthorize("@webSecurity.checkIfUserIsInvited(authentication, #invitationId)")
+    @PreAuthorize("@preAuthFilter.checkIfUserIsInvited(authentication, #invitationId)")
     public ResponseEntity<?> declineEventInvitation(@PathVariable("invitationId") Long invitationId){
         return this.eventInvitationService.declineInvite(invitationId);
     }

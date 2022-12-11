@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -23,5 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findUsersByEvents(Event event);
     @Query("SELECT u.username FROM User u WHERE :eventId NOT IN (SELECT eu.id FROM u.events eu) AND :eventId NOT IN (SELECT ei.eventId FROM u.eventInvitations ei)")
     List<String> findUsersNotInEvent(@Param("eventId") Long eventId);
-//@Query("SELECT u.username FROM User u WHERE :eventId NOT IN (SELECT eu.id FROM u.events eu)")
+
+    @Query("Select u FROM User u Where u.username IN :usernames")
+    Set<User> findAllUsersByUsernameSet(Set<String> usernames);
 }

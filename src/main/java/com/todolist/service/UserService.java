@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -25,6 +26,10 @@ public class UserService {
 
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public Set<User> findAllUsersByUsernameSet(Set<String> usernames) {
+        return this.userRepository.findAllUsersByUsernameSet(usernames);
     }
 
     public void addUser(User user){

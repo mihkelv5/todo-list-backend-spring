@@ -6,6 +6,7 @@ import com.todolist.service.TaskService;
 import com.todolist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -109,8 +110,9 @@ public class TaskController {
     }
 
     @PutMapping("/complete/{taskId}")
-    public ResponseEntity<Task> completeTaskById(@PathVariable("taskId") Long id, @RequestBody boolean isComplete){
-        Task newTask = this.taskService.completeTask(id, isComplete);
+    @PreAuthorize("@preAuthFilter.checkIfUserInTask(#taskId)")
+    public ResponseEntity<Task> completeTaskById(@PathVariable("taskId") Long taskId, @RequestBody boolean isComplete){
+        Task newTask = this.taskService.completeTask(taskId, isComplete);
         return ResponseEntity.ok(newTask);
     }
 
