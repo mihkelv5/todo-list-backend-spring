@@ -1,7 +1,9 @@
-package com.todolist.resource;
+package com.todolist.controller;
 
 import com.todolist.model.EventInvitation;
+import com.todolist.model.User;
 import com.todolist.service.EventInvitationService;
+import com.todolist.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,14 +13,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/invite")
-public class InviteResource {
+public class InviteController {
 
 
     private final EventInvitationService eventInvitationService;
+    private final UserService userService;
 
-    public InviteResource(EventInvitationService eventInvitationService) {
+    public InviteController(EventInvitationService eventInvitationService, UserService userService) {
 
         this.eventInvitationService = eventInvitationService;
+        this.userService = userService;
     }
 
     @PostMapping("/event/{eventId}/user/{username}")
@@ -26,11 +30,14 @@ public class InviteResource {
         return this.eventInvitationService.inviteUserToEvent(eventId, username);
     }
 
-    @GetMapping("/{username}/get/all") //TODO: make filter so only invited user can see the invitations
-    public ResponseEntity<List<EventInvitation>> getUserEventInvitations(@PathVariable("username") String username){
-        List<EventInvitation> eventInvitationList = this.eventInvitationService.findUserInvitations(username);
+    @GetMapping("/get/all")
+    public ResponseEntity<List<EventInvitation>> getUserEventInvitations(){
+        User user = this.userService.getCurrentUser();
+        List<EventInvitation> eventInvitationList = this.eventInvitationService.findUserInvitations(user);
         return ResponseEntity.ok(eventInvitationList);
     }
+
+    //preauthorize with currentUser
     @Transactional
     @PutMapping("/accept/{invitationId}")
     public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") Long invitationId) {

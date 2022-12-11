@@ -30,9 +30,7 @@ public class EventInvitationService {
         this.eventService = eventService;
     }
 
-    public List<EventInvitation> findUserInvitations (String username) {
-        User user = this.userService.findUserByUsername(username);
-       //return this.eventInvitationRepository.findAllEventInvitationsByIsAccepted(false);
+    public List<EventInvitation> findUserInvitations (User user) {
         return this.eventInvitationRepository.findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(user, new Date(), false);
     }
 

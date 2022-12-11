@@ -1,11 +1,9 @@
-package com.todolist.resource;
+package com.todolist.controller;
 
 import com.todolist.model.Event;
-import com.todolist.model.EventInvitation;
 import com.todolist.model.User;
-import com.todolist.service.EventInvitationService;
 import com.todolist.service.EventService;
-import org.springframework.http.HttpStatus;
+import com.todolist.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,14 +12,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/event")
-public class EventResource {
+public class EventController {
 
     private final EventService eventService;
+    private final UserService userService;
 
 
-    public EventResource(EventService eventService) {
+    public EventController(EventService eventService, UserService userService) {
         this.eventService = eventService;
 
+        this.userService = userService;
     }
 
     @GetMapping("/find/{eventId}")
@@ -30,9 +30,10 @@ public class EventResource {
         return ResponseEntity.ok(event);
     }
 
-    @GetMapping("/user/{username}") //can be done with current user
-    public ResponseEntity<List<Event>> findEventsByUserId(@PathVariable("username") String username){
-        List<Event> events = this.eventService.findEventsByUser(username);
+    @GetMapping("/user/all") //can be done with current user
+    public ResponseEntity<List<Event>> findEventsByUserId(){
+        User user = userService.getCurrentUser();
+        List<Event> events = this.eventService.findEventsByUser(user);
         return ResponseEntity.ok(events);
     }
 
@@ -62,6 +63,8 @@ public class EventResource {
         return ResponseEntity.ok().build();
     }
 
+
+    //for development
     @PutMapping("{eventId}/register/{username}")
     public ResponseEntity<?> registerUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("username") String username) {
         Event event = this.eventService.saveUserToEvent(eventId, username);

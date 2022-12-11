@@ -1,4 +1,4 @@
-package com.todolist.resource;
+package com.todolist.controller;
 
 import com.todolist.model.Task;
 import com.todolist.model.User;
@@ -15,44 +15,30 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/task")
-public class TaskResource {
+public class TaskController {
 
     private final TaskService taskService;
     private final UserService userService;
 
-    public TaskResource(TaskService taskService, UserService userService) {
+    public TaskController(TaskService taskService, UserService userService) {
         this.taskService = taskService;
         this.userService = userService;
     }
 
 
-    @GetMapping("/user/{id}/all")
-    public ResponseEntity<List<Task>> getTasksByUser(@PathVariable("id") Long id){
-        User user = userService.findUserById(id);
-
+    @GetMapping("/user/all")
+    public ResponseEntity<List<Task>> getTasksByUser(){
+        User user = userService.getCurrentUser();
         List<Task> tasks = taskService.findTasksByUser(user);
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{id}/own")
-    public ResponseEntity<List<Task>> getTasksByUserWhereEventNull(@PathVariable("id") Long id){
-        User user = userService.findUserById(id);
+    @GetMapping("/user/private")
+    public ResponseEntity<List<Task>> getTasksByUserWhereEventNull(){
+        User user = userService.getCurrentUser();
         List<Task> tasks = taskService.findTasksByUserWhereEventNull(user);
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
-
-/*    @PutMapping("/assign/{username}/task/{taskId}")
-    //TODO: filter that checks that user that assigns other user is admin in event the task is in. (needs admin system)
-    public ResponseEntity<?> assignUserToTask(@PathVariable String username, @PathVariable Long taskId){
-        this.taskService.assignUserToTask(username, taskId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/dismiss/{username}/task/{taskId}")
-    public ResponseEntity<?> dismissUserFromTask(@PathVariable String username, @PathVariable Long taskId){
-        this.taskService.removeUserFromTask(username, taskId);
-        return ResponseEntity.ok().build();
-    }*/
 
     @PutMapping("/assign/{taskId}")
     public ResponseEntity<Task> assignUsersToTask(@PathVariable Long taskId, @RequestBody List<String> usernames){
@@ -60,16 +46,17 @@ public class TaskResource {
         return ResponseEntity.ok(task);
     }
 
-    @GetMapping("/event/{eventId}/assigned/{username}")
-    public ResponseEntity<List<Task>> getTasksByAssignedUserWithEvent(@PathVariable Long eventId, @PathVariable String username){
-        List<Task> tasks = this.taskService.findUserTasksWithAssignedUsernamesAndEventId(username, eventId); //fix that username and eventId positions aren't changed
+    @GetMapping("/event/{eventId}/user")
+    public ResponseEntity<List<Task>> getTasksByAssignedUserWithEvent(@PathVariable Long eventId){
+        User user = this.userService.getCurrentUser();
+        List<Task> tasks = this.taskService.findUserTasksWithAssignedUsernamesAndEventId(user, eventId); //fix that username and eventId positions aren't changed
         return ResponseEntity.ok(tasks);
     }
 
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") Long id){
-        Task task = taskService.findTaskById(id);
+    @GetMapping("/find/{taskId}")
+    public ResponseEntity<Task> getTaskById(@PathVariable("taskId") Long taskId){
+        Task task = taskService.findTaskById(taskId);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
@@ -102,34 +89,27 @@ public class TaskResource {
     }
 
 
-    @PutMapping("/moveTask/{id}")
-    public ResponseEntity<Task> moveTaskById(@PathVariable Long id, @RequestBody int[] coordinates){
-        Task newTask = taskService.moveTask(id, coordinates[0], coordinates[1]);
+    @PutMapping("/moveTask/{taskId}")
+    public ResponseEntity<Task> moveTaskById(@PathVariable Long taskId, @RequestBody int[] coordinates){
+        Task newTask = taskService.moveTask(taskId, coordinates[0], coordinates[1]);
         return new ResponseEntity<>(newTask, HttpStatus.OK);
     }
     @Transactional
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable("id") Long id) {
-        taskService.deleteTask(id);
+    @DeleteMapping("/delete/{taskId}")
+    public ResponseEntity<?> deleteTask(@PathVariable("taskId") Long taskId) {
+        taskService.deleteTask(taskId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    //endpoints not used in front end
-
-    @GetMapping("/all")
-    public ResponseEntity<List<Task>> getAllTasks(){
-        List<Task> tasks = taskService.findAllTasks();
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
-    }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable("id") Long taskId, @RequestBody Task task){
+    @PutMapping("/update/{taskId}")
+    public ResponseEntity<Task> updateTask(@PathVariable("taskId") Long taskId, @RequestBody Task task){
         Task updatePost = taskService.updateTask(taskId, task);
         return new ResponseEntity<>(updatePost, HttpStatus.OK);
     }
 
-    @PutMapping("/complete/{id}")
-    public ResponseEntity<Task> completeTaskById(@PathVariable("id") Long id, @RequestBody boolean isComplete){
+    @PutMapping("/complete/{taskId}")
+    public ResponseEntity<Task> completeTaskById(@PathVariable("taskId") Long id, @RequestBody boolean isComplete){
         Task newTask = this.taskService.completeTask(id, isComplete);
         return ResponseEntity.ok(newTask);
     }

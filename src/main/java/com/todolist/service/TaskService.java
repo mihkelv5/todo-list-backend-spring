@@ -84,9 +84,7 @@ public class TaskService {
         return task;
     }
 
-    public List<Task> findAllTasks() {
-        return taskRepository.findAll();
-    }
+
 
     public List<Task> findTaskByDate(Date date) {
         return taskRepository.findTasksByDate(date);
@@ -116,8 +114,7 @@ public class TaskService {
 
     }
 
-    public List<Task> findUserTasksWithAssignedUsernamesAndEventId(String username, Long eventId){
-        User user = this.userService.findUserByUsername(username);
+    public List<Task> findUserTasksWithAssignedUsernamesAndEventId(User user, Long eventId){
         List<Task> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
         return assignUsernamesToTasks(tasks);
     }

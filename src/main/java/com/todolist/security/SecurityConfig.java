@@ -36,11 +36,10 @@ public class SecurityConfig{
         http.csrf().disable().cors().and()
                 .authorizeRequests(authorize ->
                 authorize
-                        .mvcMatchers("/api/user/register").permitAll()
-                        .mvcMatchers("/api/task/**").hasAnyRole("USER")
+                        .mvcMatchers("/api/auth/register").permitAll()
                         .mvcMatchers("/api/event/find/{eventId}").access("@webSecurity.checkIfUserInEvent(authentication, #eventId)")
-                        .mvcMatchers("/api/event/**").hasAnyRole("USER")
-                        .mvcMatchers("/api/user/login").permitAll().anyRequest().authenticated());
+                        .mvcMatchers("/api/event/**", "/api/task/**", "/api/user/**").hasAnyRole("USER") //TODO: create separate filters for them
+                        .mvcMatchers("/api/auth/login").permitAll().anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
