@@ -82,8 +82,8 @@ public class EventInvitationService {
         return ResponseEntity.ok().body(map);
     }
 
-    public boolean isInvitationValid(String username, Long inviteId) {
-        Long userId = this.userService.findUserByUsername(username).getId();
+    public boolean isInvitationValid(Long inviteId) {
+        Long userId = this.userService.getCurrentUser().getId();
         int count = this.eventInvitationRepository.isInviteValid(userId, inviteId, new Date());
         return count > 0;
     }

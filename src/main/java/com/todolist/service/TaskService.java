@@ -134,6 +134,11 @@ public class TaskService {
 
     public boolean isUserTaskCreatorOrAssignedToTask(Long taskId){
         User user = this.userService.getCurrentUser();
-        return this.taskRepository.existsTaskByIdAndUserOrIdAndAssignedUsers(taskId, user,taskId, user);
+        return this.taskRepository.existsTaskByIdAndUserOrIdAndAssignedUsers(taskId, user, taskId, user);
+    }
+
+    public boolean isUserTaskCreator(Long taskId) {
+        User user = this.userService.getCurrentUser();
+        return this.taskRepository.existsTaskByIdAndUser(taskId, user);
     }
 }

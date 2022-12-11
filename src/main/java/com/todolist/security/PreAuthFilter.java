@@ -32,9 +32,9 @@ public class PreAuthFilter {
     }
 
 
-    public boolean checkIfUserIsInvited(Authentication authentication, String invitationId) {
+    public boolean checkIfUserIsInvited(String invitationId) {
         if (invitationId.matches("[0-9]+")) {
-            return this.invitationService.isInvitationValid(authentication.getName(), Long.valueOf(invitationId));
+            return this.invitationService.isInvitationValid(Long.valueOf(invitationId));
         }
         return false;
     }
@@ -42,6 +42,13 @@ public class PreAuthFilter {
     public boolean checkIfUserInTask(String taskId){
         if(taskId.matches("[0-9]+")){
             return this.taskService.isUserTaskCreatorOrAssignedToTask(Long.valueOf(taskId));
+        }
+        return false;
+    }
+
+    public boolean checkIfUserCreatedTask(String taskId) {
+        if(taskId.matches("[0-9]+")){
+            return this.taskService.isUserTaskCreator(Long.valueOf(taskId));
         }
         return false;
     }

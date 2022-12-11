@@ -42,12 +42,14 @@ public class TaskController {
     }
 
     @PutMapping("/assign/{taskId}")
+    @PreAuthorize("@preAuthFilter.checkIfUserCreatedTask(#taskId)")
     public ResponseEntity<Task> assignUsersToTask(@PathVariable Long taskId, @RequestBody List<String> usernames){
         Task task = this.taskService.assignUsersToTask(taskId, usernames);
         return ResponseEntity.ok(task);
     }
 
     @GetMapping("/event/{eventId}/user")
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#authentication, #eventId)")
     public ResponseEntity<List<Task>> getTasksByAssignedUserWithEvent(@PathVariable Long eventId){
         User user = this.userService.getCurrentUser();
         List<Task> tasks = this.taskService.findUserTasksWithAssignedUsernamesAndEventId(user, eventId); //fix that username and eventId positions aren't changed
