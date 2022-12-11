@@ -1,4 +1,6 @@
+
 package com.todolist.service;
+
 
 import com.todolist.model.Event;
 import com.todolist.model.EventInvitation;
@@ -14,6 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+
 
 @Service
 public class EventInvitationService {
@@ -35,16 +39,12 @@ public class EventInvitationService {
     }
 
 
+
+
     public ResponseEntity<?> inviteUserToEvent (Long eventId, String username){
         Event event = this.eventService.findEventById(eventId);
         User invitedUser = this.userService.findUserByUsername(username);
         User requester = this.userService.getCurrentUser();
-        if(Objects.equals(username, requester.getUsername())) {
-            return ResponseEntity.badRequest().body("You cannot invite yourself");
-        }
-        if(this.userService.isUserInEvent(username, eventId)){
-            return ResponseEntity.badRequest().body("User " + username + " is already joined the event!");
-        }
         if(this.eventInvitationRepository.existsByInvitedUserAndEventIdAndExpirationDateIsAfter(invitedUser, eventId, new Date())){
             return ResponseEntity.badRequest().body("User " + username + "is already invited to the event!");
         }
@@ -62,16 +62,7 @@ public class EventInvitationService {
     @Transactional
     public ResponseEntity<?> acceptInvite(Long invitationId){ //This method is badly written
         EventInvitation invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
-        User user = this.userService.getCurrentUser();
 
-        if(invitation == null ) {
-            return ResponseEntity.badRequest().body("Invitation not found or it has been expired");
-        }
-
-        if(!Objects.equals(user.getId(), invitation.getInvitedUser().getId())) {
-            return ResponseEntity.badRequest().body("You cannot accept other users invitation");
-            //shouldn't occur unless someone sends data straight to backend, and should be filtered before?
-        }
         Event event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
 
         //if everything goes correctly
@@ -85,16 +76,16 @@ public class EventInvitationService {
 
     @Transactional
     public ResponseEntity<?> declineInvite(Long invitationId){
-        EventInvitation invitation = this.eventInvitationRepository.findEventInvitationById(invitationId);
-        User user = this.userService.getCurrentUser();
-        if(!Objects.equals(user.getUsername(), invitation.getInvitedUser().getUsername())) {
-            return ResponseEntity.badRequest().body("You cannot decline other users invitation");
-            //shouldn't occur unless someone sends data straight to backend, and should be filtered before?
-        }
         this.eventInvitationRepository.deleteEventInvitationById(invitationId);
         HashMap<String, String> map = new HashMap<>();
         map.put("success", "Request deleted");
         return ResponseEntity.ok().body(map);
+    }
+
+    public boolean isInvitationValid(String username, Long inviteId) {
+        Long userId = this.userService.findUserByUsername(username).getId();
+        int count = this.eventInvitationRepository.isInviteValid(userId, inviteId, new Date());
+        return count > 0;
     }
 
 }
