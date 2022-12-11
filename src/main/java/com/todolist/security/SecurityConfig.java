@@ -15,10 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig{
 
     @Bean
@@ -36,11 +35,11 @@ public class SecurityConfig{
     @Bean
     SecurityFilterChain web(HttpSecurity http, Filter jwtRequestFilter) throws Exception {
         http.csrf().disable().cors().and()
-                .authorizeRequests(authorize ->
+                .authorizeHttpRequests(authorize ->
                 authorize
-                        .mvcMatchers("/api/auth/register").permitAll()
-                        .mvcMatchers("/api/event/**", "/api/task/**", "/api/user/**").hasAnyRole("USER")
-                        .mvcMatchers("/api/auth/login").permitAll().anyRequest().authenticated());
+                        .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/event/**", "/api/task/**", "/api/user/**").hasAnyRole("USER")
+                        .requestMatchers("/api/auth/login").permitAll().anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

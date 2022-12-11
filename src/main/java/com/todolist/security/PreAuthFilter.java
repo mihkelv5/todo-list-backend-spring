@@ -4,10 +4,12 @@ import com.todolist.model.Task;
 import com.todolist.service.EventInvitationService;
 import com.todolist.service.TaskService;
 import com.todolist.service.UserService;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 
-@Component
+@Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class PreAuthFilter {
 
     private final UserService userService;
