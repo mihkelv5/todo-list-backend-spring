@@ -21,17 +21,15 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final EventRepository eventRepository;
 
-    private final EventService eventService;
     private final UserService userService;
 
 
 
     @Autowired
-    public TaskService(TaskRepository taskrepository, EventRepository eventRepository, EventService eventService, UserService userService) {
+    public TaskService(TaskRepository taskrepository, EventRepository eventRepository, UserService userService) {
         this.taskRepository = taskrepository;
 
         this.eventRepository = eventRepository;
-        this.eventService = eventService;
         this.userService = userService;
     }
 
@@ -47,7 +45,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task addTaskWithEvent(Long eventId, Task task, User user){
+    public Task addTaskWithEvent(Long eventId, Task task, User user){ //TODO: merge with add task method.
         Event event = this.eventRepository.findEventById(eventId);
         task.setEventName(event.getTitle());
         task.setEventId(event.getId());
@@ -55,8 +53,8 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task updateTask(Long dataBaseTaskId, Task updatedTask) {
-        Task task = taskRepository.findTaskById(dataBaseTaskId);
+    public Task updateTask(Long taskId, Task updatedTask) {
+        Task task = taskRepository.findTaskById(taskId);
         task.setTitle(updatedTask.getTitle());
         task.setDate(updatedTask.getDate());
         task.setComplete(updatedTask.isComplete());
@@ -79,7 +77,6 @@ public class TaskService {
         if(task != null){
             task.setComplete(isComplete);
             taskRepository.save(task);
-
         }
         return task;
     }

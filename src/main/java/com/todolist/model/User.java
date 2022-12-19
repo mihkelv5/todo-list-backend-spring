@@ -16,11 +16,14 @@ public class User implements Serializable {
     @Column(updatable = false, nullable = false)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
+    @Column(unique = true, nullable = false)
+    private String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private boolean enabled;
+
     private String roles;
 
     @JsonIgnore
@@ -36,8 +39,9 @@ public class User implements Serializable {
     private Set<EventInvitation> eventInvitations = new HashSet<>();
 
 
-    public User(String username, String password, boolean enabled, String roles) {
+    public User(String username, String email, String password, boolean enabled, String roles) {
         this.username = username;
+        this.email = email;
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
@@ -52,6 +56,14 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -109,4 +121,6 @@ public class User implements Serializable {
     public void setEventInvitations(Set<EventInvitation> eventInvitations) {
         this.eventInvitations = eventInvitations;
     }
+
+
 }

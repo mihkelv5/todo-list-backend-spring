@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
+    User findUserByEmail(String email);
+
     User findUserById(Long id);
 
     @Query("SELECT username FROM User ORDER BY username")

@@ -1,0 +1,22 @@
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:h2://mem:db;BD_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        show_sql: false
+    open-in-view: true

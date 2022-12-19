@@ -17,7 +17,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findTasksByUserAndEventIdIsNull(User user);
 
-    List<Task> findTasksByEventId(Long id);
+    List<Task> findTasksByEventId(Long eventId);
 
     void deleteTaskById(Long id);
 

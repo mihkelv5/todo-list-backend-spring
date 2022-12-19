@@ -76,7 +76,6 @@ public class TaskController {
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<?> addTaskWithEvent(@PathVariable("eventId") Long eventId, @RequestBody Task task){
         User user = userService.getCurrentUser();
-        task.setId(null);
         Task newTask = this.taskService.addTaskWithEvent(eventId, task, user);
         return new ResponseEntity<>(newTask, HttpStatus.CREATED);
     }
@@ -85,7 +84,6 @@ public class TaskController {
     public ResponseEntity<Task> addTask(@RequestBody Task task){
         try {
             User user = userService.getCurrentUser();
-            task.setId(null);
             Task newTask = taskService.addTask(task, user);
             return new ResponseEntity<>(newTask, HttpStatus.CREATED);
 
