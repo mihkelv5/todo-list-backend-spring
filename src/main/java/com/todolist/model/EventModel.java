@@ -3,16 +3,21 @@ package com.todolist.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "event")
 public class EventModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(updatable = false, nullable = false)
+    private UUID id;
     private String title;
 
     private String description;
@@ -31,17 +36,17 @@ public class EventModel {
     public EventModel() {
     }
 
-    public EventModel(Long id, String title, String description) {
+    public EventModel(UUID id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

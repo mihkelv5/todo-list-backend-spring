@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +34,8 @@ public class EventService {
         this.userService = userService;
     }
 
-    public EventModel findEventById(Long id){
-        EventModel event = this.eventRepository.findEventById(id);
+    public EventModel findEventById(UUID eventId){
+        EventModel event = this.eventRepository.findEventById(eventId);
         event.setEventUsernames(event.getEventUsers().stream().map(UserModel::getUsername).collect(Collectors.toSet()));
         return event;
     }
@@ -59,20 +60,20 @@ public class EventService {
         return oldEvent;
     }
 
-    public EventModel saveUserToEvent(Long eventId, String username){
+    public EventModel saveUserToEvent(UUID eventId, String username){
         UserModel user = this.userRepository.findByUsername(username);
         EventModel event = this.eventRepository.findEventById(eventId);
         event.registerUserToEvent(user);
         return this.eventRepository.save(event);
     }
 
-    public List<UserModel> findUsersByEvent(Long eventId) {
+    public List<UserModel> findUsersByEvent(UUID eventId) {
         EventModel event = this.eventRepository.findEventById(eventId);
         return userService.findUsersByEvent(event);
     }
 
     @Transactional
-    public void deleteEventById(Long eventId) {
+    public void deleteEventById(UUID eventId) {
         this.taskRepository.deleteTasksByEventId(eventId);
         this.eventRepository.deleteEventById(eventId);
         this.eventInvitationRepository.deleteAllByEventId(eventId);

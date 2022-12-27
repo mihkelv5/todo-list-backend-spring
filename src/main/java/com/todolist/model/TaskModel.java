@@ -25,7 +25,7 @@ public class TaskModel implements Serializable {
     private Date date;
     @Column(nullable = false)
     private boolean isComplete;
-    private Long eventId;
+    private UUID eventId;
     private String eventName;
     private int xLocation;
     private int yLocation;
@@ -48,7 +48,7 @@ public class TaskModel implements Serializable {
 
     public TaskModel() {}
 
-    public TaskModel(UUID id, String title, String description, Date date, boolean isComplete, Long eventId, int xLocation, int yLocation, String color) {
+    public TaskModel(UUID id, String title, String description, Date date, boolean isComplete, UUID eventId, int xLocation, int yLocation, String color) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -94,11 +94,11 @@ public class TaskModel implements Serializable {
         isComplete = complete;
     }
 
-    public Long getEventId() {
+    public UUID getEventId() {
         return eventId;
     }
 
-    public void setEventId(Long event_id) {
+    public void setEventId(UUID event_id) {
         this.eventId = event_id;
     }
 

@@ -18,13 +18,13 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
     List<TaskModel> findTasksByUserAndEventIdIsNull(UserModel user);
 
-    List<TaskModel> findTasksByEventId(Long eventId);
+    List<TaskModel> findTasksByEventId(UUID eventId);
 
     void deleteTaskById(UUID taskId);
 
-    void deleteTasksByEventId(Long eventId);
+    void deleteTasksByEventId(UUID eventId);
 
-    List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, Long eventId);
+    List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);
 
     boolean existsTaskByIdAndUserOrIdAndAssignedUsers(UUID taskId, UserModel user, UUID taskIdAgain, UserModel assignedUser);
 

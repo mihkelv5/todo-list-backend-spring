@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/event")
@@ -27,7 +28,7 @@ public class EventController {
 
     @GetMapping("/find/{eventId}")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<EventModel> findEventById(@PathVariable("eventId") Long eventId){
+    public ResponseEntity<EventModel> findEventById(@PathVariable("eventId") UUID eventId){
         EventModel event = this.eventService.findEventById(eventId);
         return ResponseEntity.ok(event);
     }
@@ -41,7 +42,7 @@ public class EventController {
 
     @GetMapping("/{eventId}/users")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<List<UserModel>> findUsersByEventId(@PathVariable("eventId") Long eventId){
+    public ResponseEntity<List<UserModel>> findUsersByEventId(@PathVariable("eventId") UUID eventId){
         List<UserModel> users = this.eventService.findUsersByEvent(eventId);
         return ResponseEntity.ok(users);
     }
@@ -63,7 +64,7 @@ public class EventController {
     @Transactional
     @DeleteMapping("delete/{eventId}")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)") //TODO: Admin system for events
-    public ResponseEntity<?> deleteEvent(@PathVariable Long eventId){
+    public ResponseEntity<?> deleteEvent(@PathVariable UUID eventId){
         this.eventService.deleteEventById(eventId);
         return ResponseEntity.ok().build();
     }
@@ -71,7 +72,7 @@ public class EventController {
 
 
     @PutMapping("{eventId}/register/{username}") //for development, will be removed in production
-    public ResponseEntity<?> registerUserToEvent(@PathVariable("eventId") Long eventId, @PathVariable("username") String username) {
+    public ResponseEntity<?> registerUserToEvent(@PathVariable("eventId") UUID eventId, @PathVariable("username") String username) {
         EventModel event = this.eventService.saveUserToEvent(eventId, username);
         return ResponseEntity.ok(event);
     }

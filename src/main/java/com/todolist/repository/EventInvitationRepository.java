@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public interface EventInvitationRepository extends JpaRepository<EventInvitationModel, Long> {
 
@@ -17,12 +18,12 @@ public interface EventInvitationRepository extends JpaRepository<EventInvitation
 
     List<EventInvitationModel> findAllEventInvitationsByIsAccepted(boolean isAccepted);
 
-    boolean existsByInvitedUserAndEventIdAndExpirationDateIsAfter(UserModel user, Long eventId, Date date);
+    boolean existsByInvitedUserAndEventIdAndExpirationDateIsAfter(UserModel user, UUID eventId, Date date);
 
 
-    EventInvitationModel findEventInvitationByIdAndExpirationDateIsAfter (Long eventId, Date date);
+    EventInvitationModel findEventInvitationByIdAndExpirationDateIsAfter (Long invitationId, Date date);
 
-    void deleteAllByEventId(Long eventId);
+    void deleteAllByEventId(UUID eventId);
 
     @Query("Select COUNT(ei) from EventInvitationModel ei where ei.id = :inviteId and ei.invitedUser.id = :userId and ei.expirationDate > :date")
     int isInviteValid(Long userId, Long inviteId, Date date);

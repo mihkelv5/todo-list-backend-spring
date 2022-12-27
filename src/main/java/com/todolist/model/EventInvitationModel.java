@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "event_invitation")
@@ -17,7 +18,7 @@ public class EventInvitationModel implements Serializable {
     @Column(nullable = false)
     private String requesterUsername;
     @Column(nullable = false)
-    private Long eventId;
+    private UUID eventId;
 
     @Column(nullable = false)
     private String eventName;
@@ -40,7 +41,7 @@ public class EventInvitationModel implements Serializable {
         this.isBlocked = false;
     }
 
-    public EventInvitationModel(Long id, String requesterUsername, Long eventId, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
+    public EventInvitationModel(Long id, String requesterUsername, UUID eventId, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
         this.id = id;
         this.requesterUsername = requesterUsername;
         this.eventId = eventId;
@@ -66,11 +67,11 @@ public class EventInvitationModel implements Serializable {
         this.requesterUsername = requesterUsername;
     }
 
-    public Long getEventId() {
+    public UUID getEventId() {
         return eventId;
     }
 
-    public void setEventId(Long eventId) {
+    public void setEventId(UUID eventId) {
         this.eventId = eventId;
     }
 

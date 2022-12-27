@@ -50,7 +50,7 @@ public class TaskController {
 
     @GetMapping("/event/{eventId}/user")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<List<TaskModel>> getTasksByAssignedUserWithEvent(@PathVariable Long eventId){
+    public ResponseEntity<List<TaskModel>> getTasksByAssignedUserWithEvent(@PathVariable UUID eventId){
         UserModel user = this.userService.getCurrentUser();
         List<TaskModel> tasks = this.taskService.findUserTasksWithAssignedUsernamesAndEventId(user, eventId); //fix that username and eventId positions aren't changed
         return ResponseEntity.ok(tasks);
@@ -67,14 +67,14 @@ public class TaskController {
 
     @GetMapping("/event/{eventId}")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<List<TaskModel>> getTasksByEvent(@PathVariable("eventId") Long eventId){
+    public ResponseEntity<List<TaskModel>> getTasksByEvent(@PathVariable("eventId") UUID eventId){
         List<TaskModel> taskList = taskService.findTasksByEvent(eventId);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
     @PostMapping("/add/event/{eventId}")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<?> addTaskWithEvent(@PathVariable("eventId") Long eventId, @RequestBody TaskModel task){
+    public ResponseEntity<?> addTaskWithEvent(@PathVariable("eventId") UUID eventId, @RequestBody TaskModel task){
         UserModel user = userService.getCurrentUser();
         TaskModel newTask = this.taskService.addTaskWithEvent(eventId, task, user);
         return new ResponseEntity<>(newTask, HttpStatus.CREATED);

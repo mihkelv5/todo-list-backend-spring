@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/user")
@@ -29,7 +30,7 @@ public class UserController {
 
     @GetMapping("/event/{eventId}/all")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<List<String>> userSearchNoEvent(@PathVariable Long eventId){
+    public ResponseEntity<List<String>> userSearchNoEvent(@PathVariable UUID eventId){
         List<String> matchingUsers = this.userService.userSearchNoEvent(eventId);
         return ResponseEntity.ok(matchingUsers);
     }

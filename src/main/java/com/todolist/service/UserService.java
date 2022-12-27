@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -51,12 +52,12 @@ public class UserService {
     }
 
 
-    public boolean isUserInEvent(Long eventId){
+    public boolean isUserInEvent(UUID eventId){
         String username = this.getCurrentUser().getUsername();
         return userRepository.existsUserByEventsIdAndUsername(eventId, username);
     }
 
-    public List<String> userSearchNoEvent(Long eventId) {
+    public List<String> userSearchNoEvent(UUID eventId) {
         return this.userRepository.findUsersNotInEvent(eventId);
     }
 }

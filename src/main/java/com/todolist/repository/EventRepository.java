@@ -6,13 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
-public interface EventRepository extends JpaRepository<EventModel, Long> {
+public interface EventRepository extends JpaRepository<EventModel, UUID> {
 
-    EventModel findEventById(Long eventId);
+    EventModel findEventById(UUID eventId);
 
     List<EventModel> findEventsByEventUsersIn(Set<UserModel> users);
 
 
-    void deleteEventById (Long id);
+    void deleteEventById (UUID id);
 }

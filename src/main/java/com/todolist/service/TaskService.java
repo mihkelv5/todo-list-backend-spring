@@ -42,7 +42,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public TaskModel addTaskWithEvent(Long eventId, TaskModel task, UserModel user){ //TODO: merge with add task method.
+    public TaskModel addTaskWithEvent(UUID eventId, TaskModel task, UserModel user){ //TODO: merge with add task method.
         EventModel event = this.eventRepository.findEventById(eventId);
         task.setEventName(event.getTitle());
         task.setEventId(event.getId());
@@ -93,7 +93,7 @@ public class TaskService {
         return assignUsernamesToTasks(tasks);
     }
 
-    public List<TaskModel> findTasksByEvent(Long eventId) {
+    public List<TaskModel> findTasksByEvent(UUID eventId) {
         List<TaskModel> tasks = taskRepository.findTasksByEventId(eventId);
         return assignUsernamesToTasks(tasks);
     }
@@ -104,7 +104,7 @@ public class TaskService {
     }
 
 
-    public List<TaskModel> findUserTasksWithAssignedUsernamesAndEventId(UserModel user, Long eventId){
+    public List<TaskModel> findUserTasksWithAssignedUsernamesAndEventId(UserModel user, UUID eventId){
         List<TaskModel> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
         return assignUsernamesToTasks(tasks);
     }

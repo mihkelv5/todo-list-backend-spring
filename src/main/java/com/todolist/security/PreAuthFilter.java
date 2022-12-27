@@ -25,11 +25,9 @@ public class PreAuthFilter {
     }
 
 
-    public boolean checkIfUserInEvent(String eventId) {
-        if(eventId.matches("[0-9]+")){
-            return userService.isUserInEvent(Long.valueOf(eventId));
-        }
-        return false;
+    public boolean checkIfUserInEvent(UUID eventId) {
+        return userService.isUserInEvent(eventId);
+
     }
 
 
@@ -55,6 +53,6 @@ public class PreAuthFilter {
 
     public boolean checkIfUserCanMoveTask(UUID taskId) {
         TaskModel task = this.taskService.findTaskById(taskId);
-        return checkIfUserInTask(taskId) || checkIfUserInEvent(String.valueOf(task.getEventId()));
+        return checkIfUserInTask(taskId) || checkIfUserInEvent(task.getEventId());
     }
 }

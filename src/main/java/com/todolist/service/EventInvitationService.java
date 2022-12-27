@@ -15,7 +15,7 @@ import jakarta.transaction.Transactional;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.UUID;
 
 
 @Service
@@ -40,7 +40,7 @@ public class EventInvitationService {
 
 
 
-    public ResponseEntity<?> inviteUserToEvent (Long eventId, String username){
+    public ResponseEntity<?> inviteUserToEvent (UUID eventId, String username){
         EventModel event = this.eventRepository.findEventById(eventId);
         UserModel invitedUser = this.userService.findUserByUsername(username);
         UserModel requester = this.userService.getCurrentUser();
