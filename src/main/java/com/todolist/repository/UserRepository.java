@@ -17,9 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findUserById(Long id);
 
-    @Query("SELECT username FROM User ORDER BY username")
-    List<String> findAllUsernames();
-    boolean existsUserByEventsIdAndId(Long eventId, Long userId);
 
     boolean existsUserByEventsIdAndUsername(Long eventId, String username);
 

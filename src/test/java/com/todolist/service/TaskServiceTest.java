@@ -4,9 +4,12 @@ import com.todolist.model.Task;
 import com.todolist.model.User;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,18 +27,42 @@ class TaskServiceTest {
     TaskRepository taskRepository;
     @Mock
     EventRepository eventRepository;
-    @Mock
+    @InjectMocks
     UserService userService;
+    private AutoCloseable autoCloseable;
     TaskService taskService;
         User testUser = new User();
     @BeforeEach
     void setUp() {
+        autoCloseable = MockitoAnnotations.openMocks(this);
         taskService = new TaskService(taskRepository, eventRepository, userService);
         testUser.setUsername("testUser");
         testUser.setPassword("123");
         testUser.setRoles("USER");
         testUser.setEmail("asdsd@asd.asd");
         testUser.setEnabled(true);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
+    }
+
+    @Test
+    void findTasksByUser() {
+
+        //setup
+        Task testTask = new Task();
+        testTask.setTitle("Test task");
+        testTask.setDate(new Date());
+        testTask.setDescription("This is a test task");
+        testTask.setComplete(false);
+        testTask.setUser(testUser);
+
+        //query
+
+
+
     }
 
     @Test
@@ -56,23 +83,6 @@ class TaskServiceTest {
 
     @Test
     void findTaskByDate() {
-    }
-
-    @Test
-    void findTasksByUser() {
-
-        //setup
-        Task testTask = new Task();
-        testTask.setTitle("Test task");
-        testTask.setDate(new Date());
-        testTask.setDescription("This is a test task");
-        testTask.setComplete(false);
-        testTask.setUser(testUser);
-
-        //query
-
-
-
     }
 
     @Test

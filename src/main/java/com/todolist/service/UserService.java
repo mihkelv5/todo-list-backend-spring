@@ -15,8 +15,14 @@ import java.util.Set;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipalImpl userDetails = (UserPrincipalImpl) auth.getPrincipal();
+        Optional<User> user = userRepository.findById(userDetails.getId());
+        return user.orElseGet(User::new);
+    }
 
+    private final UserRepository userRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -40,31 +46,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User findUserById(long id){
-        return userRepository.findUserById(id);
-    }
-
     public List<User> findUsersByEvent(Event event) {
         return userRepository.findUsersByEvents(event);
     }
 
 
-    public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipalImpl userDetails = (UserPrincipalImpl) auth.getPrincipal();
-        Optional<User> user = userRepository.findById(userDetails.getId());
-        return user.orElseGet(User::new);
-    }
-
     public boolean isUserInEvent(Long eventId){
         String username = this.getCurrentUser().getUsername();
         return userRepository.existsUserByEventsIdAndUsername(eventId, username);
-    }
-
-
-
-    public List<String> findUsersByUsernameContains() {
-        return this.userRepository.findAllUsernames();
     }
 
     public List<String> userSearchNoEvent(Long eventId) {

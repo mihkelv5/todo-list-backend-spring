@@ -28,7 +28,6 @@ public class TaskService {
     @Autowired
     public TaskService(TaskRepository taskrepository, EventRepository eventRepository, UserService userService) {
         this.taskRepository = taskrepository;
-
         this.eventRepository = eventRepository;
         this.userService = userService;
     }

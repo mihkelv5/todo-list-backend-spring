@@ -38,7 +38,6 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "invitedUser")
     private Set<EventInvitation> eventInvitations = new HashSet<>();
 
-
     public User(String username, String email, String password, boolean enabled, String roles) {
         this.username = username;
         this.email = email;

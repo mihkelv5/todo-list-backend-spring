@@ -17,6 +17,8 @@ class TaskRepositoryTest {
     @Autowired
     private TaskRepository testTaskRepository;
 
+
+
     @AfterEach
     void deleteAll(){
         testTaskRepository.deleteAll();
@@ -36,7 +38,6 @@ class TaskRepositoryTest {
 
         Task newTask = testTaskRepository.findTaskById(addedTaskId);
         assertNotNull(newTask);
-
     }
 
 

@@ -27,13 +27,6 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
-    @GetMapping("/search/all")
-    public ResponseEntity<List<String>> userSearch(){
-        List<String> matchingUsers = this.userService.findUsersByUsernameContains();
-        return ResponseEntity.ok(matchingUsers);
-    }
-
-
     @GetMapping("/event/{eventId}/all")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<List<String>> userSearchNoEvent(@PathVariable Long eventId){

@@ -21,16 +21,16 @@ public class EventService {
     private final EventRepository eventRepository;
     private final EventInvitationRepository eventInvitationRepository;
     private final TaskRepository taskRepository;
-    private final UserService userService;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
     public EventService(EventRepository eventRepository, EventInvitationRepository eventInvitationRepository, TaskRepository taskRepository, UserService userService, UserRepository userRepository) {
         this.eventRepository = eventRepository;
         this.eventInvitationRepository = eventInvitationRepository;
         this.taskRepository = taskRepository;
-        this.userService = userService;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public Event findEventById(Long id){

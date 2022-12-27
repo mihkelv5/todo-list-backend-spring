@@ -23,14 +23,14 @@ public class EventInvitationService {
 
     private final EventInvitationRepository eventInvitationRepository;
     private final EventRepository eventRepository;
-    private final UserService userService;
     private final EventService eventService;
+    private final UserService userService;
 
     public EventInvitationService(EventInvitationRepository eventInvitationRepository, UserService userService, EventRepository eventRepository, EventService eventService) {
         this.eventInvitationRepository = eventInvitationRepository;
-        this.userService = userService;
         this.eventRepository = eventRepository;
         this.eventService = eventService;
+        this.userService = userService;
     }
 
     public List<EventInvitation> findUserInvitations (User user) {
@@ -41,7 +41,7 @@ public class EventInvitationService {
 
 
     public ResponseEntity<?> inviteUserToEvent (Long eventId, String username){
-        Event event = this.eventService.findEventById(eventId);
+        Event event = this.eventRepository.findEventById(eventId);
         User invitedUser = this.userService.findUserByUsername(username);
         User requester = this.userService.getCurrentUser();
         if(this.eventInvitationRepository.existsByInvitedUserAndEventIdAndExpirationDateIsAfter(invitedUser, eventId, new Date())){
@@ -59,7 +59,7 @@ public class EventInvitationService {
     }
 
     @Transactional
-    public ResponseEntity<?> acceptInvite(Long invitationId){ //This method is badly written
+    public ResponseEntity<?> acceptInvite(Long invitationId){ //This should return boolean instead of responseEntity, was just for test
         EventInvitation invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
 
         Event event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
@@ -70,11 +70,11 @@ public class EventInvitationService {
             return ResponseEntity.ok(event);
         }
         this.eventInvitationRepository.deleteEventInvitationById(invitationId);
-        return ResponseEntity.unprocessableEntity().body("Something went wrong"); //should be 500 code? Do I want to show it to client?
+        return ResponseEntity.unprocessableEntity().body("Something went wrong");
     }
 
     @Transactional
-    public ResponseEntity<?> declineInvite(Long invitationId){
+    public ResponseEntity<?> declineInvite(Long invitationId){ //This should return boolean instead of responseEntity, was just for test
         this.eventInvitationRepository.deleteEventInvitationById(invitationId);
         HashMap<String, String> map = new HashMap<>();
         map.put("success", "Request deleted");
