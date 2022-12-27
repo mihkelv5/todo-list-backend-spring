@@ -2,9 +2,9 @@
 package com.todolist.service;
 
 
-import com.todolist.model.Event;
-import com.todolist.model.EventInvitation;
-import com.todolist.model.User;
+import com.todolist.model.EventInvitationModel;
+import com.todolist.model.EventModel;
+import com.todolist.model.UserModel;
 import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +33,7 @@ public class EventInvitationService {
         this.userService = userService;
     }
 
-    public List<EventInvitation> findUserInvitations (User user) {
+    public List<EventInvitationModel> findUserInvitations (UserModel user) {
         return this.eventInvitationRepository.findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(user, new Date(), false);
     }
 
@@ -41,28 +41,28 @@ public class EventInvitationService {
 
 
     public ResponseEntity<?> inviteUserToEvent (Long eventId, String username){
-        Event event = this.eventRepository.findEventById(eventId);
-        User invitedUser = this.userService.findUserByUsername(username);
-        User requester = this.userService.getCurrentUser();
+        EventModel event = this.eventRepository.findEventById(eventId);
+        UserModel invitedUser = this.userService.findUserByUsername(username);
+        UserModel requester = this.userService.getCurrentUser();
         if(this.eventInvitationRepository.existsByInvitedUserAndEventIdAndExpirationDateIsAfter(invitedUser, eventId, new Date())){
-            return ResponseEntity.badRequest().body("User " + username + "is already invited to the event!");
+            return ResponseEntity.badRequest().body("UserModel " + username + "is already invited to the event!");
         }
-        EventInvitation invitation = new EventInvitation();
+        EventInvitationModel invitation = new EventInvitationModel();
         invitation.setRequesterUsername(requester.getUsername());
         invitation.setInvitedUser(invitedUser);
         invitation.setEventId(eventId);
         invitation.setEventName(event.getTitle());
         this.eventInvitationRepository.save(invitation);
         HashMap<String, String> map = new HashMap<>();
-        map.put("success", "User " + username + " invited to event!");
+        map.put("success", "UserModel " + username + " invited to event!");
         return  ResponseEntity.ok().body(map);
     }
 
     @Transactional
     public ResponseEntity<?> acceptInvite(Long invitationId){ //This should return boolean instead of responseEntity, was just for test
-        EventInvitation invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
+        EventInvitationModel invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
 
-        Event event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
+        EventModel event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
 
         //if everything goes correctly
         if(event != null){

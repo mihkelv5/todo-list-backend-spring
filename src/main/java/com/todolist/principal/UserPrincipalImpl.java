@@ -1,7 +1,7 @@
 package com.todolist.principal;
 
 
-import com.todolist.model.User;
+import com.todolist.model.UserModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 
 public class UserPrincipalImpl implements UserDetails {
 
-    private final User user;
+    private final UserModel user;
 
-    public UserPrincipalImpl(User user) {
+    public UserPrincipalImpl(UserModel user) {
         this.user = user;
     }
 

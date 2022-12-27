@@ -1,17 +1,17 @@
 package com.todolist.repository;
 
-import com.todolist.model.Event;
-import com.todolist.model.User;
+import com.todolist.model.EventModel;
+import com.todolist.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Set;
 
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<EventModel, Long> {
 
-    Event findEventById(Long eventId);
+    EventModel findEventById(Long eventId);
 
-    List<Event> findEventsByEventUsersIn(Set<User> users);
+    List<EventModel> findEventsByEventUsersIn(Set<UserModel> users);
 
 
     void deleteEventById (Long id);

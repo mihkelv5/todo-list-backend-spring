@@ -7,7 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Event {
+@Table(name = "event")
+public class EventModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,14 +24,14 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @JsonIgnore
-    private Set<User> eventUsers = new HashSet<>();
+    private Set<UserModel> eventUsers = new HashSet<>();
 
     @Transient
     private Set<String> eventUsernames = new HashSet<>();
-    public Event() {
+    public EventModel() {
     }
 
-    public Event(Long id, String title, String description) {
+    public EventModel(Long id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -52,19 +53,19 @@ public class Event {
         this.title = title;
     }
 
-    public Set<User> getEventUsers() {
+    public Set<UserModel> getEventUsers() {
         return eventUsers;
     }
 
-    public void setEventUsers(Set<User> eventUsers) {
+    public void setEventUsers(Set<UserModel> eventUsers) {
         this.eventUsers = eventUsers;
     }
 
-    public void registerUserToEvent(User user) {
+    public void registerUserToEvent(UserModel user) {
         this.eventUsers.add(user);
     }
 
-    public void removeUserFromEvent(User user){
+    public void removeUserFromEvent(UserModel user){
         this.eventUsers.remove(user);
     }
 

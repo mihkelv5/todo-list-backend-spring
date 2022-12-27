@@ -1,7 +1,7 @@
 package com.todolist.controller;
 
 
-import com.todolist.model.User;
+import com.todolist.model.UserModel;
 import com.todolist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +21,9 @@ public class UserController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
+    public ResponseEntity<UserModel> updateUser(@RequestBody UserModel user){
         user.setId(null);
-        User updatedUser = userService.updateUser(user);
+        UserModel updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

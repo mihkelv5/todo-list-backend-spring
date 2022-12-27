@@ -1,7 +1,7 @@
 package com.todolist.service;
 
-import com.todolist.model.Task;
-import com.todolist.model.User;
+import com.todolist.model.TaskModel;
+import com.todolist.model.UserModel;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -10,17 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DataJpaTest
-class TaskServiceTest {
+class TaskModelServiceTest {
 
 
     @Mock
@@ -31,7 +26,7 @@ class TaskServiceTest {
     UserService userService;
     private AutoCloseable autoCloseable;
     TaskService taskService;
-        User testUser = new User();
+        UserModel testUser = new UserModel();
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
@@ -52,7 +47,7 @@ class TaskServiceTest {
     void findTasksByUser() {
 
         //setup
-        Task testTask = new Task();
+        TaskModel testTask = new TaskModel();
         testTask.setTitle("Test task");
         testTask.setDate(new Date());
         testTask.setDescription("This is a test task");

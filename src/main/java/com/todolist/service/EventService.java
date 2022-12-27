@@ -1,7 +1,7 @@
 package com.todolist.service;
 
-import com.todolist.model.Event;
-import com.todolist.model.User;
+import com.todolist.model.EventModel;
+import com.todolist.model.UserModel;
 import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
@@ -33,41 +33,41 @@ public class EventService {
         this.userService = userService;
     }
 
-    public Event findEventById(Long id){
-        Event event = this.eventRepository.findEventById(id);
-        event.setEventUsernames(event.getEventUsers().stream().map(User::getUsername).collect(Collectors.toSet()));
+    public EventModel findEventById(Long id){
+        EventModel event = this.eventRepository.findEventById(id);
+        event.setEventUsernames(event.getEventUsers().stream().map(UserModel::getUsername).collect(Collectors.toSet()));
         return event;
     }
 
-    public List<Event> findEventsByUser(User user){
-        Set<User> users = new HashSet<>();
+    public List<EventModel> findEventsByUser(UserModel user){
+        Set<UserModel> users = new HashSet<>();
         users.add(user);
         return eventRepository.findEventsByEventUsersIn(users);
     }
 
-    public Event addEvent(Event event) {
-        User user = userService.getCurrentUser();
+    public EventModel addEvent(EventModel event) {
+        UserModel user = userService.getCurrentUser();
         event.registerUserToEvent(user);
         return this.eventRepository.save(event);
     }
 
-    public Event updateEvent(Event event){
-        Event oldEvent = this.eventRepository.findEventById(event.getId());
+    public EventModel updateEvent(EventModel event){
+        EventModel oldEvent = this.eventRepository.findEventById(event.getId());
         oldEvent.setTitle(event.getTitle());
         oldEvent.setDescription(event.getDescription());
         eventRepository.save(oldEvent);
         return oldEvent;
     }
 
-    public Event saveUserToEvent(Long eventId, String username){
-        User user = this.userRepository.findByUsername(username);
-        Event event = this.eventRepository.findEventById(eventId);
+    public EventModel saveUserToEvent(Long eventId, String username){
+        UserModel user = this.userRepository.findByUsername(username);
+        EventModel event = this.eventRepository.findEventById(eventId);
         event.registerUserToEvent(user);
         return this.eventRepository.save(event);
     }
 
-    public List<User> findUsersByEvent(Long eventId) {
-        Event event = this.eventRepository.findEventById(eventId);
+    public List<UserModel> findUsersByEvent(Long eventId) {
+        EventModel event = this.eventRepository.findEventById(eventId);
         return userService.findUsersByEvent(event);
     }
 

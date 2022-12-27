@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user")
-public class User implements Serializable {
+public class UserModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
@@ -28,17 +28,17 @@ public class User implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private Set<Task> tasks = new HashSet<>();
+    private Set<TaskModel> tasks = new HashSet<>();
 
     @JsonIgnore
     @ManyToMany(mappedBy = "eventUsers")
-    private Set<Event> events = new HashSet<>();
+    private Set<EventModel> events = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "invitedUser")
-    private Set<EventInvitation> eventInvitations = new HashSet<>();
+    private Set<EventInvitationModel> eventInvitations = new HashSet<>();
 
-    public User(String username, String email, String password, boolean enabled, String roles) {
+    public UserModel(String username, String email, String password, boolean enabled, String roles) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -46,7 +46,7 @@ public class User implements Serializable {
         this.roles = roles;
     }
 
-    public User() {
+    public UserModel() {
     }
 
     public String getUsername() {
@@ -97,27 +97,27 @@ public class User implements Serializable {
         this.roles = roles;
     }
 
-    public Set<Task> getTasks() {
+    public Set<TaskModel> getTasks() {
         return tasks;
     }
 
-    public void setTasks(Set<Task> tasks) {
+    public void setTasks(Set<TaskModel> tasks) {
         this.tasks = tasks;
     }
 
-    public Set<Event> getEvents() {
+    public Set<EventModel> getEvents() {
         return events;
     }
 
-    public void setEvents(Set<Event> events) {
+    public void setEvents(Set<EventModel> events) {
         this.events = events;
     }
 
-    public Set<EventInvitation> getEventInvitations() {
+    public Set<EventInvitationModel> getEventInvitations() {
         return eventInvitations;
     }
 
-    public void setEventInvitations(Set<EventInvitation> eventInvitations) {
+    public void setEventInvitations(Set<EventInvitationModel> eventInvitations) {
         this.eventInvitations = eventInvitations;
     }
 

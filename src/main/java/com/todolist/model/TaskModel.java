@@ -3,18 +3,22 @@ package com.todolist.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Table(name= "Task")
-public class Task implements Serializable {
+@Table(name= "task")
+public class TaskModel implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false)
-    private Long id;
+    private UUID id;
     private String title;
     private String description;
     @Temporal(TemporalType.DATE)
@@ -31,20 +35,20 @@ public class Task implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
-    private User user;
+    private UserModel user;
     @Transient
     private String ownerUsername;
 
     @ManyToMany
     @JsonIgnore
-    private Set<User> assignedUsers = new HashSet<>();
+    private Set<UserModel> assignedUsers = new HashSet<>();
 
     @Transient
     private Set<String> assignedUsernames = new HashSet<>();
 
-    public Task() {}
+    public TaskModel() {}
 
-    public Task(Long id, String title, String description, Date date, boolean isComplete, Long eventId, int xLocation, int yLocation, String color) {
+    public TaskModel(UUID id, String title, String description, Date date, boolean isComplete, Long eventId, int xLocation, int yLocation, String color) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -58,11 +62,11 @@ public class Task implements Serializable {
 
 
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -139,19 +143,19 @@ public class Task implements Serializable {
 
 
 
-    public User getUser() {
+    public UserModel getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserModel user) {
         this.user = user;
     }
 
-    public Set<User> getAssignedUsers() {
+    public Set<UserModel> getAssignedUsers() {
         return assignedUsers;
     }
 
-    public void setAssignedUsers(Set<User> assignedUsers) {
+    public void setAssignedUsers(Set<UserModel> assignedUsers) {
         this.assignedUsers = assignedUsers;
     }
 

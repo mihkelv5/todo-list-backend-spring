@@ -1,7 +1,7 @@
 package com.todolist.repository;
 
-import com.todolist.model.Event;
-import com.todolist.model.User;
+import com.todolist.model.EventModel;
+import com.todolist.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,21 +9,21 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Set;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserModel, Long> {
 
-    User findByUsername(String username);
+    UserModel findByUsername(String username);
 
-    User findUserByEmail(String email);
+    UserModel findUserByEmail(String email);
 
-    User findUserById(Long id);
+    UserModel findUserById(Long id);
 
 
     boolean existsUserByEventsIdAndUsername(Long eventId, String username);
 
-    List<User> findUsersByEvents(Event event);
-    @Query("SELECT u.username FROM User u WHERE :eventId NOT IN (SELECT eu.id FROM u.events eu) AND :eventId NOT IN (SELECT ei.eventId FROM u.eventInvitations ei)")
+    List<UserModel> findUsersByEvents(EventModel event);
+    @Query("SELECT u.username FROM UserModel u WHERE :eventId NOT IN (SELECT eu.id FROM u.events eu) AND :eventId NOT IN (SELECT ei.eventId FROM u.eventInvitations ei)")
     List<String> findUsersNotInEvent(@Param("eventId") Long eventId);
 
-    @Query("Select u FROM User u Where u.username IN :usernames")
-    Set<User> findAllUsersByUsernameSet(Set<String> usernames);
+    @Query("Select u FROM UserModel u Where u.username IN :usernames")
+    Set<UserModel> findAllUsersByUsernameSet(Set<String> usernames);
 }

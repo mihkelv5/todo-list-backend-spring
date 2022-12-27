@@ -1,7 +1,7 @@
 package com.todolist.controller;
 
-import com.todolist.model.EventInvitation;
-import com.todolist.model.User;
+import com.todolist.model.EventInvitationModel;
+import com.todolist.model.UserModel;
 import com.todolist.service.EventInvitationService;
 import com.todolist.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +33,9 @@ public class InviteController {
     }
 
     @GetMapping("/get/all")
-    public ResponseEntity<List<EventInvitation>> getUserEventInvitations(){
-        User user = this.userService.getCurrentUser();
-        List<EventInvitation> eventInvitationList = this.eventInvitationService.findUserInvitations(user);
+    public ResponseEntity<List<EventInvitationModel>> getUserEventInvitations(){
+        UserModel user = this.userService.getCurrentUser();
+        List<EventInvitationModel> eventInvitationList = this.eventInvitationService.findUserInvitations(user);
         return ResponseEntity.ok(eventInvitationList);
     }
 

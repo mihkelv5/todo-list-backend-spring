@@ -2,7 +2,7 @@ package com.todolist.controller;
 
 import com.todolist.constant.SecurityConstant;
 import com.todolist.model.AuthenticationRequest;
-import com.todolist.model.User;
+import com.todolist.model.UserModel;
 import com.todolist.principal.UserPrincipalImpl;
 import com.todolist.service.UserDetailsServiceImpl;
 import com.todolist.service.UserService;
@@ -48,7 +48,7 @@ public class AuthController {
         final UserPrincipalImpl userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-        User user = userService.findUserByUsername(authenticationRequest.getUsername());
+        UserModel user = userService.findUserByUsername(authenticationRequest.getUsername());
         user.setTasks(null);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(SecurityConstant.JWT_TOKEN_HEADER, jwt);
@@ -56,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<UserModel> addUser(@RequestBody UserModel user) {
         //user.setId(null);
         user.setPassword(new BCryptPasswordEncoder(5).encode(user.getPassword()));
         try {

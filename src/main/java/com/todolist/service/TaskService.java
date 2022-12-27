@@ -1,18 +1,16 @@
 package com.todolist.service;
 
-import com.todolist.model.Event;
-import com.todolist.model.Task;
-import com.todolist.model.User;
+import com.todolist.model.EventModel;
+import com.todolist.model.TaskModel;
+import com.todolist.model.UserModel;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,26 +32,26 @@ public class TaskService {
 
 
 
-    public Task findTaskById(Long id) {
-        return taskRepository.findTaskById(id);
+    public TaskModel findTaskById(UUID taskId) {
+        return taskRepository.findTaskById(taskId);
     }
 
 
-    public Task addTask(Task task, User user){
+    public TaskModel addTask(TaskModel task, UserModel user){
         task.setUser(user);
         return taskRepository.save(task);
     }
 
-    public Task addTaskWithEvent(Long eventId, Task task, User user){ //TODO: merge with add task method.
-        Event event = this.eventRepository.findEventById(eventId);
+    public TaskModel addTaskWithEvent(Long eventId, TaskModel task, UserModel user){ //TODO: merge with add task method.
+        EventModel event = this.eventRepository.findEventById(eventId);
         task.setEventName(event.getTitle());
         task.setEventId(event.getId());
         task.setUser(user);
         return taskRepository.save(task);
     }
 
-    public Task updateTask(Long taskId, Task updatedTask) {
-        Task task = taskRepository.findTaskById(taskId);
+    public TaskModel updateTask(UUID taskId, TaskModel updatedTask) {
+        TaskModel task = taskRepository.findTaskById(taskId);
         task.setTitle(updatedTask.getTitle());
         task.setDate(updatedTask.getDate());
         task.setComplete(updatedTask.isComplete());
@@ -63,16 +61,16 @@ public class TaskService {
 
     }
 
-    public Task moveTask(Long id, int xLocation, int yLocation){
-        Task task = this.taskRepository.findTaskById(id);
+    public TaskModel moveTask(UUID taskId, int xLocation, int yLocation){
+        TaskModel task = this.taskRepository.findTaskById(taskId);
         task.setCoordinates(xLocation, yLocation);
         return this.taskRepository.save(task);
     }
 
 
 
-    public Task completeTask(Long id, Boolean isComplete){
-        Task task = taskRepository.findTaskById(id);
+    public TaskModel completeTask(UUID taskId, Boolean isComplete){
+        TaskModel task = taskRepository.findTaskById(taskId);
         if(task != null){
             task.setComplete(isComplete);
             taskRepository.save(task);
@@ -82,59 +80,59 @@ public class TaskService {
 
 
 
-    public List<Task> findTaskByDate(Date date) {
+    public List<TaskModel> findTaskByDate(Date date) {
         return taskRepository.findTasksByDate(date);
     }
 
-    public List<Task> findTasksByUser(User user) {
-        List<Task> tasks = taskRepository.findTasksByUser(user);
+    public List<TaskModel> findTasksByUser(UserModel user) {
+        List<TaskModel> tasks = taskRepository.findTasksByUser(user);
         return assignUsernamesToTasks(tasks);
     }
-    public List<Task> findTasksByUserWhereEventNull(User user){
-        List<Task> tasks =  taskRepository.findTasksByUserAndEventIdIsNull(user);
+    public List<TaskModel> findTasksByUserWhereEventNull(UserModel user){
+        List<TaskModel> tasks =  taskRepository.findTasksByUserAndEventIdIsNull(user);
         return assignUsernamesToTasks(tasks);
     }
 
-    public List<Task> findTasksByEvent(Long eventId) {
-        List<Task> tasks = taskRepository.findTasksByEventId(eventId);
+    public List<TaskModel> findTasksByEvent(Long eventId) {
+        List<TaskModel> tasks = taskRepository.findTasksByEventId(eventId);
         return assignUsernamesToTasks(tasks);
     }
 
     @Transactional
-    public void deleteTask(Long taskId) {
+    public void deleteTask(UUID taskId) {
         taskRepository.deleteTaskById(taskId);
     }
 
 
-    public List<Task> findUserTasksWithAssignedUsernamesAndEventId(User user, Long eventId){
-        List<Task> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
+    public List<TaskModel> findUserTasksWithAssignedUsernamesAndEventId(UserModel user, Long eventId){
+        List<TaskModel> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
         return assignUsernamesToTasks(tasks);
     }
 
-    public List<Task> assignUsernamesToTasks(List<Task> tasks){
+    public List<TaskModel> assignUsernamesToTasks(List<TaskModel> tasks){
         tasks.forEach(task -> {
-            task.setAssignedUsernames(task.getAssignedUsers().stream().map(User::getUsername).collect(Collectors.toSet()));
+            task.setAssignedUsernames(task.getAssignedUsers().stream().map(UserModel::getUsername).collect(Collectors.toSet()));
             task.setOwnerUsername(task.getUser().getUsername());
         });
         return tasks;
     }
 
-    public Task assignUsersToTask(Long taskId, List<String> usernames) {
-        Task task = this.taskRepository.findTaskById(taskId);
+    public TaskModel assignUsersToTask(UUID taskId, List<String> usernames) {
+        TaskModel task = this.taskRepository.findTaskById(taskId);
         Set<String> usernameSet = new HashSet<>(usernames);
-        Set<User> userSet = this.userService.findAllUsersByUsernameSet(usernameSet);
+        Set<UserModel> userSet = this.userService.findAllUsersByUsernameSet(usernameSet);
         task.setAssignedUsers(userSet);
         this.taskRepository.save(task);
         return task;
     }
 
-    public boolean isUserTaskCreatorOrAssignedToTask(Long taskId){
-        User user = this.userService.getCurrentUser();
+    public boolean isUserTaskCreatorOrAssignedToTask(UUID taskId){
+        UserModel user = this.userService.getCurrentUser();
         return this.taskRepository.existsTaskByIdAndUserOrIdAndAssignedUsers(taskId, user, taskId, user);
     }
 
-    public boolean isUserTaskCreator(Long taskId) {
-        User user = this.userService.getCurrentUser();
+    public boolean isUserTaskCreator(UUID taskId) {
+        UserModel user = this.userService.getCurrentUser();
         return this.taskRepository.existsTaskByIdAndUser(taskId, user);
     }
 }

@@ -8,8 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Entity
-@Table(name = "EventInvitation")
-public class EventInvitation implements Serializable {
+@Table(name = "event_invitation")
+public class EventInvitationModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,9 +30,9 @@ public class EventInvitation implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
-    private User invitedUser;
+    private UserModel invitedUser;
 
-    public EventInvitation() {
+    public EventInvitationModel() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 14);
         this.expirationDate = calendar.getTime();
@@ -40,7 +40,7 @@ public class EventInvitation implements Serializable {
         this.isBlocked = false;
     }
 
-    public EventInvitation(Long id, String requesterUsername, Long eventId, boolean isAccepted, boolean isRejected, Date expirationDate, User invitedUser) {
+    public EventInvitationModel(Long id, String requesterUsername, Long eventId, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
         this.id = id;
         this.requesterUsername = requesterUsername;
         this.eventId = eventId;
@@ -86,11 +86,11 @@ public class EventInvitation implements Serializable {
         return expirationDate;
     }
 
-    public User getInvitedUser() {
+    public UserModel getInvitedUser() {
         return invitedUser;
     }
 
-    public void setInvitedUser(User invitedUser) {
+    public void setInvitedUser(UserModel invitedUser) {
         this.invitedUser = invitedUser;
     }
 

@@ -1,11 +1,13 @@
 package com.todolist.security;
 
-import com.todolist.model.Task;
+import com.todolist.model.TaskModel;
 import com.todolist.service.EventInvitationService;
 import com.todolist.service.TaskService;
 import com.todolist.service.UserService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
+import java.util.UUID;
 
 
 @Configuration
@@ -38,22 +40,21 @@ public class PreAuthFilter {
         return false;
     }
 
-    public boolean checkIfUserInTask(String taskId){
-        if(taskId.matches("[0-9]+")){
-            return this.taskService.isUserTaskCreatorOrAssignedToTask(Long.valueOf(taskId));
-        }
-        return false;
+    public boolean checkIfUserInTask(UUID taskId){
+
+        return this.taskService.isUserTaskCreatorOrAssignedToTask(taskId);
+
     }
 
-    public boolean checkIfUserCreatedTask(String taskId) {
-        if(taskId.matches("[0-9]+")){
-            return this.taskService.isUserTaskCreator(Long.valueOf(taskId));
-        }
-        return false;
+    public boolean checkIfUserCreatedTask(UUID taskId) {
+
+            return this.taskService.isUserTaskCreator(taskId);
+
+
     }
 
-    public boolean checkIfUserCanMoveTask(Long taskId) {
-        Task task = this.taskService.findTaskById(taskId);
-        return checkIfUserInTask(String.valueOf(taskId)) || checkIfUserInEvent(String.valueOf(task.getEventId()));
+    public boolean checkIfUserCanMoveTask(UUID taskId) {
+        TaskModel task = this.taskService.findTaskById(taskId);
+        return checkIfUserInTask(taskId) || checkIfUserInEvent(String.valueOf(task.getEventId()));
     }
 }

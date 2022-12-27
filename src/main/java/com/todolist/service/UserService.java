@@ -1,7 +1,7 @@
 package com.todolist.service;
 
-import com.todolist.model.Event;
-import com.todolist.model.User;
+import com.todolist.model.EventModel;
+import com.todolist.model.UserModel;
 import com.todolist.principal.UserPrincipalImpl;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,11 @@ import java.util.Set;
 
 @Service
 public class UserService {
-    public User getCurrentUser() {
+    public UserModel getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipalImpl userDetails = (UserPrincipalImpl) auth.getPrincipal();
-        Optional<User> user = userRepository.findById(userDetails.getId());
-        return user.orElseGet(User::new);
+        Optional<UserModel> user = userRepository.findById(userDetails.getId());
+        return user.orElseGet(UserModel::new);
     }
 
     private final UserRepository userRepository;
@@ -30,23 +30,23 @@ public class UserService {
 
     }
 
-    public User findUserByUsername(String username) {
+    public UserModel findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public Set<User> findAllUsersByUsernameSet(Set<String> usernames) {
+    public Set<UserModel> findAllUsersByUsernameSet(Set<String> usernames) {
         return this.userRepository.findAllUsersByUsernameSet(usernames);
     }
 
-    public void addUser(User user){
+    public void addUser(UserModel user){
         userRepository.save(user);
     }
 
-    public User updateUser(User user){
+    public UserModel updateUser(UserModel user){
         return userRepository.save(user);
     }
 
-    public List<User> findUsersByEvent(Event event) {
+    public List<UserModel> findUsersByEvent(EventModel event) {
         return userRepository.findUsersByEvents(event);
     }
 

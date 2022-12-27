@@ -1,31 +1,32 @@
 package com.todolist.repository;
 
-import com.todolist.model.Task;
-import com.todolist.model.User;
+import com.todolist.model.TaskModel;
+import com.todolist.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
-    Task findTaskById(Long id);
+    TaskModel findTaskById(UUID taskId);
 
-    List<Task> findTasksByDate(Date date);
+    List<TaskModel> findTasksByDate(Date date);
 
-    List<Task> findTasksByUser(User user);
+    List<TaskModel> findTasksByUser(UserModel user);
 
-    List<Task> findTasksByUserAndEventIdIsNull(User user);
+    List<TaskModel> findTasksByUserAndEventIdIsNull(UserModel user);
 
-    List<Task> findTasksByEventId(Long eventId);
+    List<TaskModel> findTasksByEventId(Long eventId);
 
-    void deleteTaskById(Long id);
+    void deleteTaskById(UUID taskId);
 
     void deleteTasksByEventId(Long eventId);
 
-    List<Task> findTasksByAssignedUsersAndEventId(User user, Long eventId);
+    List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, Long eventId);
 
-    boolean existsTaskByIdAndUserOrIdAndAssignedUsers(Long taskId, User user, Long taskIdAgain, User assignedUser);
+    boolean existsTaskByIdAndUserOrIdAndAssignedUsers(UUID taskId, UserModel user, UUID taskIdAgain, UserModel assignedUser);
 
-    boolean existsTaskByIdAndUser(Long taskId, User user);
+    boolean existsTaskByIdAndUser(UUID taskId, UserModel user);
 }
