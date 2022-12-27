@@ -31,11 +31,10 @@ public class PreAuthFilter {
     }
 
 
-    public boolean checkIfUserIsInvited(String invitationId) {
-        if (invitationId.matches("[0-9]+")) {
-            return this.invitationService.isInvitationValid(Long.valueOf(invitationId));
-        }
-        return false;
+    public boolean checkIfUserIsInvited(UUID invitationId) {
+
+        return this.invitationService.isInvitationValid(invitationId);
+
     }
 
     public boolean checkIfUserInTask(UUID taskId){

@@ -9,11 +9,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public interface EventInvitationRepository extends JpaRepository<EventInvitationModel, Long> {
+public interface EventInvitationRepository extends JpaRepository<EventInvitationModel, UUID> {
 
-    EventInvitationModel findEventInvitationById(Long id);
+    EventInvitationModel findEventInvitationById(UUID id);
 
-    void deleteEventInvitationById(Long id);
+    void deleteEventInvitationById(UUID id);
     List<EventInvitationModel> findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(UserModel user, Date date, boolean isAccepted);
 
     List<EventInvitationModel> findAllEventInvitationsByIsAccepted(boolean isAccepted);
@@ -21,11 +21,11 @@ public interface EventInvitationRepository extends JpaRepository<EventInvitation
     boolean existsByInvitedUserAndEventIdAndExpirationDateIsAfter(UserModel user, UUID eventId, Date date);
 
 
-    EventInvitationModel findEventInvitationByIdAndExpirationDateIsAfter (Long invitationId, Date date);
+    EventInvitationModel findEventInvitationByIdAndExpirationDateIsAfter (UUID invitationId, Date date);
 
     void deleteAllByEventId(UUID eventId);
 
     @Query("Select COUNT(ei) from EventInvitationModel ei where ei.id = :inviteId and ei.invitedUser.id = :userId and ei.expirationDate > :date")
-    int isInviteValid(Long userId, Long inviteId, Date date);
+    int isInviteValid(UUID userId, UUID inviteId, Date date);
 
 }

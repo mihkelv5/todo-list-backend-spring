@@ -4,17 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "user")
 public class UserModel implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false)
-    private Long id;
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -81,11 +85,11 @@ public class UserModel implements Serializable {
         this.enabled = enabled;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

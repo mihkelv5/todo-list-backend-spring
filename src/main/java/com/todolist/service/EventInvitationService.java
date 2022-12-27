@@ -59,7 +59,7 @@ public class EventInvitationService {
     }
 
     @Transactional
-    public ResponseEntity<?> acceptInvite(Long invitationId){ //This should return boolean instead of responseEntity, was just for test
+    public ResponseEntity<?> acceptInvite(UUID invitationId){ //This should return boolean instead of responseEntity, was just for test
         EventInvitationModel invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
 
         EventModel event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
@@ -74,15 +74,15 @@ public class EventInvitationService {
     }
 
     @Transactional
-    public ResponseEntity<?> declineInvite(Long invitationId){ //This should return boolean instead of responseEntity, was just for test
+    public ResponseEntity<?> declineInvite(UUID invitationId){ //This should return boolean instead of responseEntity, was just for test
         this.eventInvitationRepository.deleteEventInvitationById(invitationId);
         HashMap<String, String> map = new HashMap<>();
         map.put("success", "Request deleted");
         return ResponseEntity.ok().body(map);
     }
 
-    public boolean isInvitationValid(Long inviteId) {
-        Long userId = this.userService.getCurrentUser().getId();
+    public boolean isInvitationValid(UUID inviteId) {
+        UUID userId = this.userService.getCurrentUser().getId();
         int count = this.eventInvitationRepository.isInviteValid(userId, inviteId, new Date());
         return count > 0;
     }

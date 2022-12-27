@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<UserModel, Long> {
+public interface UserRepository extends JpaRepository<UserModel, UUID> {
 
     UserModel findByUsername(String username);
 
     UserModel findUserByEmail(String email);
 
-    UserModel findUserById(Long id);
+    UserModel findUserById(UUID id);
 
 
     boolean existsUserByEventsIdAndUsername(UUID eventId, String username);

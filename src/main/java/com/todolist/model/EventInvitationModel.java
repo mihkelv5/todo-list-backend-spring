@@ -3,6 +3,8 @@ package com.todolist.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,8 +14,10 @@ import java.util.UUID;
 @Table(name = "event_invitation")
 public class EventInvitationModel implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(updatable = false, nullable = false)
+    private UUID id;
 
     @Column(nullable = false)
     private String requesterUsername;
@@ -41,7 +45,7 @@ public class EventInvitationModel implements Serializable {
         this.isBlocked = false;
     }
 
-    public EventInvitationModel(Long id, String requesterUsername, UUID eventId, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
+    public EventInvitationModel(UUID id, String requesterUsername, UUID eventId, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
         this.id = id;
         this.requesterUsername = requesterUsername;
         this.eventId = eventId;
@@ -51,11 +55,11 @@ public class EventInvitationModel implements Serializable {
         this.invitedUser = invitedUser;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

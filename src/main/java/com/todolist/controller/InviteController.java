@@ -44,13 +44,13 @@ public class InviteController {
     @Transactional
     @PutMapping("/accept/{invitationId}")
     @PreAuthorize("@preAuthFilter.checkIfUserIsInvited(#invitationId)")
-    public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") Long invitationId) {
+    public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") UUID invitationId) {
         return this.eventInvitationService.acceptInvite(invitationId);
     }
     @Transactional
     @DeleteMapping("/decline/{invitationId}")
     @PreAuthorize("@preAuthFilter.checkIfUserIsInvited(#invitationId)")
-    public ResponseEntity<?> declineEventInvitation(@PathVariable("invitationId") Long invitationId){
+    public ResponseEntity<?> declineEventInvitation(@PathVariable("invitationId") UUID invitationId){
         return this.eventInvitationService.declineInvite(invitationId);
     }
 }

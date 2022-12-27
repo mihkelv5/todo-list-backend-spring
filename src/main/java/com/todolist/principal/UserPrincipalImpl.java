@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class UserPrincipalImpl implements UserDetails {
@@ -26,7 +27,7 @@ public class UserPrincipalImpl implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-    public Long getId(){
+    public UUID getId(){
         return user.getId();
     }
     @Override
