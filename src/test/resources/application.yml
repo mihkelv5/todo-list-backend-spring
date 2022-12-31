@@ -7,7 +7,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:h2://mem:db;BD_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER;
     username: sa
     password: sa
     driver-class-name: org.h2.Driver
@@ -20,3 +20,11 @@ spring:
         format_sql: true
         show_sql: false
     open-in-view: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 964309651861-vc7gtcpbrr0md2skl52io2k4asl264g5.apps.googleusercontent.com
+            client-secret: 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

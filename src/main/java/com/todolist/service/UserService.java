@@ -3,6 +3,7 @@ package com.todolist.service;
 import com.todolist.model.EventModel;
 import com.todolist.model.UserModel;
 import com.todolist.principal.UserPrincipalImpl;
+import com.todolist.repository.EventRepository;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,51 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository, EventRepository eventRepository) {
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+    }
+
+    //POST method
+
+    public void addUser(UserModel user){
+        userRepository.save(user);
+    }
+
+    //GET methods
+    public UserModel findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public Set<UserModel> findAllUsersByUsernames(Set<String> usernames) {
+        return this.userRepository.findAllUsersByUsernameSet(usernames);
+    }
+
+    public List<UserModel> findUsersByEvent(EventModel event) {
+        return userRepository.findUsersByEvents(event);
+    }
+
+    public List<String> findUsersNotInEvent(UUID eventId) {
+        return this.userRepository.findUsersNotInEvent(eventId);
+    }
+
+    public List<UserModel> findUsersByEventId(UUID eventId) { //TODO: move to user service
+        EventModel event = this.eventRepository.findEventById(eventId);
+        return this.findUsersByEvent(event);
+    }
+
+
+
+    //UPDATE method
+    public UserModel updateUser(UserModel user){
+        return userRepository.save(user);
+    }
+
+    //helper methods
     public UserModel getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipalImpl userDetails = (UserPrincipalImpl) auth.getPrincipal();
@@ -23,41 +69,4 @@ public class UserService {
         return user.orElseGet(UserModel::new);
     }
 
-    private final UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-
-    }
-
-    public UserModel findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    public Set<UserModel> findAllUsersByUsernameSet(Set<String> usernames) {
-        return this.userRepository.findAllUsersByUsernameSet(usernames);
-    }
-
-    public void addUser(UserModel user){
-        userRepository.save(user);
-    }
-
-    public UserModel updateUser(UserModel user){
-        return userRepository.save(user);
-    }
-
-    public List<UserModel> findUsersByEvent(EventModel event) {
-        return userRepository.findUsersByEvents(event);
-    }
-
-
-    public boolean isUserInEvent(UUID eventId){
-        String username = this.getCurrentUser().getUsername();
-        return userRepository.existsUserByEventsIdAndUsername(eventId, username);
-    }
-
-    public List<String> userSearchNoEvent(UUID eventId) {
-        return this.userRepository.findUsersNotInEvent(eventId);
-    }
 }

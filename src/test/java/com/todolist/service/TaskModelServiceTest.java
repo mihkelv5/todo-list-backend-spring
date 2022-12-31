@@ -24,9 +24,9 @@ class TaskModelServiceTest {
     EventRepository eventRepository;
     @InjectMocks
     UserService userService;
-    private AutoCloseable autoCloseable;
     TaskService taskService;
-        UserModel testUser = new UserModel();
+    private AutoCloseable autoCloseable;
+    UserModel testUser = new UserModel();
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);

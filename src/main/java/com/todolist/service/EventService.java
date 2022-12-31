@@ -34,17 +34,7 @@ public class EventService {
         this.userService = userService;
     }
 
-    public EventModel findEventById(UUID eventId){
-        EventModel event = this.eventRepository.findEventById(eventId);
-        event.setEventUsernames(event.getEventUsers().stream().map(UserModel::getUsername).collect(Collectors.toSet()));
-        return event;
-    }
-
-    public List<EventModel> findEventsByUser(UserModel user){
-        Set<UserModel> users = new HashSet<>();
-        users.add(user);
-        return eventRepository.findEventsByEventUsersIn(users);
-    }
+    //CREATE methods
 
     public EventModel addEvent(EventModel event) {
         UserModel user = userService.getCurrentUser();
@@ -52,14 +42,28 @@ public class EventService {
         return this.eventRepository.save(event);
     }
 
-    public EventModel updateEvent(EventModel event){
-        EventModel oldEvent = this.eventRepository.findEventById(event.getId());
-        oldEvent.setTitle(event.getTitle());
-        oldEvent.setDescription(event.getDescription());
-        eventRepository.save(oldEvent);
-        return oldEvent;
+    //READ methods
+    public EventModel findEventById(UUID eventId){
+        EventModel event = this.eventRepository.findEventById(eventId);
+        event.setEventUsernames(event.getEventUsers().stream().map(UserModel::getUsername).collect(Collectors.toSet()));
+        return event;
     }
 
+    public List<EventModel> findEventsByUser(){
+        UserModel user = this.userService.getCurrentUser();
+        Set<UserModel> users = new HashSet<>();
+        users.add(user);
+        return eventRepository.findEventsByEventUsersIn(users);
+    }
+
+    //UPDATE methods
+    public EventModel updateEvent(EventModel updatedEvent){
+        EventModel event = this.eventRepository.findEventById(updatedEvent.getId());
+        event.setTitle(updatedEvent.getTitle());
+        event.setDescription(updatedEvent.getDescription());
+        eventRepository.save(event);
+        return event;
+    }
     public EventModel saveUserToEvent(UUID eventId, String username){
         UserModel user = this.userRepository.findByUsername(username);
         EventModel event = this.eventRepository.findEventById(eventId);
@@ -67,11 +71,9 @@ public class EventService {
         return this.eventRepository.save(event);
     }
 
-    public List<UserModel> findUsersByEvent(UUID eventId) {
-        EventModel event = this.eventRepository.findEventById(eventId);
-        return userService.findUsersByEvent(event);
-    }
 
+
+    //DELETE method
     @Transactional
     public void deleteEventById(UUID eventId) {
         this.taskRepository.deleteTasksByEventId(eventId);
@@ -79,4 +81,7 @@ public class EventService {
         this.eventInvitationRepository.deleteAllByEventId(eventId);
     }
 
+    public boolean isUserInEvent(UUID eventId, UUID userId) {
+        return this.eventRepository.existsEventModelByIdAndEventUsersId(eventId, userId);
+    }
 }

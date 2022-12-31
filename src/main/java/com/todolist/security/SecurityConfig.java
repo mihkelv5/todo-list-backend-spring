@@ -21,8 +21,10 @@ import jakarta.servlet.Filter;
 public class SecurityConfig{
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailsServiceImpl userDetailService)
-            throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http,
+                                                       BCryptPasswordEncoder bCryptPasswordEncoder,
+                                                       UserDetailsServiceImpl userDetailService
+                                                       ) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailService)
                 .passwordEncoder(bCryptPasswordEncoder)
@@ -34,16 +36,18 @@ public class SecurityConfig{
 
     @Bean
     SecurityFilterChain web(HttpSecurity http, Filter jwtRequestFilter) throws Exception {
-        http.csrf().disable().cors().and()
+        return http.csrf().disable()
+                .cors().and()
                 .authorizeHttpRequests(authorize ->
-                authorize
+                    authorize
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/event/**", "/api/task/**", "/api/user/**").hasAnyRole("USER")
-                        .requestMatchers("/api/auth/login").permitAll().anyRequest().authenticated());
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
     }
 
     @Bean

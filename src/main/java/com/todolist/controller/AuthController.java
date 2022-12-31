@@ -36,7 +36,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<UserModel> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -57,7 +57,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserModel> addUser(@RequestBody UserModel user) {
-        //user.setId(null);
         user.setPassword(new BCryptPasswordEncoder(5).encode(user.getPassword()));
         try {
             userService.addUser(user);

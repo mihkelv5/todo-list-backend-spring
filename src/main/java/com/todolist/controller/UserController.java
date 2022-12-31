@@ -25,14 +25,21 @@ public class UserController {
     public ResponseEntity<UserModel> updateUser(@RequestBody UserModel user){
         user.setId(null);
         UserModel updatedUser = userService.updateUser(user);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @GetMapping("/event/{eventId}/all")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<List<String>> userSearchNoEvent(@PathVariable UUID eventId){
-        List<String> matchingUsers = this.userService.userSearchNoEvent(eventId);
+        List<String> matchingUsers = this.userService.findUsersNotInEvent(eventId);
         return ResponseEntity.ok(matchingUsers);
     }
 
+
+    @GetMapping("/event/{eventId}") //currently not in use
+    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
+    public ResponseEntity<List<UserModel>> findUsersByEventId(@PathVariable("eventId") UUID eventId){
+        List<UserModel> users = this.userService.findUsersByEventId(eventId);
+        return ResponseEntity.ok(users);
+    }
 }

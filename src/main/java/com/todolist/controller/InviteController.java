@@ -19,38 +19,48 @@ public class InviteController {
 
 
     private final EventInvitationService eventInvitationService;
-    private final UserService userService;
 
-    public InviteController(EventInvitationService eventInvitationService, UserService userService) {
-
+    public InviteController(EventInvitationService eventInvitationService) {
         this.eventInvitationService = eventInvitationService;
-        this.userService = userService;
     }
+
 
     @PostMapping("/event/{eventId}/user/{username}")
     @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") UUID eventId, @PathVariable("username") String username) {
-        return this.eventInvitationService.inviteUserToEvent(eventId, username);
+        boolean success = this.eventInvitationService.inviteUserToEvent(eventId, username);
+        if(success){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/get/all")
     public ResponseEntity<List<EventInvitationModel>> getUserEventInvitations(){
-        UserModel user = this.userService.getCurrentUser();
-        List<EventInvitationModel> eventInvitationList = this.eventInvitationService.findUserInvitations(user);
+        List<EventInvitationModel> eventInvitationList = this.eventInvitationService.findUserInvitations();
         return ResponseEntity.ok(eventInvitationList);
     }
 
-    //preauthorize with currentUser
     @Transactional
     @PutMapping("/accept/{invitationId}")
     @PreAuthorize("@preAuthFilter.checkIfUserIsInvited(#invitationId)")
     public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") UUID invitationId) {
-        return this.eventInvitationService.acceptInvite(invitationId);
+        boolean success = this.eventInvitationService.acceptInvite(invitationId);
+        if(success){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
+
+
     @Transactional
     @DeleteMapping("/decline/{invitationId}")
     @PreAuthorize("@preAuthFilter.checkIfUserIsInvited(#invitationId)")
     public ResponseEntity<?> declineEventInvitation(@PathVariable("invitationId") UUID invitationId){
-        return this.eventInvitationService.declineInvite(invitationId);
+        boolean success = this.eventInvitationService.declineInvite(invitationId);
+        if(success) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

@@ -125,5 +125,4 @@ public class UserModel implements Serializable {
         this.eventInvitations = eventInvitations;
     }
 
-
 }

@@ -33,19 +33,13 @@ public class EventInvitationService {
         this.userService = userService;
     }
 
-    public List<EventInvitationModel> findUserInvitations (UserModel user) {
-        return this.eventInvitationRepository.findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(user, new Date(), false);
-    }
-
-
-
-
-    public ResponseEntity<?> inviteUserToEvent (UUID eventId, String username){
+    //CREATE methods
+    public boolean inviteUserToEvent (UUID eventId, String username){
         EventModel event = this.eventRepository.findEventById(eventId);
         UserModel invitedUser = this.userService.findUserByUsername(username);
         UserModel requester = this.userService.getCurrentUser();
         if(this.eventInvitationRepository.existsByInvitedUserAndEventIdAndExpirationDateIsAfter(invitedUser, eventId, new Date())){
-            return ResponseEntity.badRequest().body("UserModel " + username + "is already invited to the event!");
+            return false;
         }
         EventInvitationModel invitation = new EventInvitationModel();
         invitation.setRequesterUsername(requester.getUsername());
@@ -53,13 +47,27 @@ public class EventInvitationService {
         invitation.setEventId(eventId);
         invitation.setEventName(event.getTitle());
         this.eventInvitationRepository.save(invitation);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("success", "UserModel " + username + " invited to event!");
-        return  ResponseEntity.ok().body(map);
+        return true;
     }
 
+    //READ methods
+    public List<EventInvitationModel> findUserInvitations () {
+        UserModel user = this.userService.getCurrentUser();
+        return this.eventInvitationRepository.findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(user, new Date(), false);
+    }
+
+
+    //READ methods for security
+    public boolean isInvitationValid(UUID inviteId, UUID userId) {
+        int count = this.eventInvitationRepository.isInviteValid(userId, inviteId, new Date());
+        return count > 0;
+    }
+
+
+    //DELETE methods
+
     @Transactional
-    public ResponseEntity<?> acceptInvite(UUID invitationId){ //This should return boolean instead of responseEntity, was just for test
+    public boolean acceptInvite(UUID invitationId){
         EventInvitationModel invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
 
         EventModel event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
@@ -67,24 +75,17 @@ public class EventInvitationService {
         //if everything goes correctly
         if(event != null){
             this.eventInvitationRepository.deleteEventInvitationById(invitationId);
-            return ResponseEntity.ok(event);
+            return true;
         }
-        this.eventInvitationRepository.deleteEventInvitationById(invitationId);
-        return ResponseEntity.unprocessableEntity().body("Something went wrong");
+        this.eventInvitationRepository.deleteEventInvitationById(invitationId); //if event is not found, still should delete the invite
+        return false;
     }
 
     @Transactional
-    public ResponseEntity<?> declineInvite(UUID invitationId){ //This should return boolean instead of responseEntity, was just for test
+    public boolean declineInvite(UUID invitationId){
         this.eventInvitationRepository.deleteEventInvitationById(invitationId);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("success", "Request deleted");
-        return ResponseEntity.ok().body(map);
+        return true;
     }
 
-    public boolean isInvitationValid(UUID inviteId) {
-        UUID userId = this.userService.getCurrentUser().getId();
-        int count = this.eventInvitationRepository.isInviteValid(userId, inviteId, new Date());
-        return count > 0;
-    }
 
 }

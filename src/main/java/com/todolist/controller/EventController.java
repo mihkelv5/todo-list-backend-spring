@@ -17,13 +17,9 @@ import java.util.UUID;
 public class EventController {
 
     private final EventService eventService;
-    private final UserService userService;
 
-
-    public EventController(EventService eventService, UserService userService) {
+    public EventController(EventService eventService) {
         this.eventService = eventService;
-
-        this.userService = userService;
     }
 
     @GetMapping("/find/{eventId}")
@@ -35,21 +31,14 @@ public class EventController {
 
     @GetMapping("/user/all") //can be done with current user
     public ResponseEntity<List<EventModel>> findEventsByUserId(){
-        UserModel user = userService.getCurrentUser();
-        List<EventModel> events = this.eventService.findEventsByUser(user);
+        List<EventModel> events = this.eventService.findEventsByUser();
         return ResponseEntity.ok(events);
     }
 
-    @GetMapping("/{eventId}/users")
-    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<List<UserModel>> findUsersByEventId(@PathVariable("eventId") UUID eventId){
-        List<UserModel> users = this.eventService.findUsersByEvent(eventId);
-        return ResponseEntity.ok(users);
-    }
+
 
     @PostMapping("/add")
     public ResponseEntity<EventModel> addEvent(@RequestBody EventModel event){
-        //eventService automatically registers the jwt holder as a user
         EventModel addedEvent = this.eventService.addEvent(event);
         return ResponseEntity.ok(addedEvent);
     }
@@ -69,13 +58,6 @@ public class EventController {
         return ResponseEntity.ok().build();
     }
 
-
-
-    @PutMapping("{eventId}/register/{username}") //for development, will be removed in production
-    public ResponseEntity<?> registerUserToEvent(@PathVariable("eventId") UUID eventId, @PathVariable("username") String username) {
-        EventModel event = this.eventService.saveUserToEvent(eventId, username);
-        return ResponseEntity.ok(event);
-    }
 
 
 }

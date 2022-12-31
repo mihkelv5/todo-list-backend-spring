@@ -18,7 +18,6 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final EventRepository eventRepository;
-
     private final UserService userService;
 
 
@@ -31,25 +30,60 @@ public class TaskService {
     }
 
 
+    //CREATE methods
+    public TaskModel addTask(TaskModel task){
+        UserModel user = this.userService.getCurrentUser();
+        if(task.getEventId() != null) { //if task is created for an event, sets the event title
+            EventModel event = this.eventRepository.findEventById(task.getEventId());
+            task.setEventName(event.getTitle());
+        }
+        task.setUser(user);
+        return taskRepository.save(task);
+    }
 
+    //READ methods
     public TaskModel findTaskById(UUID taskId) {
         return taskRepository.findTaskById(taskId);
     }
 
-
-    public TaskModel addTask(TaskModel task, UserModel user){
-        task.setUser(user);
-        return taskRepository.save(task);
+    public List<TaskModel> findTaskByDate(Date date) {
+        return taskRepository.findTasksByDate(date);
     }
 
-    public TaskModel addTaskWithEvent(UUID eventId, TaskModel task, UserModel user){ //TODO: merge with add task method.
-        EventModel event = this.eventRepository.findEventById(eventId);
-        task.setEventName(event.getTitle());
-        task.setEventId(event.getId());
-        task.setUser(user);
-        return taskRepository.save(task);
+    public List<TaskModel> findTasksByUser() {
+        UserModel user = this.userService.getCurrentUser();
+        List<TaskModel> tasks = taskRepository.findTasksByUser(user);
+        return assignUsernamesToTasks(tasks);
+    }
+    public List<TaskModel> findTasksByUserWhereEventNull(){
+        UserModel user = this.userService.getCurrentUser();
+        List<TaskModel> tasks =  taskRepository.findTasksByUserAndEventIdIsNull(user);
+        return assignUsernamesToTasks(tasks);
     }
 
+    public List<TaskModel> findTasksByEvent(UUID eventId) {
+        List<TaskModel> tasks = taskRepository.findTasksByEventId(eventId);
+        return assignUsernamesToTasks(tasks);
+    }
+
+    public List<TaskModel> findUserTasksWithAssignedUsernamesAndEventId(UUID eventId){
+        UserModel user = this.userService.getCurrentUser();
+        List<TaskModel> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
+        return assignUsernamesToTasks(tasks);
+    }
+
+    //READ methods for security
+    public boolean isUserTaskCreatorOrAssignedToTask(UUID taskId, UUID userId){
+
+        return this.taskRepository.existsTaskByIdAndUserIdOrIdAndAssignedUsersId(taskId, userId, taskId, userId);
+    }
+
+    public boolean isUserTaskCreator(UUID taskId, UUID userId) {
+
+        return this.taskRepository.existsTaskByIdAndUserId(taskId, userId);
+    }
+
+    //UPDATE methods
     public TaskModel updateTask(UUID taskId, TaskModel updatedTask) {
         TaskModel task = taskRepository.findTaskById(taskId);
         task.setTitle(updatedTask.getTitle());
@@ -67,8 +101,6 @@ public class TaskService {
         return this.taskRepository.save(task);
     }
 
-
-
     public TaskModel completeTask(UUID taskId, Boolean isComplete){
         TaskModel task = taskRepository.findTaskById(taskId);
         if(task != null){
@@ -78,36 +110,24 @@ public class TaskService {
         return task;
     }
 
-
-
-    public List<TaskModel> findTaskByDate(Date date) {
-        return taskRepository.findTasksByDate(date);
+    public TaskModel assignUsersToTask(UUID taskId, List<String> usernames) {
+        TaskModel task = this.taskRepository.findTaskById(taskId);
+        Set<String> usernameSet = new HashSet<>(usernames);
+        Set<UserModel> userSet = this.userService.findAllUsersByUsernames(usernameSet);
+        task.setAssignedUsers(userSet);
+        return this.taskRepository.save(task);
     }
 
-    public List<TaskModel> findTasksByUser(UserModel user) {
-        List<TaskModel> tasks = taskRepository.findTasksByUser(user);
-        return assignUsernamesToTasks(tasks);
-    }
-    public List<TaskModel> findTasksByUserWhereEventNull(UserModel user){
-        List<TaskModel> tasks =  taskRepository.findTasksByUserAndEventIdIsNull(user);
-        return assignUsernamesToTasks(tasks);
-    }
 
-    public List<TaskModel> findTasksByEvent(UUID eventId) {
-        List<TaskModel> tasks = taskRepository.findTasksByEventId(eventId);
-        return assignUsernamesToTasks(tasks);
-    }
 
+    //DELETE methods
     @Transactional
     public void deleteTask(UUID taskId) {
         taskRepository.deleteTaskById(taskId);
     }
 
 
-    public List<TaskModel> findUserTasksWithAssignedUsernamesAndEventId(UserModel user, UUID eventId){
-        List<TaskModel> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
-        return assignUsernamesToTasks(tasks);
-    }
+    //helpers
 
     public List<TaskModel> assignUsernamesToTasks(List<TaskModel> tasks){
         tasks.forEach(task -> {
@@ -115,24 +135,5 @@ public class TaskService {
             task.setOwnerUsername(task.getUser().getUsername());
         });
         return tasks;
-    }
-
-    public TaskModel assignUsersToTask(UUID taskId, List<String> usernames) {
-        TaskModel task = this.taskRepository.findTaskById(taskId);
-        Set<String> usernameSet = new HashSet<>(usernames);
-        Set<UserModel> userSet = this.userService.findAllUsersByUsernameSet(usernameSet);
-        task.setAssignedUsers(userSet);
-        this.taskRepository.save(task);
-        return task;
-    }
-
-    public boolean isUserTaskCreatorOrAssignedToTask(UUID taskId){
-        UserModel user = this.userService.getCurrentUser();
-        return this.taskRepository.existsTaskByIdAndUserOrIdAndAssignedUsers(taskId, user, taskId, user);
-    }
-
-    public boolean isUserTaskCreator(UUID taskId) {
-        UserModel user = this.userService.getCurrentUser();
-        return this.taskRepository.existsTaskByIdAndUser(taskId, user);
     }
 }

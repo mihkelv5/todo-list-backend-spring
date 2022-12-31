@@ -26,8 +26,8 @@ import static java.util.Arrays.stream;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
-    private String secret;
+
+    private final String secret = "secret";
 
     public String generateToken(UserPrincipalImpl userPrincipal){
         String[] claims = getClaimsFromUser(userPrincipal);
