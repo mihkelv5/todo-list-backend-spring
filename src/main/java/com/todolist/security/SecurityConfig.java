@@ -40,9 +40,7 @@ public class SecurityConfig{
                 .cors().and()
                 .authorizeHttpRequests(authorize ->
                     authorize
-                        .requestMatchers("/api/auth/register").permitAll()
-                        .requestMatchers("/api/event/**", "/api/task/**", "/api/user/**").hasAnyRole("USER")
-                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

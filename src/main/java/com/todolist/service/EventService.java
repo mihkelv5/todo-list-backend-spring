@@ -84,4 +84,6 @@ public class EventService {
     public boolean isUserInEvent(UUID eventId, UUID userId) {
         return this.eventRepository.existsEventModelByIdAndEventUsersId(eventId, userId);
     }
+
+
 }

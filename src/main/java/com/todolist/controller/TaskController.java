@@ -8,6 +8,7 @@ import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.transaction.Transactional;
@@ -82,9 +83,11 @@ public class TaskController {
 
 
     //UPDATE methods
-    @PutMapping("/assign/{taskId}")
+    @PutMapping("/assign/{taskId}/event/{eventId}")
     @PreAuthorize("@preAuthFilter.checkIfUserCreatedTask(#taskId)")
-    public ResponseEntity<TaskModel> assignUsersToTask(@PathVariable UUID taskId, @RequestBody List<String> usernames){
+    @PreFilter(filterTarget = "usernames", value = "@preAuthFilter.usernamesInEvent(filterObject, #eventId)")
+    public ResponseEntity<TaskModel> assignUsersToTask(@PathVariable UUID taskId, @PathVariable UUID eventId, @RequestBody List<String> usernames){
+        //usernames.forEach(System.out::println);
         TaskModel task = this.taskService.assignUsersToTask(taskId, usernames);
         return ResponseEntity.ok(task);
     }

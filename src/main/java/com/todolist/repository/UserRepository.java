@@ -21,7 +21,9 @@ public interface UserRepository extends JpaRepository<UserModel, UUID> {
 
 
 
-    List<UserModel> findUsersByEvents(EventModel event);
+    List<UserModel> findUsersByEventsId(UUID eventId);
+
+    boolean existsUserModelByUsernameAndEventsId(String username, UUID eventId);
     @Query("SELECT u.username FROM UserModel u WHERE :eventId NOT IN (SELECT eu.id FROM u.events eu) AND :eventId NOT IN (SELECT ei.eventId FROM u.eventInvitations ei)")
     List<String> findUsersNotInEvent(@Param("eventId") UUID eventId);
 

@@ -5,26 +5,32 @@ import com.todolist.principal.UserPrincipalImpl;
 import com.todolist.service.EventInvitationService;
 import com.todolist.service.EventService;
 import com.todolist.service.TaskService;
+import com.todolist.service.UserService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Configuration
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity()
 public class PreAuthFilter {
 
     private final EventInvitationService invitationService;
     private final TaskService taskService;
     private final EventService eventService;
 
-    public PreAuthFilter(EventInvitationService invitationService, TaskService taskService, EventService eventService) {
+    private final UserService userService;
+
+    public PreAuthFilter(EventInvitationService invitationService, TaskService taskService, EventService eventService, UserService userService) {
 
         this.invitationService = invitationService;
         this.taskService = taskService;
         this.eventService = eventService;
+        this.userService = userService;
     }
 
 
@@ -56,9 +62,15 @@ public class PreAuthFilter {
         return checkIfUserInTask(taskId) || checkIfUserInEvent(task.getEventId());
     }
 
+    public boolean usernamesInEvent (String username, UUID eventId){
+        return this.userService.isUsernameInEvent(username, eventId);
+    }
+
+
     //helper method
     public UUID getCurrentUserId(){
         UserPrincipalImpl userDetails = (UserPrincipalImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getId();
     }
+
 }

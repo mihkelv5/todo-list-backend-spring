@@ -18,12 +18,10 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final EventRepository eventRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, EventRepository eventRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.eventRepository = eventRepository;
     }
 
     //POST method
@@ -41,17 +39,18 @@ public class UserService {
         return this.userRepository.findAllUsersByUsernameSet(usernames);
     }
 
-    public List<UserModel> findUsersByEvent(EventModel event) {
-        return userRepository.findUsersByEvents(event);
-    }
+
 
     public List<String> findUsersNotInEvent(UUID eventId) {
         return this.userRepository.findUsersNotInEvent(eventId);
     }
 
-    public List<UserModel> findUsersByEventId(UUID eventId) { //TODO: move to user service
-        EventModel event = this.eventRepository.findEventById(eventId);
-        return this.findUsersByEvent(event);
+    public List<UserModel> findUsersByEventId(UUID eventId) {
+        return this.userRepository.findUsersByEventsId(eventId);
+    }
+
+    public boolean isUsernameInEvent(String username, UUID eventId){
+        return this.userRepository.existsUserModelByUsernameAndEventsId(username, eventId);
     }
 
 
