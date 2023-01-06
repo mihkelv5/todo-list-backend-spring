@@ -1,4 +1,4 @@
-package com.todolist.filter;
+package com.todolist.security.filter;
 
 import com.todolist.constant.SecurityConstant;
 import com.todolist.service.UserDetailsServiceImpl;

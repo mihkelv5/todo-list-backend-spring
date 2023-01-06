@@ -2,7 +2,7 @@ package com.todolist.service;
 
 
 import com.todolist.repository.UserRepository;
-import com.todolist.principal.UserPrincipalImpl;
+import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.model.UserModel;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,11 +18,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserPrincipalImpl loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
         UserModel user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new UserPrincipalImpl(user);
+        return new UserDetailsImpl(user);
     }
 }

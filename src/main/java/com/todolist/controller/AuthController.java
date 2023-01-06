@@ -3,7 +3,7 @@ package com.todolist.controller;
 import com.todolist.constant.SecurityConstant;
 import com.todolist.model.AuthenticationRequest;
 import com.todolist.model.UserModel;
-import com.todolist.principal.UserPrincipalImpl;
+import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.service.UserDetailsServiceImpl;
 import com.todolist.service.UserService;
 import com.todolist.util.JwtUtil;
@@ -45,7 +45,7 @@ public class AuthController {
 
             throw new Exception("Incorrect username or password", e);
         }
-        final UserPrincipalImpl userDetails = userDetailsService
+        final UserDetailsImpl userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
         UserModel user = userService.findUserByUsername(authenticationRequest.getUsername());

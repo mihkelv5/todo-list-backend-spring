@@ -1,4 +1,4 @@
-package com.todolist.principal;
+package com.todolist.security.userdetails;
 
 
 import com.todolist.model.UserModel;
@@ -12,11 +12,11 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class UserPrincipalImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private final UserModel user;
 
-    public UserPrincipalImpl(UserModel user) {
+    public UserDetailsImpl(UserModel user) {
         this.user = user;
     }
 

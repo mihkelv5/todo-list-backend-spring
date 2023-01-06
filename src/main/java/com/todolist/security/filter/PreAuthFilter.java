@@ -1,7 +1,7 @@
-package com.todolist.security;
+package com.todolist.security.filter;
 
 import com.todolist.model.TaskModel;
-import com.todolist.principal.UserPrincipalImpl;
+import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.service.EventInvitationService;
 import com.todolist.service.EventService;
 import com.todolist.service.TaskService;
@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Configuration
@@ -69,7 +67,7 @@ public class PreAuthFilter {
 
     //helper method
     public UUID getCurrentUserId(){
-        UserPrincipalImpl userDetails = (UserPrincipalImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getId();
     }
 

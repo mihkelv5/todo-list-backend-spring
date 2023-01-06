@@ -1,9 +1,7 @@
 package com.todolist.service;
 
-import com.todolist.model.EventModel;
 import com.todolist.model.UserModel;
-import com.todolist.principal.UserPrincipalImpl;
-import com.todolist.repository.EventRepository;
+import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -63,7 +61,7 @@ public class UserService {
     //helper methods
     public UserModel getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipalImpl userDetails = (UserPrincipalImpl) auth.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         Optional<UserModel> user = userRepository.findById(userDetails.getId());
         return user.orElseGet(UserModel::new);
     }

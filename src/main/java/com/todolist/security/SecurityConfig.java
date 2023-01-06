@@ -2,12 +2,8 @@
 package com.todolist.security;
 
 
-import com.todolist.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,19 +15,6 @@ import jakarta.servlet.Filter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http,
-                                                       BCryptPasswordEncoder bCryptPasswordEncoder,
-                                                       UserDetailsServiceImpl userDetailService
-                                                       ) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailService)
-                .passwordEncoder(bCryptPasswordEncoder)
-                .and()
-                .build();
-    }
-
 
 
     @Bean
@@ -48,10 +31,7 @@ public class SecurityConfig{
 
     }
 
-    @Bean
-    public BCryptPasswordEncoder getPasswordEncoder(){
-        return new BCryptPasswordEncoder(5);
-    }
+
 
 
 }

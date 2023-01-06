@@ -5,9 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.todolist.constant.SecurityConstant;
-import com.todolist.principal.UserPrincipalImpl;
+import com.todolist.security.userdetails.UserDetailsImpl;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +28,7 @@ public class JwtUtil {
 
     private final String secret = "secret";
 
-    public String generateToken(UserPrincipalImpl userPrincipal){
+    public String generateToken(UserDetailsImpl userPrincipal){
         String[] claims = getClaimsFromUser(userPrincipal);
         return JWT.create()
                 .withIssuer(SecurityConstant.TODO)
@@ -85,7 +84,7 @@ public class JwtUtil {
         return verifier;
     }
 
-    private String[] getClaimsFromUser(UserPrincipalImpl userPrincipal) {
+    private String[] getClaimsFromUser(UserDetailsImpl userPrincipal) {
         List<String> authorities = new ArrayList<>();
         for (GrantedAuthority grantedAuthority : userPrincipal.getAuthorities()){
             authorities.add(grantedAuthority.getAuthority());
