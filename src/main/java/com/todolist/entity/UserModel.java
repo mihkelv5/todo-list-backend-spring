@@ -1,4 +1,4 @@
-package com.todolist.model;
+package com.todolist.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,7 +19,6 @@ public class UserModel implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false)
     private UUID id;
-
     @Column(unique = true, nullable = false)
     private String username;
     @Column(unique = true, nullable = false)
@@ -27,7 +26,6 @@ public class UserModel implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private boolean enabled;
-
     private String roles;
 
     @JsonIgnore
@@ -41,6 +39,7 @@ public class UserModel implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "invitedUser")
     private Set<EventInvitationModel> eventInvitations = new HashSet<>();
+
 
     public UserModel(String username, String email, String password, boolean enabled, String roles) {
         this.username = username;

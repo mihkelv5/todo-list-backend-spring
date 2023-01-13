@@ -1,6 +1,6 @@
 package com.todolist.security.filter;
 
-import com.todolist.model.TaskModel;
+import com.todolist.entity.TaskModel;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.service.EventInvitationService;
 import com.todolist.service.EventService;
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Configuration
 @EnableMethodSecurity()
-public class PreAuthFilter {
+public class PreAuthMethodFilter {
 
     private final EventInvitationService invitationService;
     private final TaskService taskService;
@@ -23,7 +23,7 @@ public class PreAuthFilter {
 
     private final UserService userService;
 
-    public PreAuthFilter(EventInvitationService invitationService, TaskService taskService, EventService eventService, UserService userService) {
+    public PreAuthMethodFilter(EventInvitationService invitationService, TaskService taskService, EventService eventService, UserService userService) {
 
         this.invitationService = invitationService;
         this.taskService = taskService;

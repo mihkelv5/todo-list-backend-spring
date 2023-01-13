@@ -1,5 +1,7 @@
 package com.todolist.security.manager;
 
+import com.todolist.security.provider.RefreshTokenAuthProvider;
+import com.todolist.security.provider.UsernamePasswordAuthProvider;
 import com.todolist.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,13 +17,18 @@ public class AuthManagerImpl {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http,
                                                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                                                       UserDetailsServiceImpl userDetailService
-    ) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailService)
-                .passwordEncoder(bCryptPasswordEncoder)
-                .and()
-                .build();
+                                                       UserDetailsServiceImpl userDetailService,
+                                                       UsernamePasswordAuthProvider usernamePasswordAuthProvider,
+                                                       RefreshTokenAuthProvider refreshTokenAuthProvider) throws Exception {
+
+
+        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        builder.userDetailsService(userDetailService).passwordEncoder(bCryptPasswordEncoder);
+        builder.authenticationProvider(usernamePasswordAuthProvider);
+        builder.authenticationProvider(refreshTokenAuthProvider);
+
+        return builder.build();
+
     }
 
     @Bean

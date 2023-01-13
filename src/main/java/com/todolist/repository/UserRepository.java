@@ -1,7 +1,6 @@
 package com.todolist.repository;
 
-import com.todolist.model.EventModel;
-import com.todolist.model.UserModel;
+import com.todolist.entity.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

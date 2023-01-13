@@ -1,7 +1,7 @@
 package com.todolist.service;
 
-import com.todolist.model.TaskModel;
-import com.todolist.model.UserModel;
+import com.todolist.entity.TaskModel;
+import com.todolist.entity.UserModel;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
 import org.junit.jupiter.api.AfterEach;

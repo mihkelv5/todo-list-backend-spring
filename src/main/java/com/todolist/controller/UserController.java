@@ -1,7 +1,7 @@
 package com.todolist.controller;
 
 
-import com.todolist.model.UserModel;
+import com.todolist.entity.UserModel;
 import com.todolist.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/notIn/event/{eventId}")
-    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
+    @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<List<String>> userSearchNoEvent(@PathVariable UUID eventId){
         List<String> matchingUsers = this.userService.findUsersNotInEvent(eventId);
         return ResponseEntity.ok(matchingUsers);
@@ -35,7 +35,7 @@ public class UserController {
 
 
     @GetMapping("/event/{eventId}") //currently not in use
-    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
+    @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<List<UserModel>> findUsersByEventId(@PathVariable("eventId") UUID eventId){
         List<UserModel> users = this.userService.findUsersByEventId(eventId);
         return ResponseEntity.ok(users);

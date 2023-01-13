@@ -1,58 +1,45 @@
 package com.todolist.controller;
 
-import com.todolist.constant.SecurityConstant;
-import com.todolist.model.AuthenticationRequest;
-import com.todolist.model.UserModel;
-import com.todolist.security.userdetails.UserDetailsImpl;
+import com.todolist.entity.UserModel;
 import com.todolist.service.UserDetailsServiceImpl;
 import com.todolist.service.UserService;
 import com.todolist.util.JwtUtil;
-import org.springframework.http.HttpHeaders;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/api/auth")
+@RequestMapping(path = "/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailsServiceImpl userDetailsService;
-    private final UserService userService;
-    private final JwtUtil jwtTokenUtil;
 
-    public AuthController(AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService, UserService userService, JwtUtil jwtTokenUtil) {
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
+    private final UserService userService;
+
+
+    public AuthController(UserService userService) {
+
         this.userService = userService;
-        this.jwtTokenUtil = jwtTokenUtil;
+
     }
 
-    @PostMapping(value = "/login")
-    public ResponseEntity<UserModel> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-        } catch (BadCredentialsException e) {
+    @GetMapping("/login")
+    public ResponseEntity<?> createRefreshToken() {
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("response", "Refresh token created");
+        return ResponseEntity.ok(responseBody);
+    }
 
-            throw new Exception("Incorrect username or password", e);
-        }
-        final UserDetailsImpl userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
-        final String jwt = jwtTokenUtil.generateToken(userDetails);
-        UserModel user = userService.findUserByUsername(authenticationRequest.getUsername());
-        user.setTasks(null);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set(SecurityConstant.JWT_TOKEN_HEADER, jwt);
-        return ResponseEntity.ok().headers(responseHeaders).body(user);
+    @GetMapping("/get-access")
+    public ResponseEntity<UserModel> createAuthenticationToken(HttpServletRequest request) {
+        String username = request.getHeader("username");
+        UserModel user = this.userService.findUserByUsername(username);
+        return ResponseEntity.ok().body(user) ;
     }
 
     @PostMapping("/register")

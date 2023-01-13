@@ -1,9 +1,7 @@
 package com.todolist.controller;
 
-import com.todolist.model.EventModel;
-import com.todolist.model.UserModel;
+import com.todolist.entity.EventModel;
 import com.todolist.service.EventService;
-import com.todolist.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +21,7 @@ public class EventController {
     }
 
     @GetMapping("/find/{eventId}")
-    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
+    @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<EventModel> findEventById(@PathVariable("eventId") UUID eventId){
         EventModel event = this.eventService.findEventById(eventId);
         return ResponseEntity.ok(event);
@@ -44,7 +42,7 @@ public class EventController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#event.id)") //TODO: Admin system for events
+    @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#event.id)") //TODO: Admin system for events
     public ResponseEntity<EventModel> updateEvent(@RequestBody EventModel event) {
         EventModel updatedEvent = this.eventService.updateEvent(event);
         return ResponseEntity.ok(updatedEvent);
@@ -52,7 +50,7 @@ public class EventController {
 
     @Transactional
     @DeleteMapping("delete/{eventId}")
-    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)") //TODO: Admin system for events
+    @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)") //TODO: Admin system for events
     public ResponseEntity<?> deleteEvent(@PathVariable UUID eventId){
         this.eventService.deleteEventById(eventId);
         return ResponseEntity.ok().build();

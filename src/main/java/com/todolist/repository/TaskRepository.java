@@ -1,7 +1,7 @@
 package com.todolist.repository;
 
-import com.todolist.model.TaskModel;
-import com.todolist.model.UserModel;
+import com.todolist.entity.TaskModel;
+import com.todolist.entity.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

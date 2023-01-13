@@ -3,7 +3,7 @@ package com.todolist.service;
 
 import com.todolist.repository.UserRepository;
 import com.todolist.security.userdetails.UserDetailsImpl;
-import com.todolist.model.UserModel;
+import com.todolist.entity.UserModel;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

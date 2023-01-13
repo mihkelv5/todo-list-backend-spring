@@ -3,6 +3,7 @@ package com.todolist.security.filter;
 import com.todolist.constant.SecurityConstant;
 import com.todolist.service.UserDetailsServiceImpl;
 import com.todolist.util.JwtUtil;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,6 +62,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         }
+
+
         filterChain.doFilter(request, response);
     }
+
+
 }

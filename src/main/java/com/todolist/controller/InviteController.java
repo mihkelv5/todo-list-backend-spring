@@ -1,9 +1,7 @@
 package com.todolist.controller;
 
-import com.todolist.model.EventInvitationModel;
-import com.todolist.model.UserModel;
+import com.todolist.entity.EventInvitationModel;
 import com.todolist.service.EventInvitationService;
-import com.todolist.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +24,7 @@ public class InviteController {
 
 
     @PostMapping("/event/{eventId}/user/{username}")
-    @PreAuthorize("@preAuthFilter.checkIfUserInEvent(#eventId)")
+    @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") UUID eventId, @PathVariable("username") String username) {
         boolean success = this.eventInvitationService.inviteUserToEvent(eventId, username);
         if(success){
@@ -43,7 +41,7 @@ public class InviteController {
 
     @Transactional
     @PutMapping("/accept/{invitationId}")
-    @PreAuthorize("@preAuthFilter.checkIfUserIsInvited(#invitationId)")
+    @PreAuthorize("@preAuthMethodFilter.checkIfUserIsInvited(#invitationId)")
     public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") UUID invitationId) {
         boolean success = this.eventInvitationService.acceptInvite(invitationId);
         if(success){
@@ -55,7 +53,7 @@ public class InviteController {
 
     @Transactional
     @DeleteMapping("/decline/{invitationId}")
-    @PreAuthorize("@preAuthFilter.checkIfUserIsInvited(#invitationId)")
+    @PreAuthorize("@preAuthMethodFilter.checkIfUserIsInvited(#invitationId)")
     public ResponseEntity<?> declineEventInvitation(@PathVariable("invitationId") UUID invitationId){
         boolean success = this.eventInvitationService.declineInvite(invitationId);
         if(success) {

@@ -2,18 +2,16 @@
 package com.todolist.service;
 
 
-import com.todolist.model.EventInvitationModel;
-import com.todolist.model.EventModel;
-import com.todolist.model.UserModel;
+import com.todolist.entity.EventInvitationModel;
+import com.todolist.entity.EventModel;
+import com.todolist.entity.UserModel;
 import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
 import jakarta.transaction.Transactional;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 

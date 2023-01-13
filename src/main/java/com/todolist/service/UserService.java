@@ -1,6 +1,6 @@
 package com.todolist.service;
 
-import com.todolist.model.UserModel;
+import com.todolist.entity.UserModel;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

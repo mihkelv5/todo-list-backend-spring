@@ -1,7 +1,7 @@
 package com.todolist.security.userdetails;
 
 
-import com.todolist.model.UserModel;
+import com.todolist.entity.UserModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

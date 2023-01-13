@@ -1,6 +1,6 @@
 package com.todolist.repository;
 
-import com.todolist.model.TaskModel;
+import com.todolist.entity.TaskModel;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DataJpaTest
 class TaskModelRepositoryTest {

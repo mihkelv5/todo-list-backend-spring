@@ -28,17 +28,18 @@ public class JwtUtil {
 
     private final String secret = "secret";
 
-    public String generateToken(UserDetailsImpl userPrincipal){
-        String[] claims = getClaimsFromUser(userPrincipal);
+    public String generateAccessToken(UserDetailsImpl userDetails){
+        String[] claims = getClaimsFromUser(userDetails);
         return JWT.create()
                 .withIssuer(SecurityConstant.TODO)
                 .withAudience(SecurityConstant.TODO_ADMINISTRATION)
                 .withIssuedAt(new Date())
-                .withSubject(userPrincipal.getUsername())
+                .withSubject(userDetails.getUsername())
                 .withArrayClaim(SecurityConstant.AUTHORIZATION, claims)
-                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.ACCESS_EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }
+
 
     public List<GrantedAuthority> getAuthorities(String token){
         String[] claims = getClaimsFromToken(token);
