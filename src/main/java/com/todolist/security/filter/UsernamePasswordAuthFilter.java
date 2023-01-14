@@ -55,6 +55,7 @@ public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
                 .sameSite("Lax")
                 .build();
         response.setHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+        response.setHeader("username", username);
 
     filterChain.doFilter(request, response);
     }

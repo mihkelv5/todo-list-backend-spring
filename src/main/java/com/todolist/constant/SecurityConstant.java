@@ -8,14 +8,11 @@ public class SecurityConstant {
     public static final String AUTHORIZATION = "Authorization";
     public static final String OPTIONS_HTTP_METHOD = "OPTIONS";
     public static final String JWT_TOKEN_HEADER = "Jwt-Token";
-
-    public static final String ACCESS_TOKEN = "Access-Token";
     public static final String REFRESH_TOKEN = "Refresh-Token";
     public static final String TOKEN_CANNOT_BE_VERIFIED = "Token Cannot Be Verified";
     public static final String TODO = "Placeholder";
     public static final String TODO_ADMINISTRATION = "TODO app";
     public static final String FORBIDDEN_MESSAGE = "You need to log in to access this page";
     public static final String ACCESS_DENIED_MESSAGE = "You do not have permission to access this page";
-    public static final String[] PUBLIC_URLS = { "/api/user/login", "/api/user/register", "/user/resetpassword/**"}; //to be implemented
 
 }

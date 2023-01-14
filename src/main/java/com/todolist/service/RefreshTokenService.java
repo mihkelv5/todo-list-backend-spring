@@ -2,6 +2,7 @@ package com.todolist.service;
 
 import com.todolist.entity.RefreshTokenEntity;
 import com.todolist.repository.RefreshTokenRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +30,11 @@ public class RefreshTokenService {
     public RefreshTokenEntity createAndSaveRefreshToken(UUID userId){
         RefreshTokenEntity token = new RefreshTokenEntity(userId);
         return this.refreshTokenRepository.save(token);
+    }
+
+    @Transactional
+    public void deleteRefreshTokenById(String tokenId){
+        UUID id = UUID.fromString(tokenId);
+        this.refreshTokenRepository.deleteById(id);
     }
 }

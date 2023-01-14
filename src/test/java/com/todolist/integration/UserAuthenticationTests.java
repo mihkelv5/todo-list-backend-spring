@@ -48,8 +48,8 @@ public class UserAuthenticationTests {
 
     @Autowired
     JwtUtil jwtUtil = new JwtUtil();
-    @InjectMocks
-    private AuthController authController = new AuthController(userService);
+    //@InjectMocks
+    //private AuthController authController = new AuthController(userService, tokenService);
 
     @BeforeEach
     void setUp() {
