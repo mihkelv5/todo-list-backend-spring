@@ -49,9 +49,7 @@ public class UserModel implements Serializable {
         this.roles = roles;
     }
 
-    public UserModel() {
-        this.email = "mihkeldevmail@gmail.com";
-    }
+    public UserModel() {}
 
     public String getUsername() {
         return username;

@@ -1,5 +1,6 @@
 package com.todolist.controller;
 
+import com.todolist.SensitiveData;
 import com.todolist.constant.SecurityConstant;
 import com.todolist.email.EmailServiceImpl;
 import com.todolist.entity.UserModel;
@@ -87,7 +88,7 @@ public class AuthController {
             VerificationTokenEntity token = this.verificationTokenService.createVerificationToken(user.getUsername());
             String message = "Activate your account: " +
                     "http://localhost:8081/auth/activate?username=" + addedUser.getUsername() + "&code=" + token.getCode();
-            emailService.sendSimpleMail("mihkeldevmail@gmail.com", message, "Confirm your email");
+            emailService.sendSimpleMail(SensitiveData.USERNAME, message, "Confirm your email");
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
