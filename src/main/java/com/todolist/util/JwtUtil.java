@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.todolist.SensitiveData;
 import com.todolist.constant.SecurityConstant;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,7 @@ import static java.util.Arrays.stream;
 public class JwtUtil {
 
 
-    private final String secret = "secret";
+    private final String secret = SensitiveData.JWT_SECRET;
 
     public String generateAccessToken(UserDetailsImpl userDetails){
         String[] claims = getClaimsFromUser(userDetails);
