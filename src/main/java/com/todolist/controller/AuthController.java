@@ -1,9 +1,12 @@
 package com.todolist.controller;
 
 import com.todolist.constant.SecurityConstant;
+import com.todolist.email.EmailServiceImpl;
 import com.todolist.entity.UserModel;
+import com.todolist.entity.VerificationTokenEntity;
 import com.todolist.service.RefreshTokenService;
 import com.todolist.service.UserService;
+import com.todolist.service.VerificationTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -15,10 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "/auth")
@@ -26,14 +26,19 @@ public class AuthController {
 
 
     private final UserService userService;
-    public final RefreshTokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
+    private final VerificationTokenService verificationTokenService;
+
+    private final EmailServiceImpl emailService;
 
 
-    public AuthController(UserService userService, RefreshTokenService tokenService) {
+    public AuthController(UserService userService, RefreshTokenService refreshTokenService, VerificationTokenService verificationTokenService, EmailServiceImpl emailService) {
 
         this.userService = userService;
 
-        this.tokenService = tokenService;
+        this.refreshTokenService = refreshTokenService;
+        this.verificationTokenService = verificationTokenService;
+        this.emailService = emailService;
     }
 
     @GetMapping("/login")
@@ -56,7 +61,7 @@ public class AuthController {
 
         Cookie[] cookies = request.getCookies();
         Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
-        optionalCookie.ifPresent(cookie -> this.tokenService.deleteRefreshTokenById(cookie.getValue()));
+        optionalCookie.ifPresent(cookie -> this.refreshTokenService.deleteRefreshTokenById(cookie.getValue()));
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("response", "logged out");
         ResponseCookie refreshCookie = ResponseCookie.from(SecurityConstant.REFRESH_TOKEN, "")
@@ -75,11 +80,28 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<UserModel> addUser(@RequestBody UserModel user) {
         user.setPassword(new BCryptPasswordEncoder(5).encode(user.getPassword()));
+        user.setEnabled(false);
+
         try {
-            userService.addUser(user);
+            UserModel addedUser = userService.addUser(user);
+            VerificationTokenEntity token = this.verificationTokenService.createVerificationToken(user.getUsername());
+            String message = "Activate your account: " +
+                    "http://localhost:8081/auth/activate?username=" + addedUser.getUsername() + "&code=" + token.getCode();
+            emailService.sendSimpleMail("mihkeldevmail@gmail.com", message, "Confirm your email");
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/activate")
+    public ResponseEntity<String> activateAccount(@RequestParam String username, @RequestParam UUID code){
+        boolean isTokenValid = this.verificationTokenService.isTokenValid(username, code);
+        if(isTokenValid){
+            this.userService.activateUser(username);
+            this.verificationTokenService.deleteTokenByCode(code);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

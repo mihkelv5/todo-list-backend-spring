@@ -24,8 +24,8 @@ public class UserService {
 
     //POST method
 
-    public void addUser(UserModel user){
-        userRepository.save(user);
+    public UserModel addUser(UserModel user){
+        return userRepository.save(user);
     }
 
     //GET methods
@@ -56,6 +56,12 @@ public class UserService {
     //UPDATE method
     public UserModel updateUser(UserModel user){
         return userRepository.save(user);
+    }
+
+    public void activateUser(String username){
+        UserModel user = this.userRepository.findByUsername(username);
+        user.setEnabled(true);
+        this.userRepository.save(user);
     }
 
     //helper methods

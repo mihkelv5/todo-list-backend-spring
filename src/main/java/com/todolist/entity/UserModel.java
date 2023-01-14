@@ -21,7 +21,7 @@ public class UserModel implements Serializable {
     private UUID id;
     @Column(unique = true, nullable = false)
     private String username;
-    @Column(unique = true, nullable = false)
+    @Column(unique = false, nullable = false) //TODO: implement registering emails
     private String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -50,6 +50,7 @@ public class UserModel implements Serializable {
     }
 
     public UserModel() {
+        this.email = "mihkeldevmail@gmail.com";
     }
 
     public String getUsername() {

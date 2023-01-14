@@ -32,7 +32,7 @@ public class UsernamePasswordAuthProvider implements AuthenticationProvider {
 
         UserDetails user = userService.loadUserByUsername(username);
 
-        if(encoder.matches(password, user.getPassword())) {
+        if(encoder.matches(password, user.getPassword()) && user.isEnabled()) {
             return new UsernamePasswordAuthToken(username, password, user.getAuthorities());
         }
 
