@@ -3,11 +3,12 @@ package com.todolist.entity;
 import com.todolist.constant.SecurityConstant;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 @Entity
-public class VerificationTokenEntity {
+public class VerificationTokenEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

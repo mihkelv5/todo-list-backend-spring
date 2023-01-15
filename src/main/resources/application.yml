@@ -1,6 +1,3 @@
-jwt:
-  secret: "secret"
-
 server:
   error:
     include-message: always

@@ -21,7 +21,7 @@ public class UserModel implements Serializable {
     private UUID id;
     @Column(unique = true, nullable = false)
     private String username;
-    @Column(unique = false, nullable = false) //TODO: implement registering emails
+    @Column(unique = false, nullable = false) //unique false for testing
     private String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -41,12 +41,15 @@ public class UserModel implements Serializable {
     private Set<EventInvitationModel> eventInvitations = new HashSet<>();
 
 
+
+
     public UserModel(String username, String email, String password, boolean enabled, String roles) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
+
     }
 
     public UserModel() {}
@@ -122,5 +125,6 @@ public class UserModel implements Serializable {
     public void setEventInvitations(Set<EventInvitationModel> eventInvitations) {
         this.eventInvitations = eventInvitations;
     }
+
 
 }
