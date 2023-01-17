@@ -37,7 +37,6 @@ public class AuthController {
     public AuthController(UserService userService, RefreshTokenService refreshTokenService, VerificationTokenService verificationTokenService, EmailServiceImpl emailService) {
 
         this.userService = userService;
-
         this.refreshTokenService = refreshTokenService;
         this.verificationTokenService = verificationTokenService;
         this.emailService = emailService;

@@ -23,6 +23,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
@@ -43,6 +44,7 @@ public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
             String username = request.getHeader("username");
             String password = request.getHeader("password");
 
+
             Authentication unauthenticated = new UsernamePasswordAuthToken(username, password);
             authenticationManager.authenticate(unauthenticated); //throws error if user is not authenticated.
 
@@ -59,6 +61,7 @@ public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
                     .build();
             response.setHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
             response.setHeader("username", username);
+            response.setHeader( "Valid-Days" ,String.valueOf(TimeUnit.SECONDS.toDays(SecurityConstant.REFRESH_EXPIRATION_TIME)));
 
             filterChain.doFilter(request, response);
         }catch (BadCredentialsException e){

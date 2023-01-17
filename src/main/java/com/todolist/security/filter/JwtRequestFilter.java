@@ -1,5 +1,6 @@
 package com.todolist.security.filter;
 
+import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.todolist.constant.SecurityConstant;
 import com.todolist.service.UserDetailsServiceImpl;
 import com.todolist.util.JwtUtil;
@@ -34,32 +35,36 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
 
-
-        final String authorizationHeader = request.getHeader(SecurityConstant.AUTHORIZATION);
-
-        String username = null;
-        String jwt = null;
         if(request.getMethod().equalsIgnoreCase(SecurityConstant.OPTIONS_HTTP_METHOD)){
             response.setStatus(HttpStatus.OK.value());
         } else {
+            try {
+                final String authorizationHeader = request.getHeader(SecurityConstant.AUTHORIZATION);
 
-            if (authorizationHeader != null && authorizationHeader.startsWith(SecurityConstant.TOKEN_PREFIX)) {
-                jwt = authorizationHeader.substring(SecurityConstant.TOKEN_PREFIX.length());
-                username = jwtUtil.getSubject(jwt);
-            }
-
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (jwtUtil.isTokenValid(username, jwt)) {
-
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                    usernamePasswordAuthenticationToken.
-                            setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                String username = null;
+                String jwt = null;
+                if (authorizationHeader != null && authorizationHeader.startsWith(SecurityConstant.TOKEN_PREFIX)) {
+                    jwt = authorizationHeader.substring(SecurityConstant.TOKEN_PREFIX.length());
+                    username = jwtUtil.getSubject(jwt);
                 }
+
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                    if (jwtUtil.isTokenValid(username, jwt)) {
+
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                        usernamePasswordAuthenticationToken.
+                                setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    }
+                }
+            } catch (Exception e){
+                response.setStatus(403);
+                response.getWriter().write(e.getMessage());
+                return;
             }
         }
 
