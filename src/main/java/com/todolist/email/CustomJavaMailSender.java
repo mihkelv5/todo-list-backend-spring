@@ -16,8 +16,8 @@ public class CustomJavaMailSender {
         JavaMailSenderImpl gmailMailSender = new JavaMailSenderImpl();
         gmailMailSender.setHost("smtp.gmail.com");
         gmailMailSender.setPort(587);
-        gmailMailSender.setUsername(SensitiveData.USERNAME);
-        gmailMailSender.setPassword(SensitiveData.PASSWORD);
+        gmailMailSender.setUsername(SensitiveData.MAIL_USERNAME);
+        gmailMailSender.setPassword(SensitiveData.MAIL_PASSWORD);
 
         Properties props = gmailMailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

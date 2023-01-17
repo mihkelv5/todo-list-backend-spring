@@ -2,14 +2,9 @@ package com.todolist.email;
 
 
 import com.todolist.SensitiveData;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
-
-import java.util.Properties;
 
 @Service
 public class EmailServiceImpl{
@@ -21,7 +16,7 @@ public class EmailServiceImpl{
 
     public EmailServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
-        this.sender = SensitiveData.USERNAME;
+        this.sender = SensitiveData.MAIL_USERNAME;
     }
 
     public String sendSimpleMail(String recipient, String message, String subject) {

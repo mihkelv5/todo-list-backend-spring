@@ -17,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -88,7 +87,7 @@ public class AuthController {
             VerificationToken token = this.verificationTokenService.createVerificationToken(addedUser.getUsername());
             String message = "Activate your account: " +
                     "http://localhost:8081/auth/activate?username=" + addedUser.getUsername() + "&code=" + token.getCode();
-            emailService.sendSimpleMail(SensitiveData.USERNAME, message, "Confirm your email");
+            emailService.sendSimpleMail(SensitiveData.MAIL_USERNAME, message, "Confirm your email");
         } catch (DuplicateKeyException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

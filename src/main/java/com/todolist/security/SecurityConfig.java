@@ -26,7 +26,7 @@ public class SecurityConfig{
                 .cors().and()
                 .authorizeHttpRequests(authorize ->
                     authorize
-                        .requestMatchers("/auth/**", "/auth/activate/**").permitAll()
+                        .requestMatchers("/auth/**", "/auth/activate/**").permitAll() //had to specify /activate separately, otherwise it still did not allow access
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
