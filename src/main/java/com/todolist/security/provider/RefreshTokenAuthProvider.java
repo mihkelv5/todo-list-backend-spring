@@ -1,10 +1,11 @@
 package com.todolist.security.provider;
 
-import com.todolist.entity.RefreshTokenEntity;
+import com.todolist.entity.RefreshToken;
 import com.todolist.security.authentication.RefreshTokenAuthToken;
 import com.todolist.service.RefreshTokenService;
 import com.todolist.service.UserDetailsServiceImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,10 +35,10 @@ public class RefreshTokenAuthProvider implements AuthenticationProvider {
 
         UserDetails user = this.userService.loadUserByUsername(username);
 
-        RefreshTokenEntity refreshToken = this.tokenService.findTokenById(tokenId); //cant be null otherwise error is thrown by service;
+        RefreshToken refreshToken = this.tokenService.findTokenById(tokenId); //cant be null otherwise error is thrown by service;
 
-        if(refreshToken.getExpirationDate().compareTo(new Date()) < 0) { //expirationDate is before today
-            return null;
+        if(refreshToken.getExpirationDate().compareTo(new Date()) < 0) { //expirationDate is before current time
+            throw new CredentialsExpiredException("Token is expired");
         }
 
         return new RefreshTokenAuthToken(username, null, user.getAuthorities());

@@ -21,7 +21,7 @@ public class UserModel implements Serializable {
     private UUID id;
     @Column(unique = true, nullable = false)
     private String username;
-    @Column(unique = false, nullable = false) //unique false for testing
+    @Column(unique = true, nullable = false)
     private String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -39,8 +39,6 @@ public class UserModel implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "invitedUser")
     private Set<EventInvitationModel> eventInvitations = new HashSet<>();
-
-
 
 
     public UserModel(String username, String email, String password, boolean enabled, String roles) {

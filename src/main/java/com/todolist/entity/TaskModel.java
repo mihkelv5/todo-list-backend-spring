@@ -29,7 +29,6 @@ public class TaskModel implements Serializable {
     private String eventName;
     private int xLocation;
     private int yLocation;
-
     private String color;
 
     @ManyToOne

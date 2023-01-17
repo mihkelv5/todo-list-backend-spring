@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name="refresh_token")
-public class RefreshTokenEntity {
+public class RefreshToken {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -20,14 +20,14 @@ public class RefreshTokenEntity {
     UUID userId;
     Date expirationDate;
 
-    public RefreshTokenEntity(UUID userId) {
+    public RefreshToken(UUID userId) {
         this.id = UUID.randomUUID();
         this.userId = userId;
         this.expirationDate = Date.from(Instant.now().plusSeconds(SecurityConstant.REFRESH_EXPIRATION_TIME));
         // token lasts for 7 days
     }
 
-    public RefreshTokenEntity() {
+    public RefreshToken() {
     }
 
     public UUID getId() {

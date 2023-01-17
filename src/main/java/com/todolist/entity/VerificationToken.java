@@ -2,37 +2,30 @@ package com.todolist.entity;
 
 import com.todolist.constant.SecurityConstant;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 @Entity
-public class VerificationTokenEntity implements Serializable {
+public class VerificationToken implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(unique = true, nullable = false)
     private UUID code;
     private String username;
     private Date expirationDate;
 
-    public VerificationTokenEntity(String username) {
+    public VerificationToken(String username) {
         this.username = username;
-        this.code = UUID.randomUUID();
         this.expirationDate = Date.from(Instant.now().plusSeconds(SecurityConstant.REGISTRATION_TOKEN_EXPIRATION_TIME));
     }
 
-    public VerificationTokenEntity() {}
+    public VerificationToken() {}
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public UUID getCode() {
         return code;

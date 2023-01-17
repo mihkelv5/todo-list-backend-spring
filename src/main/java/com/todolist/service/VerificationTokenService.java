@@ -1,6 +1,6 @@
 package com.todolist.service;
 
-import com.todolist.entity.VerificationTokenEntity;
+import com.todolist.entity.VerificationToken;
 import com.todolist.repository.VerificationTokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -18,19 +18,19 @@ public class VerificationTokenService {
 
     }
 
-    public VerificationTokenEntity createVerificationToken(String username){
-        VerificationTokenEntity token = new VerificationTokenEntity(username);
+    public VerificationToken createVerificationToken(String username){
+        VerificationToken token = new VerificationToken(username);
         return this.verificationTokenRepository.save(token);
     }
 
     public boolean isTokenValid(String username, UUID code){
-        return this.verificationTokenRepository.existsVerificationTokenEntityByUsernameAndCode(username, code);
+        return this.verificationTokenRepository.existsVerificationTokenByUsernameAndCode(username, code);
     }
 
 
     @Transactional
     public void deleteTokenByCode(UUID code){
-        this.verificationTokenRepository.deleteVerificationTokenEntityByCode(code);
+        this.verificationTokenRepository.deleteVerificationTokenByCode(code);
     }
 
 }

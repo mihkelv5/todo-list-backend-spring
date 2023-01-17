@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +25,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -41,26 +43,31 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Cookie[] cookies = request.getCookies();
-        Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
-        String username = request.getHeader("username");
-        if(optionalCookie.isPresent()){
+        try {
+            Cookie[] cookies = request.getCookies();
+            Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
+            String username = request.getHeader("username");
+
             String refreshToken = optionalCookie.get().getValue();
             Authentication authentication = new RefreshTokenAuthToken(username, refreshToken);
             authenticationManager.authenticate(authentication); //throws error if user is not authenticated.
 
 
-            //generate access token
+            //generate access token and send it
             UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(username);
             final String accessTokenJwt = jwtUtil.generateAccessToken(userDetails);
-
             response.setHeader(SecurityConstant.JWT_TOKEN_HEADER, accessTokenJwt);
-
             filterChain.doFilter(request, response);
 
-        } else {
-            throw new BadCredentialsException("Refresh token not found");
+        } catch (RuntimeException e) {
+            response.setStatus(401);
+            response.getWriter().write("Bad credentials");
         }
+
+
+
+
+
 
     }
 

@@ -1,6 +1,6 @@
 package com.todolist.service;
 
-import com.todolist.entity.RefreshTokenEntity;
+import com.todolist.entity.RefreshToken;
 import com.todolist.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,17 +18,17 @@ public class RefreshTokenService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public RefreshTokenEntity findTokenById(UUID tokenId){
+    public RefreshToken findTokenById(UUID tokenId){
 
-        Optional<RefreshTokenEntity> optionalToken = this.refreshTokenRepository.findById(tokenId);
+        Optional<RefreshToken> optionalToken = this.refreshTokenRepository.findById(tokenId);
         if(optionalToken.isPresent()){
             return optionalToken.get();
         }
         throw new BadCredentialsException("Token with id: " + tokenId + " not found");
     }
 
-    public RefreshTokenEntity createAndSaveRefreshToken(UUID userId){
-        RefreshTokenEntity token = new RefreshTokenEntity(userId);
+    public RefreshToken createAndSaveRefreshToken(UUID userId){
+        RefreshToken token = new RefreshToken(userId);
         return this.refreshTokenRepository.save(token);
     }
 
