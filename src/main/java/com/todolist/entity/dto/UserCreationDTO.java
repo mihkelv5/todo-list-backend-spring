@@ -1,19 +1,19 @@
 package com.todolist.entity.dto;
 
-public class UserLoginDTO {
+public class UserCreationDTO {
 
     private String username;
     private String email;
     private String password;
 
-    public UserLoginDTO(String username, String email, String password) {
+    public UserCreationDTO(String username, String email, String password) {
 
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
-    public UserLoginDTO() {
+    public UserCreationDTO() {
     }
 
 

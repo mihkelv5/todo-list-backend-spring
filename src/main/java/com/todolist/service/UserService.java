@@ -1,17 +1,17 @@
 package com.todolist.service;
 
 import com.todolist.entity.UserModel;
+import com.todolist.entity.dto.UserCreationDTO;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -24,7 +24,21 @@ public class UserService {
 
     //POST method
 
-    public UserModel addUser(UserModel user){
+    public UserModel addUser(UserCreationDTO userDTO){
+        if(userRepository.existsByUsername(userDTO.getUsername())){
+            throw new DuplicateKeyException("Username already taken");
+        }
+        if(userRepository.existsByEmail(userDTO.getEmail())){
+            throw new DuplicateKeyException("Email already taken");
+        }
+
+        UserModel user = new UserModel();
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(new BCryptPasswordEncoder(5).encode(userDTO.getPassword()));
+        user.setEmail(userDTO.getEmail());
+        user.setRoles("ROLE_USER");
+        user.setEnabled(false);
+
         return userRepository.save(user);
     }
 
@@ -36,8 +50,6 @@ public class UserService {
     public Set<UserModel> findAllUsersByUsernames(Set<String> usernames) {
         return this.userRepository.findAllUsersByUsernameSet(usernames);
     }
-
-
 
     public List<String> findUsersNotInEvent(UUID eventId) {
         return this.userRepository.findUsersNotInEvent(eventId);

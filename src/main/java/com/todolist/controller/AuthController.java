@@ -5,13 +5,14 @@ import com.todolist.constant.SecurityConstant;
 import com.todolist.email.EmailServiceImpl;
 import com.todolist.entity.UserModel;
 import com.todolist.entity.VerificationToken;
-import com.todolist.entity.dto.UserLoginDTO;
+import com.todolist.entity.dto.UserCreationDTO;
 import com.todolist.service.RefreshTokenService;
 import com.todolist.service.UserService;
 import com.todolist.service.VerificationTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -25,7 +26,6 @@ import java.util.*;
 @RestController
 @RequestMapping(path = "/auth")
 public class AuthController {
-
 
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
@@ -80,31 +80,27 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> addUser(@RequestBody UserLoginDTO userDTO) {
-        UserModel user = new UserModel();
+    public ResponseEntity<?> addUser(@RequestBody UserCreationDTO userDTO) {
 
-        //getting data from DTO. Could use library like mapstruct to do it.
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(new BCryptPasswordEncoder(5).encode(userDTO.getPassword()));
-        user.setEmail(userDTO.getEmail());
-        user.setRoles("ROLE_USER");
-        user.setEnabled(false);
 
         try {
-            UserModel addedUser = userService.addUser(user);
-            VerificationToken token = this.verificationTokenService.createVerificationToken(user.getUsername());
+            UserModel addedUser = userService.addUser(userDTO);
+            VerificationToken token = this.verificationTokenService.createVerificationToken(addedUser.getUsername());
             String message = "Activate your account: " +
                     "http://localhost:8081/auth/activate?username=" + addedUser.getUsername() + "&code=" + token.getCode();
             emailService.sendSimpleMail(SensitiveData.USERNAME, message, "Confirm your email");
-        } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e);
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/activate")
     public ResponseEntity<String> activateAccount(@RequestParam String username, @RequestParam UUID code){
-        boolean isTokenValid = this.verificationTokenService.isTokenValid(username, code); // should be moved to filter
+        boolean isTokenValid = this.verificationTokenService.isTokenValid(username, code);
         if(isTokenValid){
             this.userService.activateUser(username);
             this.verificationTokenService.deleteTokenByCode(code);
