@@ -2,6 +2,8 @@ package com.todolist.service;
 
 import com.todolist.entity.EventModel;
 import com.todolist.entity.UserModel;
+import com.todolist.entity.dto.EventModelDTO;
+import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
@@ -36,33 +38,34 @@ public class EventService {
 
     //CREATE methods
 
-    public EventModel addEvent(EventModel event) {
+    public EventModelDTO addEvent(EventModel event) {
         UserModel user = userService.getCurrentUser();
         event.registerUserToEvent(user);
-        return this.eventRepository.save(event);
+        return EventModelDTO.EventModelDTOConverter(this.eventRepository.save(event));
     }
 
     //READ methods
-    public EventModel findEventById(UUID eventId){
+    public EventModelDTO findEventById(UUID eventId){
         EventModel event = this.eventRepository.findEventById(eventId);
-        event.setEventUsernames(event.getEventUsers().stream().map(UserModel::getUsername).collect(Collectors.toSet()));
-        return event;
+        EventModelDTO eventModelDTO = EventModelDTO.EventModelDTOConverter(event);
+        return eventModelDTO;
     }
 
-    public List<EventModel> findEventsByUser(){
+    public Set<EventModelDTO> findEventsByUser(){
         UserModel user = this.userService.getCurrentUser();
         Set<UserModel> users = new HashSet<>();
         users.add(user);
-        return eventRepository.findEventsByEventUsersIn(users);
+        Set<EventModel> events = eventRepository.findEventsByEventUsersIn(users);
+        return events.stream().map(EventModelDTO::EventModelDTOConverter).collect(Collectors.toSet());
     }
 
     //UPDATE methods
-    public EventModel updateEvent(EventModel updatedEvent){
+    public EventModelDTO updateEvent(EventModel updatedEvent){
         EventModel event = this.eventRepository.findEventById(updatedEvent.getId());
         event.setTitle(updatedEvent.getTitle());
         event.setDescription(updatedEvent.getDescription());
         eventRepository.save(event);
-        return event;
+        return EventModelDTO.EventModelDTOConverter(event);
     }
     public EventModel saveUserToEvent(UUID eventId, String username){
         UserModel user = this.userRepository.findByUsername(username);

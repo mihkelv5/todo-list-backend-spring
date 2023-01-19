@@ -34,7 +34,7 @@ public class TaskModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
-    private UserModel user;
+    private UserModel ownerUser;
     @Transient
     private String ownerUsername;
 
@@ -54,7 +54,7 @@ public class TaskModel implements Serializable {
         this.date = date;
         this.isComplete = isComplete;
         this.eventId = eventId;
-        this.xLocation = xLocation; //TODO: locations should be saved in map in event and user classes instead.
+        this.xLocation = xLocation;
         this.yLocation = yLocation;
         this.color = color;
     }
@@ -142,12 +142,12 @@ public class TaskModel implements Serializable {
 
 
 
-    public UserModel getUser() {
-        return user;
+    public UserModel getOwnerUser() {
+        return ownerUser;
     }
 
-    public void setUser(UserModel user) {
-        this.user = user;
+    public void setOwnerUser(UserModel user) {
+        this.ownerUser = user;
     }
 
     public Set<UserModel> getAssignedUsers() {

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
@@ -14,9 +15,9 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
     List<TaskModel> findTasksByDate(Date date);
 
-    List<TaskModel> findTasksByUser(UserModel user);
+    Set<TaskModel> findTasksByOwnerUser(UserModel user);
 
-    List<TaskModel> findTasksByUserAndEventIdIsNull(UserModel user);
+    Set<TaskModel> findTasksByOwnerUserAndEventIdIsNull(UserModel user);
 
     List<TaskModel> findTasksByEventId(UUID eventId);
 
@@ -24,9 +25,9 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
     void deleteTasksByEventId(UUID eventId);
 
-    List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);
+    Set<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);
 
-    boolean existsTaskByIdAndUserIdOrIdAndAssignedUsersId(UUID taskId, UUID userId, UUID taskIdAgain, UUID assignedUserId);
+    boolean existsTaskByIdAndOwnerUserIdOrIdAndAssignedUsersId(UUID taskId, UUID userId, UUID taskIdAgain, UUID assignedUserId);
 
-    boolean existsTaskByIdAndUserId(UUID taskId, UUID userId);
+    boolean existsTaskByIdAndOwnerUserId(UUID taskId, UUID userId);
 }

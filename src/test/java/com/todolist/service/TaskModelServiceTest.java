@@ -52,7 +52,7 @@ class TaskModelServiceTest {
         testTask.setDate(new Date());
         testTask.setDescription("This is a test task");
         testTask.setComplete(false);
-        testTask.setUser(testUser);
+        testTask.setOwnerUser(testUser);
 
         //query
 

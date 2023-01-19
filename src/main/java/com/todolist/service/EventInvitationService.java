@@ -5,6 +5,7 @@ package com.todolist.service;
 import com.todolist.entity.EventInvitationModel;
 import com.todolist.entity.EventModel;
 import com.todolist.entity.UserModel;
+import com.todolist.entity.dto.EventModelDTO;
 import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
 import org.springframework.stereotype.Service;
@@ -69,14 +70,9 @@ public class EventInvitationService {
         EventInvitationModel invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
 
         EventModel event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
+        this.eventInvitationRepository.deleteEventInvitationById(invitationId); //if event is not found, invite is still deleted
 
-        //if everything goes correctly
-        if(event != null){
-            this.eventInvitationRepository.deleteEventInvitationById(invitationId);
-            return true;
-        }
-        this.eventInvitationRepository.deleteEventInvitationById(invitationId); //if event is not found, still should delete the invite
-        return false;
+        return event != null; //true if event exists.
     }
 
     @Transactional

@@ -1,6 +1,5 @@
 package com.todolist.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,11 +27,9 @@ public class EventModel {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @JsonIgnore
+
     private Set<UserModel> eventUsers = new HashSet<>();
 
-    @Transient
-    private Set<String> eventUsernames = new HashSet<>();
     public EventModel() {
     }
 
@@ -82,11 +79,4 @@ public class EventModel {
         this.description = description;
     }
 
-    public Set<String> getEventUsernames() {
-        return eventUsernames;
-    }
-
-    public void setEventUsernames(Set<String> eventUsernames) {
-        this.eventUsernames = eventUsernames;
-    }
 }

@@ -31,7 +31,7 @@ public class UserModel implements Serializable {
     //public data
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "ownerUser")
     private Set<TaskModel> tasks = new HashSet<>();
 
     @JsonIgnore
