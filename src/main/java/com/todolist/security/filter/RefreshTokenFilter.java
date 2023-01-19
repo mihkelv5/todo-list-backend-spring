@@ -49,6 +49,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             String username = request.getHeader("username");
 
             String refreshToken = optionalCookie.get().getValue();
+
             Authentication authentication = new RefreshTokenAuthToken(username, refreshToken);
             authenticationManager.authenticate(authentication); //throws error if user is not authenticated.
 
@@ -61,13 +62,8 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
         } catch (RuntimeException e) {
             response.setStatus(401);
-            response.getWriter().write("Bad credentials");
+            response.getWriter().write(e.getMessage());
         }
-
-
-
-
-
 
     }
 

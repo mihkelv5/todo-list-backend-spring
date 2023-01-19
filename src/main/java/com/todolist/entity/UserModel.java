@@ -28,6 +28,8 @@ public class UserModel implements Serializable {
     private boolean enabled;
     private String roles;
 
+    //public data
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<TaskModel> tasks = new HashSet<>();
@@ -40,6 +42,9 @@ public class UserModel implements Serializable {
     @OneToMany(mappedBy = "invitedUser")
     private Set<EventInvitationModel> eventInvitations = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private Set<Friendship> friends = new HashSet<>();
 
     public UserModel(String username, String email, String password, boolean enabled, String roles) {
         this.username = username;
@@ -51,6 +56,16 @@ public class UserModel implements Serializable {
     }
 
     public UserModel() {}
+
+
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -82,14 +97,6 @@ public class UserModel implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getRoles() {
@@ -124,5 +131,11 @@ public class UserModel implements Serializable {
         this.eventInvitations = eventInvitations;
     }
 
+    public Set<Friendship> getFriends() {
+        return friends;
+    }
 
+    public void setFriends(Set<Friendship> friends) {
+        this.friends = friends;
+    }
 }

@@ -3,9 +3,11 @@ package com.todolist.controller;
 import com.todolist.SensitiveData;
 import com.todolist.constant.SecurityConstant;
 import com.todolist.email.EmailServiceImpl;
+import com.todolist.entity.Friendship;
 import com.todolist.entity.UserModel;
 import com.todolist.entity.VerificationToken;
 import com.todolist.entity.dto.UserCreationDTO;
+import com.todolist.service.FriendshipService;
 import com.todolist.service.RefreshTokenService;
 import com.todolist.service.UserService;
 import com.todolist.service.VerificationTokenService;
@@ -33,12 +35,16 @@ public class AuthController {
     private final EmailServiceImpl emailService;
 
 
+
+
     public AuthController(UserService userService, RefreshTokenService refreshTokenService, VerificationTokenService verificationTokenService, EmailServiceImpl emailService) {
 
         this.userService = userService;
         this.refreshTokenService = refreshTokenService;
         this.verificationTokenService = verificationTokenService;
         this.emailService = emailService;
+
+
     }
 
     @GetMapping("/login")
@@ -52,14 +58,14 @@ public class AuthController {
     public ResponseEntity<UserModel> createAuthenticationToken(HttpServletRequest request) {
         String username = request.getHeader("username");
         UserModel user = this.userService.findUserByUsername(username);
-        return ResponseEntity.ok().body(user) ;
+        return ResponseEntity.ok().body(user); //TODO: move userdata to another controller as right now it sends the data even if it is not requested.
     }
 
     @Transactional
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) { // move more logic to filter?
 
-
+        // finds refresh token cookie and sets the duration of it to 1 second, so it would instantly expire. Using 0 seconds produced some weird errors.
         Cookie[] cookies = request.getCookies();
         Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
         optionalCookie.ifPresent(cookie -> this.refreshTokenService.deleteRefreshTokenById(cookie.getValue()));
@@ -107,4 +113,5 @@ public class AuthController {
         }
         return ResponseEntity.badRequest().build();
     }
+
 }

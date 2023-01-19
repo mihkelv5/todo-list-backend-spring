@@ -2,6 +2,7 @@ package com.todolist.security.provider;
 
 import com.todolist.entity.RefreshToken;
 import com.todolist.security.authentication.RefreshTokenAuthToken;
+import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.service.RefreshTokenService;
 import com.todolist.service.UserDetailsServiceImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -33,12 +34,16 @@ public class RefreshTokenAuthProvider implements AuthenticationProvider {
 
         UUID tokenId = UUID.fromString(authentication.getCredentials().toString());
 
-        UserDetails user = this.userService.loadUserByUsername(username);
+        UserDetailsImpl user = this.userService.loadUserByUsername(username);
 
         RefreshToken refreshToken = this.tokenService.findTokenById(tokenId); //cant be null otherwise error is thrown by service;
 
         if(refreshToken.getExpirationDate().compareTo(new Date()) < 0) { //expirationDate is before current time
             throw new CredentialsExpiredException("Token is expired");
+        }
+
+        if(!refreshToken.getUserId().equals(user.getId())){
+            throw new CredentialsExpiredException("Username and token do not match");
         }
 
         return new RefreshTokenAuthToken(username, null, user.getAuthorities());
