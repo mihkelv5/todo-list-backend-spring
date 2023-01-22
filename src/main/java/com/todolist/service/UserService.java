@@ -53,8 +53,8 @@ public class UserService {
         return this.userRepository.findAllUsersByUsernameSet(usernames);
     }
 
-    public List<String> findUsersNotInEvent(UUID eventId) {
-        return this.userRepository.findUsersNotInEvent(eventId);
+    public Set<PublicUserDTO> findUsersNotInEvent(UUID eventId) {
+        return this.userRepository.findUsersNotInEvent(eventId).stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
     }
 
     public Set<PublicUserDTO> findUsersByEventId(UUID eventId) {
@@ -66,8 +66,12 @@ public class UserService {
         return this.userRepository.existsUserModelByUsernameAndEventsId(username, eventId);
     }
 
+    public boolean isUserIdInEvent(UUID userId, UUID eventId){
+        return this.userRepository.existsUserModelByIdAndEventsId(userId, eventId);
+    }
+
     public Set<PublicUserDTO> getInvitedUsers(UUID eventId){
-        Set<UserModel> userModels = this.userRepository.findUserModelsByEventInviteId(eventId);
+        Set<UserModel> userModels = this.userRepository.findUserModelsFromEventInvitationWithEventId(eventId);
         return userModels.stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
     }
 

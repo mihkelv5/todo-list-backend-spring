@@ -1,5 +1,6 @@
 package com.todolist.security.filter;
 
+import com.todolist.entity.EventInvitationModel;
 import com.todolist.entity.TaskModel;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.service.EventInvitationService;
@@ -64,11 +65,15 @@ public class PreAuthMethodFilter {
         return this.userService.isUsernameInEvent(username, eventId);
     }
 
+    public boolean checkIfCurrentUserIsInEvent(UUID eventId) {
+        UUID currentUserId = this.getCurrentUserId();
+        return this.userService.isUserIdInEvent(currentUserId, eventId);
+    }
 
     //helper method
+
     public UUID getCurrentUserId(){
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getId();
     }
-
 }

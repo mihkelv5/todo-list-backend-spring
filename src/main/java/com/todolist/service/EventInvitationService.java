@@ -71,6 +71,8 @@ public class EventInvitationService {
     }
 
 
+
+
     //DELETE methods
 
     @Transactional
@@ -87,6 +89,11 @@ public class EventInvitationService {
     public boolean declineInvite(UUID invitationId){
         this.eventInvitationRepository.deleteEventInvitationById(invitationId);
         return true;
+    }
+
+    @Transactional
+    public void deleteInvite(String username, UUID eventId){
+        this.eventInvitationRepository.deleteEventInvitationModelByInvitedUserUsernameAndEventId(username, eventId);
     }
 
 

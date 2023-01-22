@@ -16,12 +16,13 @@ public interface EventInvitationRepository extends JpaRepository<EventInvitation
 
 
     void deleteEventInvitationById(UUID id);
+
+    void deleteEventInvitationModelByInvitedUserUsernameAndEventId(String username, UUID eventId);
     List<EventInvitationModel> findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(UserModel user, Date date, boolean isAccepted);
 
     List<EventInvitationModel> findAllEventInvitationsByIsAccepted(boolean isAccepted);
 
     boolean existsByInvitedUserAndEventIdAndExpirationDateIsAfter(UserModel user, UUID eventId, Date date);
-
 
     EventInvitationModel findEventInvitationByIdAndExpirationDateIsAfter (UUID invitationId, Date date);
 

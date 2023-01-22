@@ -8,9 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+
+import java.util.*;
 
 
 @RestController
@@ -63,5 +62,16 @@ public class InviteController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @Transactional
+    @DeleteMapping("/delete/{eventId}/user/{username}")
+    @PreAuthorize("@preAuthMethodFilter.checkIfCurrentUserIsInEvent(#eventId)")
+    public ResponseEntity<?> deleteEventInvitation(@PathVariable UUID eventId, @PathVariable String username){
+        this.eventInvitationService.deleteInvite(username, eventId);
+        Map<String, String> response = new HashMap<>();
+        response.put("response", "deleted user: " + username);
+        return ResponseEntity.ok(response);
+
     }
 }

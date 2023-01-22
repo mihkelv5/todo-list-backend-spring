@@ -44,8 +44,8 @@ public class UserController {
 
     @GetMapping("/notIn/event/{eventId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<List<String>> userSearchNoEvent(@PathVariable UUID eventId){
-        List<String> matchingUsers = this.userService.findUsersNotInEvent(eventId);
+    public ResponseEntity<Set<PublicUserDTO>> userSearchNoEvent(@PathVariable UUID eventId){
+        Set<PublicUserDTO> matchingUsers = this.userService.findUsersNotInEvent(eventId);
         return ResponseEntity.ok(matchingUsers);
     }
 
