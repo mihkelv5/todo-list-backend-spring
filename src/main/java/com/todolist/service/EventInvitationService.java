@@ -6,15 +6,15 @@ import com.todolist.entity.EventInvitationModel;
 import com.todolist.entity.EventModel;
 import com.todolist.entity.UserModel;
 import com.todolist.entity.dto.EventModelDTO;
+import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
 
 import jakarta.transaction.Transactional;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
 
 
 @Service
@@ -32,21 +32,29 @@ public class EventInvitationService {
         this.userService = userService;
     }
 
+
     //CREATE methods
-    public boolean inviteUserToEvent (UUID eventId, String username){
+
+    public Set<PublicUserDTO> inviteUserToEvent (UUID eventId, Set<String> usernames){
         EventModel event = this.eventRepository.findEventById(eventId);
-        UserModel invitedUser = this.userService.findUserByUsername(username);
         UserModel requester = this.userService.getCurrentUser();
-        if(this.eventInvitationRepository.existsByInvitedUserAndEventIdAndExpirationDateIsAfter(invitedUser, eventId, new Date())){
-            return false;
-        }
-        EventInvitationModel invitation = new EventInvitationModel();
-        invitation.setRequesterUsername(requester.getUsername());
-        invitation.setInvitedUser(invitedUser);
-        invitation.setEventId(eventId);
-        invitation.setEventName(event.getTitle());
-        this.eventInvitationRepository.save(invitation);
-        return true;
+        Set<PublicUserDTO> invitedUsers = new HashSet<>();
+        usernames.forEach(username -> {
+            UserModel invitedUser = this.userService.findUserByUsername(username);
+            if(this.eventInvitationRepository.existsByInvitedUserAndEventIdAndExpirationDateIsAfter(invitedUser, eventId, new Date())){
+                return;
+            }
+            EventInvitationModel invitation = new EventInvitationModel();
+            invitation.setRequesterUsername(requester.getUsername());
+            invitation.setInvitedUser(invitedUser);
+            invitation.setEventId(eventId);
+            invitation.setEventName(event.getTitle());
+            this.eventInvitationRepository.save(invitation);
+            invitedUsers.add(PublicUserDTO.publicUserDTOConverter(invitedUser));
+        });
+
+
+        return invitedUsers;
     }
 
     //READ methods

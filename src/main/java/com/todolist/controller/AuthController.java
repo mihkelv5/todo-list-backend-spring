@@ -87,7 +87,6 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> addUser(@RequestBody UserCreationDTO userDTO) {
 
-
         try {
             UserModel addedUser = userService.addUser(userDTO);
             VerificationToken token = this.verificationTokenService.createVerificationToken(addedUser.getUsername());

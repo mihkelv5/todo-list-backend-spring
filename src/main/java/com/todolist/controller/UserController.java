@@ -4,6 +4,8 @@ package com.todolist.controller;
 import com.todolist.entity.Friendship;
 import com.todolist.entity.UserModel;
 import com.todolist.entity.dto.FriendshipDTO;
+import com.todolist.entity.dto.PrivateUserDTO;
+import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.service.FriendshipService;
 import com.todolist.service.UserService;
 import jakarta.transaction.Transactional;
@@ -26,6 +28,12 @@ public class UserController {
         this.friendshipService = friendshipService;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<PrivateUserDTO> getUserData (){
+        UserModel user = this.userService.getCurrentUser();
+        PrivateUserDTO userDTO = PrivateUserDTO.privateUserDTOConverter(user);
+        return ResponseEntity.ok(userDTO);
+    }
 
     @PutMapping("/update")
     public ResponseEntity<UserModel> updateUser(@RequestBody UserModel user){
@@ -44,8 +52,8 @@ public class UserController {
 
     @GetMapping("/event/{eventId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<List<UserModel>> findUsersByEventId(@PathVariable("eventId") UUID eventId){
-        List<UserModel> users = this.userService.findUsersByEventId(eventId);
+    public ResponseEntity<Set<PublicUserDTO>> findUsersByEventId(@PathVariable("eventId") UUID eventId){
+        Set<PublicUserDTO> users = this.userService.findUsersByEventId(eventId);
         return ResponseEntity.ok(users);
     }
 

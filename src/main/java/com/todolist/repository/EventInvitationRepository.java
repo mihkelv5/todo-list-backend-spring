@@ -7,11 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface EventInvitationRepository extends JpaRepository<EventInvitationModel, UUID> {
 
     EventInvitationModel findEventInvitationById(UUID id);
+
 
     void deleteEventInvitationById(UUID id);
     List<EventInvitationModel> findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(UserModel user, Date date, boolean isAccepted);

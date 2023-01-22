@@ -1,6 +1,7 @@
 package com.todolist.service;
 
 import com.todolist.entity.UserModel;
+import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.entity.dto.UserCreationDTO;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -55,12 +57,18 @@ public class UserService {
         return this.userRepository.findUsersNotInEvent(eventId);
     }
 
-    public List<UserModel> findUsersByEventId(UUID eventId) {
-        return this.userRepository.findUsersByEventsId(eventId);
+    public Set<PublicUserDTO> findUsersByEventId(UUID eventId) {
+        Set<UserModel> eventUsers = this.userRepository.findUsersByEventsId(eventId);
+        return eventUsers.stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
     }
 
     public boolean isUsernameInEvent(String username, UUID eventId){
         return this.userRepository.existsUserModelByUsernameAndEventsId(username, eventId);
+    }
+
+    public Set<PublicUserDTO> getInvitedUsers(UUID eventId){
+        Set<UserModel> userModels = this.userRepository.findUserModelsByEventInviteId(eventId);
+        return userModels.stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
     }
 
 

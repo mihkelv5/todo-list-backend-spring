@@ -1,6 +1,7 @@
 package com.todolist.entity.dto;
 
 import com.todolist.entity.EventModel;
+import com.todolist.entity.UserModel;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +14,7 @@ public class EventModelDTO {
     private String description;
     private Set<PublicUserDTO> eventUsers;
 
+    private Set<PublicUserDTO> invitedUsers;
     public EventModelDTO() {
     }
 
@@ -21,7 +23,6 @@ public class EventModelDTO {
         event.setId(eventModel.getId());
         event.setTitle(eventModel.getTitle());
         event.setDescription(eventModel.getDescription());
-
         Set<PublicUserDTO> eventUsers = eventModel.getEventUsers().stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
         event.setEventUsers(eventUsers);
         return event;
@@ -57,5 +58,13 @@ public class EventModelDTO {
 
     public void setEventUsers(Set<PublicUserDTO> eventUsers) {
         this.eventUsers = eventUsers;
+    }
+
+    public Set<PublicUserDTO> getInvitedUsers() {
+        return invitedUsers;
+    }
+
+    public void setInvitedUsers(Set<PublicUserDTO> invitedUsers) {
+        this.invitedUsers = invitedUsers;
     }
 }

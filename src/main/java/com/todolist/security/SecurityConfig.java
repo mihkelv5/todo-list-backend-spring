@@ -33,10 +33,5 @@ public class SecurityConfig{
                 .addFilterBefore(usernamePasswordAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(refreshTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
     }
-
-
-
-
 }

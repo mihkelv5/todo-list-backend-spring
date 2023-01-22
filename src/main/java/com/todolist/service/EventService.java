@@ -48,6 +48,8 @@ public class EventService {
     public EventModelDTO findEventById(UUID eventId){
         EventModel event = this.eventRepository.findEventById(eventId);
         EventModelDTO eventModelDTO = EventModelDTO.EventModelDTOConverter(event);
+        Set<PublicUserDTO> invitedUsers = this.userService.getInvitedUsers(eventId);
+        eventModelDTO.setInvitedUsers(invitedUsers);
         return eventModelDTO;
     }
 
