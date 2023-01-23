@@ -26,7 +26,7 @@ public class InviteController {
 
     @PostMapping("/event/{eventId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<?> inviteUserToEvent(@PathVariable("eventId") UUID eventId, @RequestBody Set<String> usernames) {
+    public ResponseEntity<?> inviteUsersToEvent(@PathVariable("eventId") UUID eventId, @RequestBody Set<String> usernames) {
         Set<PublicUserDTO> invitedUsers = this.eventInvitationService.inviteUserToEvent(eventId, usernames);
         if(!invitedUsers.isEmpty()){
             return ResponseEntity.ok(invitedUsers);
@@ -70,7 +70,7 @@ public class InviteController {
     public ResponseEntity<?> deleteEventInvitation(@PathVariable UUID eventId, @PathVariable String username){
         this.eventInvitationService.deleteInvite(username, eventId);
         Map<String, String> response = new HashMap<>();
-        response.put("response", "deleted user: " + username);
+        response.put("username", username);
         return ResponseEntity.ok(response);
 
     }
