@@ -30,8 +30,8 @@ public class EventController {
     }
 
     @GetMapping("/all") //can be done with current user
-    public ResponseEntity<Set<EventModelDTO>> findEventsByUserId(){
-        Set<EventModelDTO> events = this.eventService.findEventsByUser();
+    public ResponseEntity<List<EventModelDTO>> findEventsByUserId(){
+        List<EventModelDTO> events = this.eventService.findEventsByUser();
         return ResponseEntity.ok(events);
     }
 

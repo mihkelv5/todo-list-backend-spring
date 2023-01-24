@@ -53,12 +53,12 @@ public class EventService {
         return eventModelDTO;
     }
 
-    public Set<EventModelDTO> findEventsByUser(){
+    public List<EventModelDTO> findEventsByUser(){
         UserModel user = this.userService.getCurrentUser();
         Set<UserModel> users = new HashSet<>();
         users.add(user);
-        Set<EventModel> events = eventRepository.findEventsByEventUsersIn(users);
-        return events.stream().map(EventModelDTO::EventModelDTOConverter).collect(Collectors.toSet());
+        List<EventModel> events = eventRepository.findEventsByEventUsersIn(users);
+        return events.stream().map(EventModelDTO::EventModelDTOConverter).collect(Collectors.toList());
     }
 
     //UPDATE methods

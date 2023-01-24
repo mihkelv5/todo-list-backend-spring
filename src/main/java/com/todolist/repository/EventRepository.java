@@ -12,7 +12,7 @@ public interface EventRepository extends JpaRepository<EventModel, UUID> {
 
     EventModel findEventById(UUID eventId);
 
-    Set<EventModel> findEventsByEventUsersIn(Set<UserModel> users);
+    List<EventModel> findEventsByEventUsersIn(Set<UserModel> users);
     void deleteEventById (UUID id);
 
     boolean existsEventModelByIdAndEventUsersId (UUID eventId, UUID userId);
