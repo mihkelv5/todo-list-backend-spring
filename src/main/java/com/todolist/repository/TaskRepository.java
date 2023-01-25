@@ -15,9 +15,9 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
     List<TaskModel> findTasksByDate(Date date);
 
-    Set<TaskModel> findTasksByOwnerUser(UserModel user);
+    List<TaskModel> findTasksByOwnerUser(UserModel user);
 
-    Set<TaskModel> findTasksByOwnerUserAndEventIdIsNull(UserModel user);
+    List<TaskModel> findTasksByOwnerUserAndEventIdIsNull(UserModel user);
 
     List<TaskModel> findTasksByEventId(UUID eventId);
 
@@ -25,7 +25,7 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
     void deleteTasksByEventId(UUID eventId);
 
-    Set<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);
+    List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);
 
     boolean existsTaskByIdAndOwnerUserIdOrIdAndAssignedUsersId(UUID taskId, UUID userId, UUID taskIdAgain, UUID assignedUserId);
 

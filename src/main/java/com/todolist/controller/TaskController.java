@@ -43,23 +43,23 @@ public class TaskController {
 
     //READ Methods
     @GetMapping("/user/all")
-    public ResponseEntity<Set<TaskDTO>> getTasksByUser(){
-        Set<TaskDTO> tasks = taskService.findTasksByUser();
+    public ResponseEntity<List<TaskDTO>> getTasksByUser(){
+        List<TaskDTO> tasks = taskService.findTasksByUser();
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/user/private")
-    public ResponseEntity<Set<TaskDTO>> getTasksByUserWhereEventNull(){
+    public ResponseEntity<List<TaskDTO>> getTasksByUserWhereEventNull(){
 
-        Set<TaskDTO> tasks = taskService.findTasksByUserWhereEventNull();
+        List<TaskDTO> tasks = taskService.findTasksByUserWhereEventNull();
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/event/{eventId}/user")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<Set<TaskDTO>> getTasksByAssignedUserWithEvent(@PathVariable UUID eventId){
+    public ResponseEntity<List<TaskDTO>> getTasksByAssignedUserWithEvent(@PathVariable UUID eventId){
 
-        Set<TaskDTO> tasks = this.taskService.findUserTasksWithAssignedUsernamesAndEventId(eventId); //fix that username and eventId positions aren't changed
+        List<TaskDTO> tasks = this.taskService.findUserTasksWithAssignedUsernamesAndEventId(eventId); //fix that username and eventId positions aren't changed
         return ResponseEntity.ok(tasks);
     }
 

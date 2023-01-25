@@ -21,6 +21,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Duration;
 import java.util.*;
 
@@ -67,8 +68,10 @@ public class AuthController {
 
         // finds refresh token cookie and sets the duration of it to 1 second, so it would instantly expire. Using 0 seconds produced some weird errors.
         Cookie[] cookies = request.getCookies();
-        Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
-        optionalCookie.ifPresent(cookie -> this.refreshTokenService.deleteRefreshTokenById(cookie.getValue()));
+        if(cookies != null){
+            Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
+            optionalCookie.ifPresent(cookie -> this.refreshTokenService.deleteRefreshTokenById(cookie.getValue()));
+        }
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("response", "logged out");
         ResponseCookie refreshCookie = ResponseCookie.from(SecurityConstant.REFRESH_TOKEN, "")

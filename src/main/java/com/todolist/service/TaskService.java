@@ -51,15 +51,15 @@ public class TaskService {
         return taskRepository.findTasksByDate(date);
     }
 
-    public Set<TaskDTO> findTasksByUser() {
+    public List<TaskDTO> findTasksByUser() {
         UserModel user = this.userService.getCurrentUser();
-        Set<TaskModel> tasks = taskRepository.findTasksByOwnerUser(user);
-        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toSet());
+        List<TaskModel> tasks = taskRepository.findTasksByOwnerUser(user);
+        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toList());
     }
-    public Set<TaskDTO> findTasksByUserWhereEventNull(){
+    public List<TaskDTO> findTasksByUserWhereEventNull(){
         UserModel user = this.userService.getCurrentUser();
-        Set<TaskModel> tasks =  taskRepository.findTasksByOwnerUserAndEventIdIsNull(user);
-        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toSet());
+        List<TaskModel> tasks =  taskRepository.findTasksByOwnerUserAndEventIdIsNull(user);
+        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toList());
     }
 
     public Set<TaskDTO> findTasksByEvent(UUID eventId) {
@@ -67,10 +67,10 @@ public class TaskService {
         return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toSet());
     }
 
-    public Set<TaskDTO> findUserTasksWithAssignedUsernamesAndEventId(UUID eventId){
+    public List<TaskDTO> findUserTasksWithAssignedUsernamesAndEventId(UUID eventId){
         UserModel user = this.userService.getCurrentUser();
-        Set<TaskModel> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
-        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toSet());
+        List<TaskModel> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
+        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toList());
     }
 
     //READ methods for security
