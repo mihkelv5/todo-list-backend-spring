@@ -10,9 +10,8 @@ import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+
+import java.util.*;
 
 
 @RestController
@@ -28,9 +27,9 @@ public class TaskController {
 
     //CREATE methods
     @PostMapping("/add")
-    public ResponseEntity<TaskModel> addTask(@RequestBody TaskModel task){
+    public ResponseEntity<TaskDTO> addTask(@RequestBody TaskModel task){
         try {
-            TaskModel newTask = taskService.addTask(task);
+            TaskDTO newTask = TaskDTO.TaskDTOConverter(taskService.addTask(task));
             return ResponseEntity.ok(newTask);
 
         }catch (NullPointerException e){
@@ -86,7 +85,6 @@ public class TaskController {
     @PreAuthorize("@preAuthMethodFilter.checkIfUserCreatedTask(#taskId)")
     @PreFilter(filterTarget = "usernames", value = "@preAuthMethodFilter.usernamesInEvent(filterObject, #eventId)")
     public ResponseEntity<TaskDTO> assignUsersToTask(@PathVariable UUID taskId, @PathVariable UUID eventId, @RequestBody List<String> usernames){
-        //usernames.forEach(System.out::println);
         TaskDTO task = this.taskService.assignUsersToTask(taskId, usernames);
         return ResponseEntity.ok(task);
     }
@@ -120,12 +118,8 @@ public class TaskController {
     @PreAuthorize("@preAuthMethodFilter.checkIfUserCreatedTask(#taskId)")
     public ResponseEntity<?> deleteTask(@PathVariable("taskId") UUID taskId) {
         taskService.deleteTask(taskId);
-        return ResponseEntity.ok().build();
+        Map<String, String> response = new HashMap<>();
+        response.put("response", "task deleted");
+        return ResponseEntity.ok().body(response);
     }
-
-
-
-
-
-
 }

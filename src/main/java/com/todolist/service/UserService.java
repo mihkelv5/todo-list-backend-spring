@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,11 @@ public class UserService {
 
     //POST method
 
-    public UserModel addUser(UserCreationDTO userDTO){
+    public UserModel addUser(UserCreationDTO userDTO) throws CredentialNotFoundException {
+        if(userDTO.getUsername() == null || userDTO.getEmail() == null || userDTO.getPassword() == null){
+            throw new CredentialNotFoundException("User must have username, email and password");
+        }
+
         if(userRepository.existsByUsername(userDTO.getUsername())){
             throw new DuplicateKeyException("Username already taken");
         }
