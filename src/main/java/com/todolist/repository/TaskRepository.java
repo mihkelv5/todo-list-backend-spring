@@ -3,6 +3,7 @@ package com.todolist.repository;
 import com.todolist.entity.TaskModel;
 import com.todolist.entity.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,8 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
     TaskModel findTaskById(UUID taskId);
 
-    List<TaskModel> findTasksByDate(Date date);
+    @Query("Select t FROM TaskModel t WHERE t.date <= :before AND t.date >= :after")
+    List<TaskModel> findTasksBetweenDates(Date before, Date after);
 
     List<TaskModel> findTasksByOwnerUser(UserModel user);
 

@@ -6,6 +6,7 @@ import com.todolist.entity.UserModel;
 import com.todolist.entity.dto.TaskDTO;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +48,8 @@ public class TaskService {
         return taskRepository.findTaskById(taskId);
     }
 
-    public List<TaskModel> findTaskByDate(Date date) {
-        return taskRepository.findTasksByDate(date);
+    public List<TaskModel> findTaskByDates(Date before, Date after) {
+        return taskRepository.findTasksBetweenDates(before, after);
     }
 
     public List<TaskDTO> findTasksByUser() {
@@ -58,7 +59,7 @@ public class TaskService {
     }
     public List<TaskDTO> findTasksByUserWhereEventNull(){
         UserModel user = this.userService.getCurrentUser();
-        List<TaskModel> tasks =  taskRepository.findTasksByOwnerUserAndEventIdIsNull(user);
+        List<TaskModel> tasks = taskRepository.findTasksByOwnerUserAndEventIdIsNull(user);
         return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toList());
     }
 
@@ -75,24 +76,22 @@ public class TaskService {
 
     //READ methods for security
     public boolean isUserTaskCreatorOrAssignedToTask(UUID taskId, UUID userId){
-
         return this.taskRepository.existsTaskByIdAndOwnerUserIdOrIdAndAssignedUsersId(taskId, userId, taskId, userId);
     }
 
     public boolean isUserTaskCreator(UUID taskId, UUID userId) {
-
         return this.taskRepository.existsTaskByIdAndOwnerUserId(taskId, userId);
     }
 
     //UPDATE methods
-    public TaskModel updateTask(UUID taskId, TaskModel updatedTask) {
+    public TaskDTO updateTask(UUID taskId, TaskModel updatedTask) {
         TaskModel task = taskRepository.findTaskById(taskId);
         task.setTitle(updatedTask.getTitle());
         task.setDate(updatedTask.getDate());
         task.setComplete(updatedTask.isComplete());
         task.setDescription(updatedTask.getDescription());
         task.setColor(updatedTask.getColor());
-        return taskRepository.save(task);
+        return TaskDTO.TaskDTOConverter(taskRepository.save(task));
 
     }
 
@@ -104,17 +103,17 @@ public class TaskService {
 
     public TaskDTO completeTask(UUID taskId, Boolean isComplete){
         TaskModel task = taskRepository.findTaskById(taskId);
-        if(task != null){
-            task.setComplete(isComplete);
-            taskRepository.save(task);
+        if(task == null){
+            throw new EntityNotFoundException("Task with id " + taskId + " not found");
         }
+        task.setComplete(isComplete);
+        taskRepository.save(task);
         return TaskDTO.TaskDTOConverter(task);
     }
 
-    public TaskDTO assignUsersToTask(UUID taskId, List<String> usernames) {
+    public TaskDTO assignUsersToTask(UUID taskId, Set<String> usernames) {
         TaskModel task = this.taskRepository.findTaskById(taskId);
-        Set<String> usernameSet = new HashSet<>(usernames);
-        Set<UserModel> userSet = this.userService.findAllUsersByUsernames(usernameSet);
+        Set<UserModel> userSet = this.userService.findAllUsersByUsernames(usernames);
         task.setAssignedUsers(userSet);
         return TaskDTO.TaskDTOConverter(this.taskRepository.save(task));
     }

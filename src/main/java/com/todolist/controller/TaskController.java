@@ -84,7 +84,7 @@ public class TaskController {
     @PutMapping("/assign/{taskId}/event/{eventId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserCreatedTask(#taskId)")
     @PreFilter(filterTarget = "usernames", value = "@preAuthMethodFilter.usernamesInEvent(filterObject, #eventId)")
-    public ResponseEntity<TaskDTO> assignUsersToTask(@PathVariable UUID taskId, @PathVariable UUID eventId, @RequestBody List<String> usernames){
+    public ResponseEntity<TaskDTO> assignUsersToTask(@PathVariable UUID taskId, @PathVariable UUID eventId, @RequestBody Set<String> usernames){
         TaskDTO task = this.taskService.assignUsersToTask(taskId, usernames);
         return ResponseEntity.ok(task);
     }
@@ -98,8 +98,8 @@ public class TaskController {
 
     @PutMapping("/update/{taskId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserCreatedTask(#taskId)")
-    public ResponseEntity<TaskModel> updateTask(@PathVariable("taskId") UUID taskId, @RequestBody TaskModel task){
-        TaskModel updatePost = taskService.updateTask(taskId, task);
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable("taskId") UUID taskId, @RequestBody TaskModel task){
+        TaskDTO updatePost = taskService.updateTask(taskId, task);
         return ResponseEntity.ok(updatePost);
     }
 

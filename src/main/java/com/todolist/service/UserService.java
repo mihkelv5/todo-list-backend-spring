@@ -97,8 +97,7 @@ public class UserService {
     public UserModel getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        Optional<UserModel> user = userRepository.findById(userDetails.getId());
-        return user.orElseGet(UserModel::new);
+        return userRepository.findUserById(userDetails.getId());
     }
 
 }
