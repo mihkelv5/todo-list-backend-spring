@@ -43,11 +43,11 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         try {
             Cookie[] cookies = request.getCookies();
             Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
             String username = request.getHeader("username");
-
             String refreshToken = optionalCookie.orElseThrow().getValue();
 
             Authentication authentication = new RefreshTokenAuthToken(username, refreshToken);

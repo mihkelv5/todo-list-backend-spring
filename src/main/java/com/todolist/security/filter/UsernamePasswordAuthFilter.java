@@ -44,7 +44,6 @@ public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
             String username = request.getHeader("username");
             String password = request.getHeader("password");
 
-
             Authentication unauthenticated = new UsernamePasswordAuthToken(username, password);
             authenticationManager.authenticate(unauthenticated); //throws error if user is not authenticated.
 

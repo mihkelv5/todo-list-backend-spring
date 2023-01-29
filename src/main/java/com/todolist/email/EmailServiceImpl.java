@@ -28,7 +28,7 @@ public class EmailServiceImpl{
             mailMessage.setText(message);
 
 
-            mailSender.send(mailMessage);
+            this.mailSender.send(mailMessage);
             return "Mail sent";
         } catch (Exception e){
             return "Error sending mail";

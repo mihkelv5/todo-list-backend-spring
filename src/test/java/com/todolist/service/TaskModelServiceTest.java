@@ -1,5 +1,6 @@
 package com.todolist.service;
 
+import com.todolist.email.CustomJavaMailSender;
 import com.todolist.entity.EventModel;
 import com.todolist.entity.TaskModel;
 import com.todolist.entity.UserModel;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,6 +45,9 @@ class TaskModelServiceTest {
     UserService userService;
     @InjectMocks
     TaskService taskService;
+
+    @Mock
+    CustomJavaMailSender javaMailSender;
 
     @BeforeEach
     void setUp() {
