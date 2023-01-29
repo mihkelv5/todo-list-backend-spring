@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users") //renamed to users as h2 does not allow "user" - Testing purposes
 public class UserModel implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")

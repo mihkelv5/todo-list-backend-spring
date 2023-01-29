@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
@@ -26,6 +25,7 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
     void deleteTaskById(UUID taskId);
 
     void deleteTasksByEventId(UUID eventId);
+
 
     List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);
 

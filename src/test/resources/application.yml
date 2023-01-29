@@ -7,7 +7,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER;
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=user,USER;
     username: sa
     password: sa
     driver-class-name: org.h2.Driver
@@ -19,5 +19,6 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         show_sql: false
+
     open-in-view: true
 
