@@ -3,27 +3,19 @@ package com.todolist.repository;
 import com.todolist.entity.EventModel;
 import com.todolist.entity.TaskModel;
 import com.todolist.entity.UserModel;
-import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("test")
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Sql(scripts = {"classpath:tasks.sql"})
@@ -45,11 +37,11 @@ class TaskModelRepositoryTest {
         user.setUsername("username");
         user.setPassword("password");
         user.setEmail("email@email.ee");
-        this.userRepository.save(user);
+        this.user = this.userRepository.save(user);
 
         event.setTitle("event");
         event.setDescription("event");
-        this.eventRepository.save(event); //to get id
+        this.event = this.eventRepository.save(event); //to get id
     }
 
 
@@ -121,9 +113,6 @@ class TaskModelRepositoryTest {
     void itShouldAssignUserToTask() {
 
         //setup
-        UUID eventId = this.eventRepository.findAll().get(0).getId();
-        UserModel user = this.userRepository.findByUsername("username");
-
         TaskModel task = this.testTaskRepository.findAll().get(0);
         Set<UserModel> users = new HashSet<>();
         users.add(user);
@@ -134,12 +123,116 @@ class TaskModelRepositoryTest {
         this.testTaskRepository.save(task);
 
         //query
-        TaskModel actualTask = this.testTaskRepository.findTasksByAssignedUsersAndEventId(user, eventId).get(0);
+        TaskModel actualTask = this.testTaskRepository.findTasksByAssignedUsersAndEventId(this.user, this.event.getId()).get(0);
 
         //assert
         assertEquals(task.getTitle(), actualTask.getTitle());
 
     }
+    @Test
+    void shouldFindTasksByOwner(){
+        //setup
+        List<TaskModel> tasks = this.testTaskRepository.findAll();
+        tasks.get(0).setOwnerUser(this.user);
+        this.testTaskRepository.saveAll(tasks);
+
+        //query
+        List<TaskModel> actualTasks = this.testTaskRepository.findTasksByOwnerUser(this.user);
+
+        //assert
+        assertEquals(1, actualTasks.size());
+        assertEquals(actualTasks.get(0).getOwnerUser().getUsername(), this.user.getUsername());
+
+    }
+    @Test
+    void shouldFindTasksByOwnerWithoutEvent() {
+        //setup
+            //all tasks are registered to the owner, but only one is assigned to event. Goal is to get tasks that are user private tasks.
+        List<TaskModel> tasks = this.testTaskRepository.findAll();
+        tasks.forEach(task -> task.setOwnerUser(this.user));
+        tasks.get(0).setEventId(this.event.getId());
+        this.testTaskRepository.saveAll(tasks);
+
+        //query
+        List<TaskModel> actualTasks = this.testTaskRepository.findTasksByOwnerUserAndEventIdIsNull(this.user);
+
+        //assert
+        assertEquals( 1, actualTasks.size());
+        assertNull(actualTasks.get(0).getEventId());
+        assertEquals(actualTasks.get(0).getOwnerUser().getUsername(), this.user.getUsername());
+    }
+
+    @Test
+    void shouldFindTasksByEventId() {
+        //setup
+        List<TaskModel> tasks = this.testTaskRepository.findAll();
+        tasks.get(0).setEventId(this.event.getId());
+        this.testTaskRepository.saveAll(tasks);
+
+        //query
+        List<TaskModel> actualTasks = this.testTaskRepository.findTasksByEventId(this.event.getId());
+
+        //assert
+        assertEquals(1, actualTasks.size());
+        assertEquals(this.event.getId(), actualTasks.get(0).getEventId());
+    }
+
+    @Test
+    void shouldDeleteTasksByEventId() {
+        //setup
+        List<TaskModel> tasksWithEvent = new ArrayList<>();
+            //create 10 tasks, half of them will have events assigned to them
+        for (int i = 0; i < 10; i++) {
+            TaskModel task = new TaskModel();
+            task.setTitle("task" + i);
+            task.setComplete(false);
+            if(i % 2 == 0){
+                task.setEventId(this.event.getId());
+            }
+            tasksWithEvent.add(task);
+        }
+        this.testTaskRepository.saveAll(tasksWithEvent);
+
+        //query
+        this.testTaskRepository.deleteTasksByEventId(this.event.getId());
+        List<TaskModel> actualTasks = this.testTaskRepository.findAll();
+
+        actualTasks.forEach(task -> assertNull(task.getEventId())); //none of the events should have task assigned to them.
+    }
+
+
+    @Test
+    void shouldExistByIdAndAssignedUserId(){ //technically could be tested in previous tests, but I think it is good practice to test everything separately.
+        //setup
+        TaskModel task = this.testTaskRepository.findAll().get(0);
+        Set<UserModel> users = new HashSet<>();
+        users.add(this.user);
+        task.setAssignedUsers(users); //saved set cant be immutable, so has to be done in this way. (?)
+        task = this.testTaskRepository.save(task); //to get its id;
+
+        //query
+        boolean doesActuallyExist = this.testTaskRepository.existsTaskByIdAndAssignedUsersId(task.getId(), this.user.getId());
+
+        //assert
+        assertTrue(doesActuallyExist);
+    }
+
+    @Test
+    void shouldExistByIdAndOwnerUserId(){ //technically could be tested in previous tests, but I think it is good practice to test everything separately.
+        //setup
+        TaskModel task = this.testTaskRepository.findAll().get(0);
+
+        task.setOwnerUser(this.user); //saved set cant be immutable, so has to be done in this way. (?)
+        task = this.testTaskRepository.save(task); //to get its id;
+
+        //query
+        boolean doesActuallyExist = this.testTaskRepository.existsTaskByIdAndOwnerUserId(task.getId(), this.user.getId());
+
+        //assert
+        assertTrue(doesActuallyExist);
+    }
+
+
 
 
 

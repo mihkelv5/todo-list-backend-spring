@@ -47,7 +47,7 @@ public class PreAuthMethodFilter {
 
     public boolean checkIfUserInTask(UUID taskId){
         UUID userId = this.getCurrentUserId();
-        return this.taskService.isUserTaskCreatorOrAssignedToTask(taskId, userId);
+        return this.taskService.isUserTaskCreatorOrAssignedToTask(taskId, userId) || this.taskService.isUserTaskCreator(taskId, userId);
 
     }
 

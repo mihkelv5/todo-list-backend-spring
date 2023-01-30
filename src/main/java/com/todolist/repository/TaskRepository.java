@@ -29,7 +29,8 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
     List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);
 
-    boolean existsTaskByIdAndOwnerUserIdOrIdAndAssignedUsersId(UUID taskId, UUID userId, UUID taskIdAgain, UUID assignedUserId);
+
+    boolean existsTaskByIdAndAssignedUsersId(UUID taskId, UUID assignedUserId);
 
     boolean existsTaskByIdAndOwnerUserId(UUID taskId, UUID userId);
 }

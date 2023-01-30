@@ -76,7 +76,7 @@ public class TaskService {
 
     //READ methods for security
     public boolean isUserTaskCreatorOrAssignedToTask(UUID taskId, UUID userId){
-        return this.taskRepository.existsTaskByIdAndOwnerUserIdOrIdAndAssignedUsersId(taskId, userId, taskId, userId);
+        return this.taskRepository.existsTaskByIdAndAssignedUsersId(taskId, userId);
     }
 
     public boolean isUserTaskCreator(UUID taskId, UUID userId) {

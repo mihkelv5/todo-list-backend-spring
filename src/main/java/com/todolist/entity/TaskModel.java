@@ -35,15 +35,10 @@ public class TaskModel implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private UserModel ownerUser;
-    @Transient
-    private String ownerUsername;
 
     @ManyToMany
     @JsonIgnore
     private Set<UserModel> assignedUsers = new HashSet<>();
-
-    @Transient
-    private Set<String> assignedUsernames = new HashSet<>();
 
     public TaskModel() {}
 
@@ -158,19 +153,5 @@ public class TaskModel implements Serializable {
         this.assignedUsers = assignedUsers;
     }
 
-    public String getOwnerUsername() {
-        return ownerUsername;
-    }
 
-    public void setOwnerUsername(String ownerUsername) {
-        this.ownerUsername = ownerUsername;
-    }
-
-    public Set<String> getAssignedUsernames() {
-        return assignedUsernames;
-    }
-
-    public void setAssignedUsernames(Set<String> assignedUsername) {
-        this.assignedUsernames = assignedUsername;
-    }
 }
