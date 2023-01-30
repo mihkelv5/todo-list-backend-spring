@@ -1,10 +1,8 @@
 package com.todolist.service;
 
-import com.todolist.entity.EventModel;
 import com.todolist.entity.UserModel;
 import com.todolist.entity.dto.UserCreationDTO;
 import com.todolist.repository.UserRepository;
-import com.todolist.security.userdetails.UserDetailsImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -14,11 +12,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.security.auth.login.CredentialNotFoundException;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -91,7 +87,7 @@ class UserServiceTest {
         user.setId(UUID.randomUUID());
         user.setUsername("test");
         user.setEmail("email");
-        when(userRepository.findByUsername(anyString())).thenReturn(user);
+        when(userRepository.findUserByUsername(anyString())).thenReturn(user);
 
         //run
         UserModel actual = this.userService.findUserByUsername(MethodOrderer.Random.RANDOM_SEED_PROPERTY_NAME);
@@ -105,7 +101,7 @@ class UserServiceTest {
     void shouldNotFindUserByUsernameThatDoesNotExist() {
 
         //setup
-        when(userRepository.findByUsername(anyString())).thenReturn(null);
+        when(userRepository.findUserByUsername(anyString())).thenReturn(null);
 
         //run
         UserModel actual = this.userService.findUserByUsername(MethodOrderer.Random.RANDOM_SEED_PROPERTY_NAME);
@@ -178,7 +174,7 @@ class UserServiceTest {
         user.setUsername("user");
         user.setEnabled(false);
 
-        when(this.userRepository.findByUsername(anyString())).thenReturn(user);
+        when(this.userRepository.findUserByUsername(anyString())).thenReturn(user);
 
         //run
         this.userService.activateUser(MethodOrderer.Random.RANDOM_SEED_PROPERTY_NAME);

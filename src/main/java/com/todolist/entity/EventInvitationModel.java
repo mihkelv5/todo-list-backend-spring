@@ -45,10 +45,11 @@ public class EventInvitationModel implements Serializable {
         this.isBlocked = false;
     }
 
-    public EventInvitationModel(UUID id, String requesterUsername, UUID eventId, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
-        this.id = id;
+    public EventInvitationModel(String requesterUsername, UUID eventId, String eventName, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
+
         this.requesterUsername = requesterUsername;
         this.eventId = eventId;
+        this.eventName = eventName;
         this.isAccepted = isAccepted;
         this.isBlocked = isRejected;
         this.expirationDate = expirationDate;

@@ -70,7 +70,7 @@ public class EventService {
         return EventModelDTO.EventModelDTOConverter(event);
     }
     public EventModel saveUserToEvent(UUID eventId, String username){
-        UserModel user = this.userRepository.findByUsername(username);
+        UserModel user = this.userRepository.findUserByUsername(username);
         EventModel event = this.eventRepository.findEventById(eventId);
         event.registerUserToEvent(user);
         return this.eventRepository.save(event);

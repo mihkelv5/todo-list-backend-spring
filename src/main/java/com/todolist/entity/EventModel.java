@@ -33,8 +33,7 @@ public class EventModel {
     public EventModel() {
     }
 
-    public EventModel(UUID id, String title, String description) {
-        this.id = id;
+    public EventModel(String title, String description) {
         this.title = title;
         this.description = description;
     }

@@ -32,10 +32,10 @@ public class UserService {
             throw new CredentialNotFoundException("User must have username, email and password");
         }
 
-        if(userRepository.existsByUsername(userDTO.getUsername())){
+        if(userRepository.existsUserByUsername(userDTO.getUsername())){
             throw new DuplicateKeyException("Username already taken");
         }
-        if(userRepository.existsByEmail(userDTO.getEmail())){
+        if(userRepository.existsByUserEmail(userDTO.getEmail())){
             throw new DuplicateKeyException("Email already taken");
         }
 
@@ -51,7 +51,7 @@ public class UserService {
 
     //GET methods
     public UserModel findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findUserByUsername(username);
     }
 
     public Set<UserModel> findAllUsersByUsernames(Set<String> usernames) {
@@ -59,7 +59,7 @@ public class UserService {
     }
 
     public Set<PublicUserDTO> findUsersNotInEvent(UUID eventId) {
-        return this.userRepository.findUsersNotInEvent(eventId).stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
+        return this.userRepository.findUsersNotInEventByEventId(eventId).stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
     }
 
     public Set<PublicUserDTO> findUsersByEventId(UUID eventId) {
@@ -76,7 +76,7 @@ public class UserService {
     }
 
     public Set<PublicUserDTO> getInvitedUsers(UUID eventId){
-        Set<UserModel> userModels = this.userRepository.findUserModelsFromEventInvitationWithEventId(eventId);
+        Set<UserModel> userModels = this.userRepository.findAlreadyInvitedUsersByEventId(eventId);
         return userModels.stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
     }
 
@@ -88,7 +88,7 @@ public class UserService {
     }
 
     public void activateUser(String username){
-        UserModel user = this.userRepository.findByUsername(username);
+        UserModel user = this.userRepository.findUserByUsername(username);
         user.setEnabled(true);
         this.userRepository.save(user);
     }
