@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -55,9 +55,7 @@ public class EventService {
 
     public List<EventModelDTO> findEventsByUser(){
         UserModel user = this.userService.getCurrentUser();
-        Set<UserModel> users = new HashSet<>();
-        users.add(user);
-        List<EventModel> events = eventRepository.findEventsByEventUsersIn(users);
+        List<EventModel> events = eventRepository.findEventsByUser(user);
         return events.stream().map(EventModelDTO::EventModelDTOConverter).collect(Collectors.toList());
     }
 
@@ -87,7 +85,7 @@ public class EventService {
     }
 
     public boolean isUserInEvent(UUID eventId, UUID userId) {
-        return this.eventRepository.existsEventModelByIdAndEventUsersId(eventId, userId);
+        return this.eventRepository.isUserInEvent(eventId, userId);
     }
 
 
