@@ -52,7 +52,7 @@ public class AuthController {
     public ResponseEntity<?> createRefreshToken() {
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("response", "Refresh token created");
-        return ResponseEntity.ok("responseBody");
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-access")

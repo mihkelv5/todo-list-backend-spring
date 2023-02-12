@@ -5,7 +5,6 @@ package com.todolist.service;
 import com.todolist.entity.EventInvitationModel;
 import com.todolist.entity.EventModel;
 import com.todolist.entity.UserModel;
-import com.todolist.entity.dto.EventModelDTO;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
@@ -47,20 +46,17 @@ public class EventInvitationService {
             EventInvitationModel invitation = new EventInvitationModel();
             invitation.setRequesterUsername(requester.getUsername());
             invitation.setInvitedUser(invitedUser);
-            invitation.setEventId(eventId);
-            invitation.setEventName(event.getTitle());
+            invitation.setEvent(event);
             this.eventInvitationRepository.save(invitation);
             invitedUsers.add(PublicUserDTO.publicUserDTOConverter(invitedUser));
         });
-
-
         return invitedUsers;
     }
 
     //READ methods
     public List<EventInvitationModel> findUserInvitations () {
         UserModel user = this.userService.getCurrentUser();
-        return this.eventInvitationRepository.findAllByInvitedUserAndExpirationDateIsAfterAndIsAccepted(user, new Date(), false);
+        return this.eventInvitationRepository.findValidEventInvitesByUser(user, new Date(), false);
     }
 
 
@@ -79,7 +75,7 @@ public class EventInvitationService {
     public boolean acceptInvite(UUID invitationId){
         EventInvitationModel invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
 
-        EventModel event = this.eventService.saveUserToEvent(invitation.getEventId(), invitation.getInvitedUser().getUsername());
+        EventModel event = this.eventService.saveUserToEvent(invitation.getEvent().getId(), invitation.getInvitedUser().getUsername());
         this.eventInvitationRepository.deleteEventInvitationById(invitationId); //if event is not found, invite is still deleted
 
         return event != null; //true if event exists.

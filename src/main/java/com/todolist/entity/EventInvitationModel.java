@@ -21,11 +21,11 @@ public class EventInvitationModel implements Serializable {
 
     @Column(nullable = false)
     private String requesterUsername;
-    @Column(nullable = false)
-    private UUID eventId;
 
-    @Column(nullable = false)
-    private String eventName;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name= "event_id", referencedColumnName = "id")
+    private EventModel event;
     @Column(nullable = false, name = "is_accepted")
     private boolean isAccepted;
     @Column(nullable = false)
@@ -45,11 +45,10 @@ public class EventInvitationModel implements Serializable {
         this.isBlocked = false;
     }
 
-    public EventInvitationModel(String requesterUsername, UUID eventId, String eventName, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
+    public EventInvitationModel(String requesterUsername, boolean isAccepted, boolean isRejected, Date expirationDate, UserModel invitedUser) {
 
         this.requesterUsername = requesterUsername;
-        this.eventId = eventId;
-        this.eventName = eventName;
+
         this.isAccepted = isAccepted;
         this.isBlocked = isRejected;
         this.expirationDate = expirationDate;
@@ -70,14 +69,6 @@ public class EventInvitationModel implements Serializable {
 
     public void setRequesterUsername(String requesterUsername) {
         this.requesterUsername = requesterUsername;
-    }
-
-    public UUID getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(UUID eventId) {
-        this.eventId = eventId;
     }
 
     public boolean isAccepted() {
@@ -108,11 +99,11 @@ public class EventInvitationModel implements Serializable {
         this.isBlocked = true;
     }
 
-    public String getEventName() {
-        return eventName;
+    public EventModel getEvent() {
+        return event;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setEvent(EventModel event) {
+        this.event = event;
     }
 }

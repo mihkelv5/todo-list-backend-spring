@@ -248,7 +248,9 @@ class UserRepositoryTest {
             user.setEmail("email" + i);
             this.userTestRepository.save(user);
             if(i % 2 == 0){
-                eventInvitationTestRepository.save(generateEventInvitationModel(user, event.getId()));
+                EventInvitationModel invite = generateEventInvitationModel(user);
+                invite.setEvent(event);
+                eventInvitationTestRepository.save(invite);
             }
         }
 
@@ -259,8 +261,8 @@ class UserRepositoryTest {
         assertEquals(5, alreadyInvitedUsers.size());
     }
 
-    private EventInvitationModel generateEventInvitationModel(UserModel user, UUID eventId) throws ParseException {
+    private EventInvitationModel generateEventInvitationModel(UserModel user) throws ParseException {
         Date date = new SimpleDateFormat("dd/MM/yyyy").parse("10/10/3000");
-        return new EventInvitationModel("randomUser", eventId, "title", false, false, date, user);
+        return new EventInvitationModel("randomUser",  false, false, date, user);
     }
 }

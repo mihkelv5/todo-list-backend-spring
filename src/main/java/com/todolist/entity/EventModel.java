@@ -1,6 +1,7 @@
 package com.todolist.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -29,6 +30,10 @@ public class EventModel {
     )
 
     private Set<UserModel> eventUsers = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "event")
+    private Set<EventInvitationModel> invites = new HashSet<>();
 
     public EventModel() {
     }
@@ -78,4 +83,11 @@ public class EventModel {
         this.description = description;
     }
 
+    public Set<EventInvitationModel> getInvites() {
+        return invites;
+    }
+
+    public void setInvites(Set<EventInvitationModel> invites) {
+        this.invites = invites;
+    }
 }

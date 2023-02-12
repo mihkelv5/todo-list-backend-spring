@@ -12,7 +12,7 @@ public interface EventRepository extends JpaRepository<EventModel, UUID> {
 
     EventModel findEventById(UUID eventId);
 
-    @Query("select e from EventModel e where :user = (select eu from e.eventUsers eu)")
+    @Query("select e from EventModel e where :user in (select eu from e.eventUsers eu)")
     List<EventModel> findEventsByUser(UserModel user);
     void deleteEventById (UUID id);
 

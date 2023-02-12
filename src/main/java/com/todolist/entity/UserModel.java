@@ -46,14 +46,12 @@ public class UserModel implements Serializable {
     @OneToMany(mappedBy = "user")
     private Set<Friendship> friends = new HashSet<>();
 
-    public UserModel(String username, String email, String password, boolean enabled, String roles) {
+    public UserModel(String username, String email) {
         this.username = username;
         this.email = email;
-        this.password = password;
-        this.enabled = enabled;
-        this.roles = roles;
-
     }
+
+
 
     public UserModel() {}
 
