@@ -5,6 +5,7 @@ package com.todolist.service;
 import com.todolist.entity.EventInvitationModel;
 import com.todolist.entity.EventModel;
 import com.todolist.entity.UserModel;
+import com.todolist.entity.dto.EventModelDTO;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
@@ -72,13 +73,13 @@ public class EventInvitationService {
     //DELETE methods
 
     @Transactional
-    public boolean acceptInvite(UUID invitationId){
+    public EventModelDTO acceptInvite(UUID invitationId){
         EventInvitationModel invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
 
         EventModel event = this.eventService.saveUserToEvent(invitation.getEvent().getId(), invitation.getInvitedUser().getUsername());
         this.eventInvitationRepository.deleteEventInvitationById(invitationId); //if event is not found, invite is still deleted
 
-        return event != null; //true if event exists.
+        return EventModelDTO.EventModelDTOConverter(event); //true if event exists.
     }
 
     @Transactional

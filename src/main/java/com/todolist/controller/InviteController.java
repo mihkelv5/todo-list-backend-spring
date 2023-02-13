@@ -1,6 +1,7 @@
 package com.todolist.controller;
 
 import com.todolist.entity.EventInvitationModel;
+import com.todolist.entity.dto.EventModelDTO;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.service.EventInvitationService;
 import org.springframework.http.ResponseEntity;
@@ -42,26 +43,18 @@ public class InviteController {
     }
 
     @Transactional
-    @PutMapping("/accept/{invitationId}")
+    @PutMapping("/respond/{invitationId}/accepted/{isAccepted}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserIsInvited(#invitationId)")
-    public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") UUID invitationId) {
-        boolean success = this.eventInvitationService.acceptInvite(invitationId);
-        if(success){
+    public ResponseEntity<?> acceptEventInvitation(@PathVariable ("invitationId") UUID invitationId, @PathVariable boolean isAccepted) {
+
+        if(isAccepted){
+            EventModelDTO event = this.eventInvitationService.acceptInvite(invitationId);
+            return ResponseEntity.ok(event);
+        } else {
+            this.eventInvitationService.declineInvite(invitationId);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
-    }
 
-
-    @Transactional
-    @DeleteMapping("/decline/{invitationId}")
-    @PreAuthorize("@preAuthMethodFilter.checkIfUserIsInvited(#invitationId)")
-    public ResponseEntity<?> declineEventInvitation(@PathVariable("invitationId") UUID invitationId){
-        boolean success = this.eventInvitationService.declineInvite(invitationId);
-        if(success) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
     }
 
     @Transactional
