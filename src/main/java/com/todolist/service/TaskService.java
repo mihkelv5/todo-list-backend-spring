@@ -1,8 +1,8 @@
 package com.todolist.service;
 
-import com.todolist.entity.EventModel;
-import com.todolist.entity.TaskModel;
-import com.todolist.entity.UserModel;
+import com.todolist.entity.event.EventModel;
+import com.todolist.entity.task.TaskModel;
+import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.TaskDTO;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;

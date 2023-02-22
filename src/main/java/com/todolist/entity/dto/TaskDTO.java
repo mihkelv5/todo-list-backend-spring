@@ -1,9 +1,6 @@
 package com.todolist.entity.dto;
 
-import com.todolist.entity.TaskModel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import com.todolist.entity.task.TaskModel;
 
 import java.util.Date;
 import java.util.Set;

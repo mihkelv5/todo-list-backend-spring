@@ -3,11 +3,9 @@ package com.todolist.controller;
 import com.todolist.SensitiveData;
 import com.todolist.constant.SecurityConstant;
 import com.todolist.email.EmailServiceImpl;
-import com.todolist.entity.Friendship;
-import com.todolist.entity.UserModel;
-import com.todolist.entity.VerificationToken;
+import com.todolist.entity.user.UserModel;
+import com.todolist.entity.token.VerificationToken;
 import com.todolist.entity.dto.UserCreationDTO;
-import com.todolist.service.FriendshipService;
 import com.todolist.service.RefreshTokenService;
 import com.todolist.service.UserService;
 import com.todolist.service.VerificationTokenService;
@@ -21,7 +19,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Duration;
 import java.util.*;
 

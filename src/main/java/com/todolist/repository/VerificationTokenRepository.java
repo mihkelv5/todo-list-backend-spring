@@ -1,6 +1,6 @@
 package com.todolist.repository;
 
-import com.todolist.entity.VerificationToken;
+import com.todolist.entity.token.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

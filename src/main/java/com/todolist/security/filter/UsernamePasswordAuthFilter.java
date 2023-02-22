@@ -1,8 +1,7 @@
 package com.todolist.security.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todolist.constant.SecurityConstant;
-import com.todolist.entity.RefreshToken;
+import com.todolist.entity.token.RefreshToken;
 import com.todolist.security.authentication.UsernamePasswordAuthToken;
 import com.todolist.service.RefreshTokenService;
 import com.todolist.service.UserDetailsServiceImpl;
@@ -15,13 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 

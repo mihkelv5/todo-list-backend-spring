@@ -1,9 +1,7 @@
 package com.todolist.entity.dto;
 
-import com.todolist.entity.EventModel;
-import com.todolist.entity.UserModel;
+import com.todolist.entity.event.EventModel;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;

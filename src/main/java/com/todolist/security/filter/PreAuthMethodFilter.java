@@ -1,7 +1,6 @@
 package com.todolist.security.filter;
 
-import com.todolist.entity.EventInvitationModel;
-import com.todolist.entity.TaskModel;
+import com.todolist.entity.task.TaskModel;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.service.EventInvitationService;
 import com.todolist.service.EventService;

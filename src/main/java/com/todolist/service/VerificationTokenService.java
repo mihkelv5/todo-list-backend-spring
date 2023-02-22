@@ -1,6 +1,6 @@
 package com.todolist.service;
 
-import com.todolist.entity.VerificationToken;
+import com.todolist.entity.token.VerificationToken;
 import com.todolist.repository.VerificationTokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

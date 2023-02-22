@@ -1,6 +1,6 @@
 package com.todolist.controller;
 
-import com.todolist.entity.EventModel;
+import com.todolist.entity.event.EventModel;
 import com.todolist.entity.dto.EventModelDTO;
 import com.todolist.service.EventService;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController

@@ -1,6 +1,6 @@
 package com.todolist.entity.dto;
 
-import com.todolist.entity.Friendship;
+import com.todolist.entity.user.Friendship;
 
 public class FriendshipDTO {
 

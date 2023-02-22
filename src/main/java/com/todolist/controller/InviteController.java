@@ -1,6 +1,6 @@
 package com.todolist.controller;
 
-import com.todolist.entity.EventInvitationModel;
+import com.todolist.entity.event.EventInvitationModel;
 import com.todolist.entity.dto.EventModelDTO;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.service.EventInvitationService;

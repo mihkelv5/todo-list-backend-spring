@@ -1,6 +1,6 @@
 package com.todolist.entity.dto;
 
-import com.todolist.entity.UserModel;
+import com.todolist.entity.user.UserModel;
 
 public class PublicUserDTO {
     //for now only username will be visible

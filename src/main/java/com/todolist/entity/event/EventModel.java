@@ -1,13 +1,13 @@
-package com.todolist.entity;
+package com.todolist.entity.event;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.todolist.entity.event.EventInvitationModel;
+import com.todolist.entity.user.UserModel;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "event")
@@ -34,6 +34,10 @@ public class EventModel {
     @JsonIgnore
     @OneToMany(mappedBy = "event")
     private Set<EventInvitationModel> invites = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "event")
+    private List<EventLogEntry> entries = new ArrayList<>();
 
     public EventModel() {
     }
@@ -89,5 +93,13 @@ public class EventModel {
 
     public void setInvites(Set<EventInvitationModel> invites) {
         this.invites = invites;
+    }
+
+    public List<EventLogEntry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(List<EventLogEntry> entries) {
+        this.entries = entries;
     }
 }

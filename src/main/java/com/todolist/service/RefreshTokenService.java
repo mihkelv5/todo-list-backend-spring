@@ -1,6 +1,6 @@
 package com.todolist.service;
 
-import com.todolist.entity.RefreshToken;
+import com.todolist.entity.token.RefreshToken;
 import com.todolist.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.BadCredentialsException;

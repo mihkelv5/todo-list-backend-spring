@@ -1,9 +1,9 @@
 package com.todolist.service;
 
 import com.todolist.email.CustomJavaMailSender;
-import com.todolist.entity.EventModel;
-import com.todolist.entity.TaskModel;
-import com.todolist.entity.UserModel;
+import com.todolist.entity.event.EventModel;
+import com.todolist.entity.task.TaskModel;
+import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.entity.dto.TaskDTO;
 import com.todolist.repository.EventRepository;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,6 +1,6 @@
 package com.todolist.security.provider;
 
-import com.todolist.entity.RefreshToken;
+import com.todolist.entity.token.RefreshToken;
 import com.todolist.security.authentication.RefreshTokenAuthToken;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.service.RefreshTokenService;
@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

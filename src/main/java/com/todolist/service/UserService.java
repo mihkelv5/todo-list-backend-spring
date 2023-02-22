@@ -1,6 +1,6 @@
 package com.todolist.service;
 
-import com.todolist.entity.UserModel;
+import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.entity.dto.UserCreationDTO;
 import com.todolist.security.userdetails.UserDetailsImpl;

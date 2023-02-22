@@ -1,8 +1,8 @@
 package com.todolist.repository;
 
-import com.todolist.entity.EventModel;
-import com.todolist.entity.TaskModel;
-import com.todolist.entity.UserModel;
+import com.todolist.entity.event.EventModel;
+import com.todolist.entity.task.TaskModel;
+import com.todolist.entity.user.UserModel;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

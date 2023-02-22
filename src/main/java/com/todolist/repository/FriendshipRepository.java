@@ -1,7 +1,7 @@
 package com.todolist.repository;
 
-import com.todolist.entity.Friendship;
-import com.todolist.entity.UserModel;
+import com.todolist.entity.user.Friendship;
+import com.todolist.entity.user.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

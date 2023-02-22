@@ -1,7 +1,7 @@
 package com.todolist.service;
 
-import com.todolist.entity.Friendship;
-import com.todolist.entity.UserModel;
+import com.todolist.entity.user.Friendship;
+import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.FriendshipDTO;
 import com.todolist.repository.FriendshipRepository;
 import jakarta.transaction.Transactional;

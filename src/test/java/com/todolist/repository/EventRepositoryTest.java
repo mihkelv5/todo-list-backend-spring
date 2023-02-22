@@ -1,7 +1,7 @@
 package com.todolist.repository;
 
-import com.todolist.entity.EventModel;
-import com.todolist.entity.UserModel;
+import com.todolist.entity.event.EventModel;
+import com.todolist.entity.user.UserModel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

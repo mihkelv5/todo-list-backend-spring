@@ -1,8 +1,11 @@
-package com.todolist.entity;
+package com.todolist.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.todolist.entity.event.EventInvitationModel;
+import com.todolist.entity.event.EventModel;
+import com.todolist.entity.task.TaskModel;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 

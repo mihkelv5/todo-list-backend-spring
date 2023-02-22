@@ -1,6 +1,6 @@
 package com.todolist.repository;
 
-import com.todolist.entity.RefreshToken;
+import com.todolist.entity.token.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

@@ -1,9 +1,8 @@
 package com.todolist.controller;
 
-import com.todolist.entity.TaskModel;
+import com.todolist.entity.task.TaskModel;
 import com.todolist.entity.dto.TaskDTO;
 import com.todolist.service.TaskService;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreFilter;

@@ -1,10 +1,9 @@
-package com.todolist.entity;
+package com.todolist.entity.user;
 
+import com.todolist.entity.user.UserModel;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 
 @Entity

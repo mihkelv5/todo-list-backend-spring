@@ -1,4 +1,4 @@
-package com.todolist.entity;
+package com.todolist.entity.token;
 
 import com.todolist.constant.SecurityConstant;
 import jakarta.persistence.*;
