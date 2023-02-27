@@ -49,6 +49,10 @@ public class UserModel implements Serializable {
     @OneToMany(mappedBy = "user")
     private Set<Friendship> friends = new HashSet<>();
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private ProfilePictureData profilePictureData;
+
     public UserModel(String username, String email) {
         this.username = username;
         this.email = email;
@@ -138,5 +142,13 @@ public class UserModel implements Serializable {
 
     public void setFriends(Set<Friendship> friends) {
         this.friends = friends;
+    }
+
+    public ProfilePictureData getProfilePictureData() {
+        return profilePictureData;
+    }
+
+    public void setProfilePictureData(ProfilePictureData profilePictureData) {
+        this.profilePictureData = profilePictureData;
     }
 }

@@ -7,13 +7,16 @@ import com.todolist.entity.dto.FriendshipDTO;
 import com.todolist.entity.dto.PrivateUserDTO;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.service.FriendshipService;
+import com.todolist.service.ProfilePictureService;
 import com.todolist.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -23,15 +26,19 @@ public class UserController {
     private final UserService userService;
     private final FriendshipService friendshipService;
 
-    public UserController(UserService userService, FriendshipService friendshipService) {
+    private final ProfilePictureService profilePictureService;
+
+    public UserController(UserService userService, FriendshipService friendshipService, ProfilePictureService profilePictureService) {
         this.userService = userService;
         this.friendshipService = friendshipService;
+        this.profilePictureService = profilePictureService;
     }
 
     @GetMapping("/me")
     public ResponseEntity<PrivateUserDTO> getUserData (){
         UserModel user = this.userService.getCurrentUser();
         PrivateUserDTO userDTO = PrivateUserDTO.privateUserDTOConverter(user);
+        userDTO.setImage(profilePictureService.downloadImageFromServer(user.getUsername()));
         return ResponseEntity.ok(userDTO);
     }
 
@@ -66,6 +73,14 @@ public class UserController {
     public ResponseEntity<?> addFriend(@RequestParam String username){
         Friendship friendship = this.friendshipService.addFriend(username);
         return ResponseEntity.ok(friendship);
+    }
+
+    @PostMapping("/profile/picture")
+    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile image) throws IOException {
+        String message = this.profilePictureService.uploadImageToServer(image);
+        Map<String, String> response = new HashMap<>();
+        response.put("response", message);
+        return ResponseEntity.ok(response);
     }
 
 

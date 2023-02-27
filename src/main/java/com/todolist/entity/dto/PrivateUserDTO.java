@@ -1,6 +1,7 @@
 package com.todolist.entity.dto;
 
 import com.todolist.entity.user.UserModel;
+import org.springframework.core.io.ByteArrayResource;
 
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ public class PrivateUserDTO {
     String username;
     String email;
     //etc
-
+    private ByteArrayResource image;
 
     public PrivateUserDTO() {
     }
@@ -44,5 +45,13 @@ public class PrivateUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public byte[] getImage() {
+        return image.getByteArray();
+    }
+
+    public void setImage(byte[] image) {
+        this.image = new ByteArrayResource(image);
     }
 }

@@ -79,7 +79,7 @@ public class EventInvitationService {
         EventModel event = this.eventService.saveUserToEvent(invitation.getEvent().getId(), invitation.getInvitedUser().getUsername());
         this.eventInvitationRepository.deleteEventInvitationById(invitationId); //if event is not found, invite is still deleted
 
-        return EventModelDTO.EventModelDTOConverter(event); //true if event exists.
+        return EventModelDTO.EventModelDTOConverter(event);
     }
 
     @Transactional

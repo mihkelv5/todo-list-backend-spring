@@ -26,14 +26,16 @@ public class EventService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ProfilePictureService profilePictureService;
 
     @Autowired
-    public EventService(EventRepository eventRepository, EventInvitationRepository eventInvitationRepository, TaskRepository taskRepository, UserService userService, UserRepository userRepository) {
+    public EventService(EventRepository eventRepository, EventInvitationRepository eventInvitationRepository, TaskRepository taskRepository, UserService userService, UserRepository userRepository, ProfilePictureService profilePictureService) {
         this.eventRepository = eventRepository;
         this.eventInvitationRepository = eventInvitationRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.profilePictureService = profilePictureService;
     }
 
     //CREATE methods
@@ -49,6 +51,7 @@ public class EventService {
         EventModel event = this.eventRepository.findEventById(eventId);
         EventModelDTO eventModelDTO = EventModelDTO.EventModelDTOConverter(event);
         Set<PublicUserDTO> invitedUsers = this.userService.getInvitedUsers(eventId);
+        invitedUsers.forEach(user -> user.setImage(profilePictureService.downloadImageFromServer(user.getUsername()))); //kinda hacky way to add user images
         eventModelDTO.setInvitedUsers(invitedUsers);
         return eventModelDTO;
     }

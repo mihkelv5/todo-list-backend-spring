@@ -1,13 +1,14 @@
 package com.todolist.entity.dto;
 
 import com.todolist.entity.user.UserModel;
+import org.springframework.core.io.ByteArrayResource;
 
 public class PublicUserDTO {
     //for now only username will be visible
 
     private String username;
 
-
+    private ByteArrayResource image;
     public PublicUserDTO() {
     }
 
@@ -24,5 +25,13 @@ public class PublicUserDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public byte[] getImage() {
+        return image.getByteArray();
+    }
+
+    public void setImage(byte[] image) {
+        this.image = new ByteArrayResource(image);
     }
 }
