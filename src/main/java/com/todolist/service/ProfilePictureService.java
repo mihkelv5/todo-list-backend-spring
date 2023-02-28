@@ -8,7 +8,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static com.todolist.SensitiveData.IMAGE_LOCATION;
 
 
 @Service
@@ -29,17 +34,16 @@ public class ProfilePictureService {
         }
 
         UserModel user = this.userService.getCurrentUser();
+        String imagePath = IMAGE_LOCATION + "/" + user.getUsername() + "/" + image.getOriginalFilename();
 
-
+        Files.createDirectories(Paths.get(imagePath));
 
         ProfilePictureData uploadedData = new ProfilePictureData();
         uploadedData.setName(image.getOriginalFilename());
         uploadedData.setUser(user);
-        uploadedData.setImageData(ImageUtil.compressImage(image.getBytes()));
+        uploadedData.setImgPath(imagePath);
 
-        if(uploadedData.getImageData().length > 75000){ //max file size ~70kb
-            return "File size too big";
-        }
+        image.transferTo(new File(imagePath));
 
         ProfilePictureData savedData = profilePictureRepository.save(uploadedData);
 
@@ -50,8 +54,11 @@ public class ProfilePictureService {
     }
 
     public byte[] downloadImageFromServer(String username) {
-        ProfilePictureData savedData = this.profilePictureRepository.findByUsername(username);
-        return ImageUtil.decompressImage(savedData.getImageData());
-
+        try {
+            ProfilePictureData savedData = this.profilePictureRepository.findByUsername(username);
+            return  Files.readAllBytes(new File(savedData.getImgPath()).toPath());
+        } catch (IOException e){
+            return null;
+        }
     }
 }

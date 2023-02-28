@@ -16,9 +16,7 @@ public class ProfilePictureData {
     @OneToOne
     @JoinColumn(name= "user_id", referencedColumnName = "id")
     private UserModel user;
-    @Lob
-    @Column(length = 1000)
-    private byte[] imageData;
+    private String imgPath;
 
     public ProfilePictureData() {
     }
@@ -39,13 +37,6 @@ public class ProfilePictureData {
         this.name = name;
     }
 
-    public byte[] getImageData() {
-        return imageData;
-    }
-
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
-    }
 
     public UserModel getUser() {
         return user;
@@ -53,5 +44,13 @@ public class ProfilePictureData {
 
     public void setUser(UserModel user) {
         this.user = user;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 }
