@@ -3,8 +3,8 @@ package com.todolist.service;
 import com.todolist.entity.user.ProfilePictureData;
 import com.todolist.entity.user.UserModel;
 import com.todolist.repository.ProfilePictureRepository;
-import com.todolist.util.ImageUtil;
 import jakarta.transaction.Transactional;
+import org.aspectj.util.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Base64;
 
 import static com.todolist.SensitiveData.IMAGE_LOCATION;
 
@@ -33,15 +34,23 @@ public class ProfilePictureService {
             throw new RuntimeException("file too big");
         }
 
-        UserModel user = this.userService.getCurrentUser();
-        String imagePath = IMAGE_LOCATION + "/" + user.getUsername() + "/" + image.getOriginalFilename();
 
-        Files.createDirectories(Paths.get(imagePath));
+
+        UserModel user = this.userService.getCurrentUser();
+        String imagePath = IMAGE_LOCATION + "/" + user.getUsername() + "/profile.jpg";
+
+
+
+        Files.deleteIfExists(Paths.get(imagePath)); //deletes old profile picture if exists
+        Files.createDirectories(Paths.get(imagePath)); //creates user folder if it does not exist
 
         ProfilePictureData uploadedData = new ProfilePictureData();
-        uploadedData.setName(image.getOriginalFilename());
+        uploadedData.setName("profile.jpg");
         uploadedData.setUser(user);
         uploadedData.setImgPath(imagePath);
+
+
+
 
         image.transferTo(new File(imagePath));
 
@@ -53,12 +62,17 @@ public class ProfilePictureService {
 
     }
 
-    public byte[] downloadImageFromServer(String username) {
+    public String getUserImage(String username) {
+
+        ProfilePictureData savedData = this.profilePictureRepository.findByUsername(username);
+        String imagePath = IMAGE_LOCATION + "/" + username + "/profile.jpg";
         try {
-            ProfilePictureData savedData = this.profilePictureRepository.findByUsername(username);
-            return  Files.readAllBytes(new File(savedData.getImgPath()).toPath());
-        } catch (IOException e){
-            return null;
+            byte[] image = FileUtil.readAsByteArray(new File(imagePath));
+            return Base64.getEncoder().encodeToString(image);
+        } catch (IOException e) {
+            throw new RuntimeException("Image for user: " + username + " not found");
         }
+
+
     }
 }

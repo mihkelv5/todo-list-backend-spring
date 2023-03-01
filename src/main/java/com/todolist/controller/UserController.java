@@ -10,8 +10,6 @@ import com.todolist.service.FriendshipService;
 import com.todolist.service.ProfilePictureService;
 import com.todolist.service.UserService;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -40,16 +38,10 @@ public class UserController {
     public ResponseEntity<PrivateUserDTO> getUserData (){
         UserModel user = this.userService.getCurrentUser();
         PrivateUserDTO userDTO = PrivateUserDTO.privateUserDTOConverter(user);
-        userDTO.setImage(profilePictureService.downloadImageFromServer(user.getUsername()));
+        userDTO.setImageString(profilePictureService.getUserImage(user.getUsername()));
         return ResponseEntity.ok(userDTO);
     }
 
-    @GetMapping("/img")
-    public ResponseEntity<?> getImage() {
-        UserModel user = this.userService.getCurrentUser();
-        byte[] img = this.profilePictureService.downloadImageFromServer(user.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(img);
-    }
 
     @PutMapping("/update")
     public ResponseEntity<UserModel> updateUser(@RequestBody UserModel user){

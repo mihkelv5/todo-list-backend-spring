@@ -51,7 +51,7 @@ public class EventService {
         EventModel event = this.eventRepository.findEventById(eventId);
         EventModelDTO eventModelDTO = EventModelDTO.EventModelDTOConverter(event);
         Set<PublicUserDTO> invitedUsers = this.userService.getInvitedUsers(eventId);
-        invitedUsers.forEach(user -> user.setImage(profilePictureService.downloadImageFromServer(user.getUsername()))); //kinda hacky way to add user images
+        invitedUsers.forEach(user -> user.setImageString(this.profilePictureService.getUserImage(user.getUsername()))); //kinda hacky way to add user images
         eventModelDTO.setInvitedUsers(invitedUsers);
         return eventModelDTO;
     }

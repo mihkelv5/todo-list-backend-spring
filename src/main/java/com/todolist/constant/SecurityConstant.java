@@ -1,7 +1,7 @@
 package com.todolist.constant;
 
 public class SecurityConstant {
-    public static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 15; // 15 min in milliseconds
+    public static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 15 * 1000; // Long time for development purposes, without 1000 would be 15 min
 
     public static final long REGISTRATION_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 5; //5 days in seconds
     public static final long REFRESH_EXPIRATION_TIME = 60 * 60 * 24 * 5; //5 days in seconds
