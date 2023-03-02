@@ -21,14 +21,17 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final EventRepository eventRepository;
     private final UserService userService;
+    
+    private final ProfilePictureService profilePictureService;
 
 
 
     @Autowired
-    public TaskService(TaskRepository taskrepository, EventRepository eventRepository, UserService userService) {
+    public TaskService(TaskRepository taskrepository, EventRepository eventRepository, UserService userService, ProfilePictureService profilePictureService) {
         this.taskRepository = taskrepository;
         this.eventRepository = eventRepository;
         this.userService = userService;
+        this.profilePictureService = profilePictureService;
     }
 
 
@@ -65,7 +68,11 @@ public class TaskService {
 
     public Set<TaskDTO> findTasksByEvent(UUID eventId) {
         List<TaskModel> tasks = taskRepository.findTasksByEventId(eventId);
-        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toSet());
+        Set<TaskDTO> taskDTOs = tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toSet());
+        taskDTOs.forEach(task -> //not a good way to do it, as it makes many queries to db
+                task.getAssignedUsers().forEach(assignedUser ->
+                        assignedUser.setImageString(this.profilePictureService.getUserImage(assignedUser.getUsername()))));
+        return taskDTOs;
     }
 
     public List<TaskDTO> findUserTasksWithAssignedUsernamesAndEventId(UUID eventId){
@@ -115,7 +122,9 @@ public class TaskService {
         TaskModel task = this.taskRepository.findTaskById(taskId);
         Set<UserModel> userSet = this.userService.findAllUsersByUsernames(usernames);
         task.setAssignedUsers(userSet);
-        return TaskDTO.TaskDTOConverter(this.taskRepository.save(task));
+        TaskDTO taskDTO=  TaskDTO.TaskDTOConverter(this.taskRepository.save(task));
+        taskDTO.getAssignedUsers().forEach(user -> user.setImageString(this.profilePictureService.getUserImage(user.getUsername())));
+        return taskDTO;
     }
 
 

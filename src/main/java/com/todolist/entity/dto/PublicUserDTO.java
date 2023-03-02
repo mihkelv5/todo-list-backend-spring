@@ -1,9 +1,10 @@
 package com.todolist.entity.dto;
 
 import com.todolist.entity.user.UserModel;
+import com.todolist.service.ProfilePictureService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class PublicUserDTO {
-    //for now only username will be visible
 
     private String username;
 

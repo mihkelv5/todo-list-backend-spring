@@ -54,6 +54,7 @@ public class UserController {
     @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<Set<PublicUserDTO>> userSearchNoEvent(@PathVariable UUID eventId){
         Set<PublicUserDTO> matchingUsers = this.userService.findUsersNotInEvent(eventId);
+        matchingUsers.forEach(user -> user.setImageString(this.profilePictureService.getUserImage(user.getUsername())));
         return ResponseEntity.ok(matchingUsers);
     }
 

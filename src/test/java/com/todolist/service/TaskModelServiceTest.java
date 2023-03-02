@@ -42,6 +42,9 @@ class TaskModelServiceTest {
     EventRepository eventRepository;
     @InjectMocks
     UserService userService;
+
+    @InjectMocks
+    ProfilePictureService profilePictureService;
     @InjectMocks
     TaskService taskService;
 
@@ -51,7 +54,7 @@ class TaskModelServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        taskService = new TaskService(taskRepository, eventRepository, userService);
+        taskService = new TaskService(taskRepository, eventRepository, userService, profilePictureService);
 
         UsernamePasswordAuthToken token = mock(UsernamePasswordAuthToken.class);
         Authentication authentication = mock(Authentication.class);

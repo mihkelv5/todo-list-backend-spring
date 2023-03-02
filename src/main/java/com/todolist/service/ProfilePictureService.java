@@ -63,16 +63,21 @@ public class ProfilePictureService {
     }
 
     public String getUserImage(String username) {
-
-        ProfilePictureData savedData = this.profilePictureRepository.findByUsername(username);
-        String imagePath = IMAGE_LOCATION + "/" + username + "/profile.jpg";
         try {
-            byte[] image = FileUtil.readAsByteArray(new File(imagePath));
-            return Base64.getEncoder().encodeToString(image);
+
+            ProfilePictureData savedData = this.profilePictureRepository.findByUsername(username);
+            String imagePath = IMAGE_LOCATION + "/" + username + "/profile.jpg";
+            File imageFile = new File(imagePath);
+            if(imageFile.exists()){
+                byte[] image = FileUtil.readAsByteArray(imageFile);
+                return "data:image/jpg;base64," + Base64.getEncoder().encodeToString(image);
+            }
+            else {
+                byte[] image = FileUtil.readAsByteArray(new File(IMAGE_LOCATION + "/default-user.jpg"));
+                return "data:image/jpg;base64," + Base64.getEncoder().encodeToString(image);
+            }
         } catch (IOException e) {
             throw new RuntimeException("Image for user: " + username + " not found");
         }
-
-
     }
 }
