@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.CredentialNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -117,8 +116,12 @@ public class UserService {
         publicUserDTO.setUsername(userModel.getUsername());
         publicUserDTO.setJoinDate(userModel.getJoinDate());
         publicUserDTO.setImageString(profilePictureService.getUserImage(userModel.getUsername()));
+
         publicUserDTO.setTasksCreated(this.taskRepository.countTaskModelByOwnerUser(userModel.getUsername()));
-        //publicUserDTO.setTasksCompleted(this.taskRepository.countTaskModelByAssignedUsersAndComplete(userModel));
+        publicUserDTO.setTasksCompleted(this.taskRepository.countTaskModelByAssignedUserAndComplete(userModel));
+        publicUserDTO.setActiveTasks(this.taskRepository.countTaskModelByAssignedUserAndNotComplete(userModel));
+        publicUserDTO.setGroupsJoined(this.eventRepository.countEventModelsByUser(userModel));
+
         return publicUserDTO;
     }
 
@@ -135,7 +138,12 @@ public class UserService {
         privateUserDTO.setEmail(userModel.getEmail());
         privateUserDTO.setJoinDate(userModel.getJoinDate());
         privateUserDTO.setImageString(profilePictureService.getUserImage(userModel.getUsername()));
+
         privateUserDTO.setTasksCreated(this.taskRepository.countTaskModelByOwnerUser(userModel.getUsername()));
+        privateUserDTO.setTasksCompleted(this.taskRepository.countTaskModelByAssignedUserAndComplete(userModel));
+        privateUserDTO.setActiveTasks(this.taskRepository.countTaskModelByAssignedUserAndNotComplete(userModel));
+        privateUserDTO.setGroupsJoined(this.eventRepository.countEventModelsByUser(userModel));
+
         return privateUserDTO;
     }
 

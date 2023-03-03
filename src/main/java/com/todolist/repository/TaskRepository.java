@@ -29,8 +29,11 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
     @Query("select count(t) from TaskModel t where t.ownerUser.username = ?1")
     int countTaskModelByOwnerUser(String username);
 
-/*    @Query("select count(t) from TaskModel t where :user IN t.assignedUsers  and t.isComplete = true")
-    int countTaskModelByAssignedUsersAndComplete(UserModel user);*/
+    @Query("select count(t) from TaskModel t where :user MEMBER OF t.assignedUsers and t.isComplete = true")
+    int countTaskModelByAssignedUserAndComplete(UserModel user);
+
+    @Query("select count(t) from TaskModel t where :user MEMBER OF t.assignedUsers and t.isComplete = false")
+    int countTaskModelByAssignedUserAndNotComplete(UserModel user);
 
 
     List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);

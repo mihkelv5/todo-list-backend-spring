@@ -16,7 +16,8 @@ public interface EventRepository extends JpaRepository<EventModel, UUID> {
     List<EventModel> findEventsByUser(UserModel user);
     void deleteEventById (UUID id);
 
-
+    @Query("select count(e) from EventModel e where :userModel MEMBER OF e.eventUsers")
+    int countEventModelsByUser(UserModel userModel);
 
     @Query("""
             select (count(e) > 0) from EventModel e inner join e.eventUsers eventUsers
