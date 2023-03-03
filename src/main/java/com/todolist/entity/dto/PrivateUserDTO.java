@@ -2,6 +2,8 @@ package com.todolist.entity.dto;
 
 import com.todolist.entity.user.UserModel;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class PrivateUserDTO {
@@ -10,6 +12,7 @@ public class PrivateUserDTO {
     private String email;
     //etc
     private String imageString;
+    private String joinDate;
 
     public PrivateUserDTO() {
     }
@@ -19,6 +22,7 @@ public class PrivateUserDTO {
         privateUserDTO.setUserId(user.getId());
         privateUserDTO.setUsername(user.getUsername());
         privateUserDTO.setEmail(user.getEmail());
+        privateUserDTO.setJoinDate(user.getJoinDate());
         return privateUserDTO;
     }
 
@@ -46,6 +50,15 @@ public class PrivateUserDTO {
         this.email = email;
     }
 
+    public String getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(Date joinDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(joinDate);
+        this.joinDate = (cal.get(Calendar.DATE)  + "." + (cal.get(Calendar.MONTH)+1) + "." + cal.get(Calendar.YEAR));
+    }
 
     public String getImageString() {
         return imageString;

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
@@ -30,7 +31,7 @@ public class ProfilePictureService {
 
     @Transactional
     public String uploadImageToServer(MultipartFile image) throws IOException {
-        if(image.getSize() > 10485760){
+        if(image.getSize() > 10485760){ //10485760
             throw new IOException("File exceeds the size of 10 MB");
         }
 
@@ -40,9 +41,10 @@ public class ProfilePictureService {
         String imagePath = IMAGE_LOCATION + "/" + user.getUsername() + "/profile.jpg";
 
 
+        Path path = Paths.get(imagePath);
+        Files.deleteIfExists(path); //deletes old profile picture if exists
+        Files.createDirectories(path); //creates user folder if it does not exist
 
-        Files.deleteIfExists(Paths.get(imagePath)); //deletes old profile picture if exists
-        Files.createDirectories(Paths.get(imagePath)); //creates user folder if it does not exist
 
         ProfilePictureData uploadedData = new ProfilePictureData();
         uploadedData.setName("profile.jpg");

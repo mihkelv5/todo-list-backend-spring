@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -31,7 +32,7 @@ public class UserModel implements Serializable {
     private boolean enabled;
     private String roles;
 
-    //public data
+    private Date joinDate;
 
     @JsonIgnore
     @OneToMany(mappedBy = "ownerUser")
@@ -56,11 +57,14 @@ public class UserModel implements Serializable {
     public UserModel(String username, String email) {
         this.username = username;
         this.email = email;
+        this.joinDate = new Date();
     }
 
 
 
-    public UserModel() {}
+    public UserModel() {
+        this.joinDate = new Date();
+    }
 
 
 
@@ -150,5 +154,13 @@ public class UserModel implements Serializable {
 
     public void setProfilePictureData(ProfilePictureData profilePictureData) {
         this.profilePictureData = profilePictureData;
+    }
+
+    public Date getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(Date joinDate) {
+        this.joinDate = joinDate;
     }
 }
