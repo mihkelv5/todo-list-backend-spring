@@ -37,8 +37,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<PrivateUserDTO> getUserData (){
         UserModel user = this.userService.getCurrentUser();
-        PrivateUserDTO userDTO = PrivateUserDTO.privateUserDTOConverter(user);
-        userDTO.setImageString(profilePictureService.getUserImage(user.getUsername()));
+        PrivateUserDTO userDTO = this.userService.privateUserDTOConverter(user);
         return ResponseEntity.ok(userDTO);
     }
 

@@ -14,6 +14,11 @@ public class PrivateUserDTO {
     private String imageString;
     private String joinDate;
 
+    private int groupsJoined;
+    private int tasksCreated;
+    private int tasksCompleted;
+    private int activeTasks;
+
     public PrivateUserDTO() {
     }
 
@@ -66,5 +71,37 @@ public class PrivateUserDTO {
 
     public void setImageString(String imageString) {
         this.imageString = imageString;
+    }
+
+    public int getGroupsJoined() {
+        return groupsJoined;
+    }
+
+    public void setGroupsJoined(int groupsJoined) {
+        this.groupsJoined = groupsJoined;
+    }
+
+    public int getTasksCreated() {
+        return tasksCreated;
+    }
+
+    public void setTasksCreated(int tasksCreated) {
+        this.tasksCreated = tasksCreated;
+    }
+
+    public int getTasksCompleted() {
+        return tasksCompleted;
+    }
+
+    public void setTasksCompleted(int tasksCompleted) {
+        this.tasksCompleted = tasksCompleted;
+    }
+
+    public int getActiveTasks() {
+        return activeTasks;
+    }
+
+    public void setActiveTasks(int activeTasks) {
+        this.activeTasks = activeTasks;
     }
 }

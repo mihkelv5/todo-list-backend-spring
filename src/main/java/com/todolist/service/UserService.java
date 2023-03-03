@@ -1,5 +1,6 @@
 package com.todolist.service;
 
+import com.todolist.entity.dto.PrivateUserDTO;
 import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.entity.dto.UserCreationDTO;
@@ -116,7 +117,7 @@ public class UserService {
         publicUserDTO.setUsername(userModel.getUsername());
         publicUserDTO.setJoinDate(userModel.getJoinDate());
         publicUserDTO.setImageString(profilePictureService.getUserImage(userModel.getUsername()));
-        //publicUserDTO.setTasksCreated(this.taskRepository.countTaskModelByOwnerUser(userModel.getUsername()));
+        publicUserDTO.setTasksCreated(this.taskRepository.countTaskModelByOwnerUser(userModel.getUsername()));
         //publicUserDTO.setTasksCompleted(this.taskRepository.countTaskModelByAssignedUsersAndComplete(userModel));
         return publicUserDTO;
     }
@@ -125,6 +126,17 @@ public class UserService {
         Set<PublicUserDTO> publicUserDTOSet = new HashSet<>();
         users.forEach(user -> publicUserDTOSet.add(this.publicUserDTOConverter(user)));
         return publicUserDTOSet;
+    }
+
+    public PrivateUserDTO privateUserDTOConverter(UserModel userModel){
+        PrivateUserDTO privateUserDTO = new PrivateUserDTO();
+        privateUserDTO.setUserId(userModel.getId());
+        privateUserDTO.setUsername(userModel.getUsername());
+        privateUserDTO.setEmail(userModel.getEmail());
+        privateUserDTO.setJoinDate(userModel.getJoinDate());
+        privateUserDTO.setImageString(profilePictureService.getUserImage(userModel.getUsername()));
+        privateUserDTO.setTasksCreated(this.taskRepository.countTaskModelByOwnerUser(userModel.getUsername()));
+        return privateUserDTO;
     }
 
 }
