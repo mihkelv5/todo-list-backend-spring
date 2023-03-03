@@ -13,15 +13,12 @@ public class PublicUserDTO {
     private String joinDate;
 
     private String imageString;
-    public PublicUserDTO() {
-    }
 
-    //static method so it would be possible to convert to a DTO before sending the data
-    public static PublicUserDTO publicUserDTOConverter(UserModel user){
-        PublicUserDTO publicUser = new PublicUserDTO();
-        publicUser.setUsername(user.getUsername());
-        publicUser.setJoinDate(user.getJoinDate());
-        return publicUser;
+    private int groupsJoined;
+    private int tasksCreated;
+    private int tasksCompleted;
+    private int activeTasks;
+    public PublicUserDTO() {
     }
 
     public String getUsername() {
@@ -48,5 +45,37 @@ public class PublicUserDTO {
 
     public void setImageString(String imageString) {
         this.imageString = imageString;
+    }
+
+    public int getGroupsJoined() {
+        return groupsJoined;
+    }
+
+    public void setGroupsJoined(int groupsJoined) {
+        this.groupsJoined = groupsJoined;
+    }
+
+    public int getTasksCreated() {
+        return tasksCreated;
+    }
+
+    public void setTasksCreated(int tasksCreated) {
+        this.tasksCreated = tasksCreated;
+    }
+
+    public int getTasksCompleted() {
+        return tasksCompleted;
+    }
+
+    public void setTasksCompleted(int tasksCompleted) {
+        this.tasksCompleted = tasksCompleted;
+    }
+
+    public int getActiveTasks() {
+        return activeTasks;
+    }
+
+    public void setActiveTasks(int activeTasks) {
+        this.activeTasks = activeTasks;
     }
 }

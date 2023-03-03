@@ -16,16 +16,6 @@ public class EventModelDTO {
     public EventModelDTO() {
     }
 
-    public static EventModelDTO EventModelDTOConverter(EventModel eventModel){
-        EventModelDTO event = new EventModelDTO();
-        event.setId(eventModel.getId());
-        event.setTitle(eventModel.getTitle());
-        event.setDescription(eventModel.getDescription());
-        Set<PublicUserDTO> eventUsers = eventModel.getEventUsers().stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
-        event.setEventUsers(eventUsers);
-        return event;
-    }
-
     public UUID getId() {
         return id;
     }

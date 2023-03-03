@@ -135,8 +135,8 @@ class TaskModelServiceTest {
         when(taskRepository.save(task2)).thenReturn(task2);
 
         //query
-        TaskModel actual1 = this.taskService.addTask(task1);
-        TaskModel actual2 = this.taskService.addTask(task2);
+        TaskDTO actual1 = this.taskService.addTask(task1);
+        TaskDTO actual2 = this.taskService.addTask(task2);
 
         //assert
         assertAll(

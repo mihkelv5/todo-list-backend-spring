@@ -49,7 +49,7 @@ public class EventInvitationService {
             invitation.setInvitedUser(invitedUser);
             invitation.setEvent(event);
             this.eventInvitationRepository.save(invitation);
-            invitedUsers.add(PublicUserDTO.publicUserDTOConverter(invitedUser));
+            invitedUsers.add(this.userService.publicUserDTOConverter(invitedUser));
         });
         return invitedUsers;
     }
@@ -76,10 +76,10 @@ public class EventInvitationService {
     public EventModelDTO acceptInvite(UUID invitationId){
         EventInvitationModel invitation = this.eventInvitationRepository.findEventInvitationByIdAndExpirationDateIsAfter(invitationId, new Date());
 
-        EventModel event = this.eventService.saveUserToEvent(invitation.getEvent().getId(), invitation.getInvitedUser().getUsername());
+        EventModelDTO eventModelDTO = this.eventService.saveUserToEvent(invitation.getEvent().getId(), invitation.getInvitedUser().getUsername());
         this.eventInvitationRepository.deleteEventInvitationById(invitationId); //if event is not found, invite is still deleted
 
-        return EventModelDTO.EventModelDTOConverter(event);
+        return eventModelDTO;
     }
 
     @Transactional

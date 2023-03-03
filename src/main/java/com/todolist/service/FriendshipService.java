@@ -1,5 +1,6 @@
 package com.todolist.service;
 
+import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.entity.user.Friendship;
 import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.FriendshipDTO;
@@ -31,7 +32,7 @@ public class FriendshipService {
         //probably could be done in one query with custom queries, JPA did not allow me to use UNION with selects
         Set<Friendship> friends = new HashSet<>(this.friendshipRepository.findAllFriendsWhereUser(username));
         //friends.addAll(this.friendshipRepository.findAllFriendsWhereFriend(username));
-        return friends.stream().map(friendship -> FriendshipDTO.friendshipDTOConverter(friendship, username)).collect(Collectors.toSet());
+        return friends.stream().map(friendship -> this.friendshipDTOConverter(friendship, username)).collect(Collectors.toSet());
     }
 
     public Friendship addFriend(String invitedUsername){
@@ -107,5 +108,21 @@ public class FriendshipService {
         }
         Friendship friendship = this.friendshipRepository.findFriendship(currentUser, removedUser);
         this.friendshipRepository.delete(friendship);
+    }
+
+
+    public FriendshipDTO friendshipDTOConverter(Friendship friendship, String currentUser){
+        FriendshipDTO friendshipDTO = new FriendshipDTO();
+
+        // friendships are not saved bidirectionally in the DB, must check one is friend and which is the user itself
+        if(currentUser.equals(friendship.getUser().getUsername())){
+            friendshipDTO.setFriend(this.userService.publicUserDTOConverter(friendship.getUser()));
+        } else {
+            friendshipDTO.setFriend(this.userService.publicUserDTOConverter(friendship.getUser()));
+        }
+        friendshipDTO.setAccepted(friendship.isAccepted());
+        friendshipDTO.setBlocked(friendship.isBlocked());
+
+        return friendshipDTO;
     }
 }

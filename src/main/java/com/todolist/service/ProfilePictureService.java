@@ -22,22 +22,16 @@ import static com.todolist.SensitiveData.IMAGE_LOCATION;
 public class ProfilePictureService {
 
     private final ProfilePictureRepository profilePictureRepository;
-    private final UserService userService;
 
-    public ProfilePictureService(ProfilePictureRepository profilePictureRepository, UserService userService) {
+    public ProfilePictureService(ProfilePictureRepository profilePictureRepository) {
         this.profilePictureRepository = profilePictureRepository;
-        this.userService = userService;
     }
 
     @Transactional
-    public String uploadImageToServer(MultipartFile image) throws IOException {
+    public String uploadImageToServer(MultipartFile image, UserModel user) throws IOException {
         if(image.getSize() > 10485760){ //10485760
             throw new IOException("File exceeds the size of 10 MB");
         }
-
-
-
-        UserModel user = this.userService.getCurrentUser();
         String imagePath = IMAGE_LOCATION + "/" + user.getUsername() + "/profile.jpg";
 
 

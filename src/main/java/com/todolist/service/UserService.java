@@ -3,6 +3,8 @@ package com.todolist.service;
 import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.entity.dto.UserCreationDTO;
+import com.todolist.repository.EventRepository;
+import com.todolist.repository.TaskRepository;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,17 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
 
+    private final TaskRepository taskRepository;
+    private final EventRepository eventRepository;
+
+    private final ProfilePictureService profilePictureService;
+
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, TaskRepository taskRepository, EventRepository eventRepository, ProfilePictureService profilePictureService) {
         this.userRepository = userRepository;
+        this.taskRepository = taskRepository;
+        this.eventRepository = eventRepository;
+        this.profilePictureService = profilePictureService;
     }
 
     //POST method
@@ -59,12 +69,13 @@ public class UserService {
     }
 
     public Set<PublicUserDTO> findUsersNotInEvent(UUID eventId) {
-        return this.userRepository.findUsersNotInEventByEventId(eventId).stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
+        Set<UserModel> usersNotInEventByEventId = this.userRepository.findUsersNotInEventByEventId(eventId);
+        return this.publicUserDTOSetConverter(usersNotInEventByEventId);
     }
 
     public Set<PublicUserDTO> findUsersByEventId(UUID eventId) {
         Set<UserModel> eventUsers = this.userRepository.findUsersByEventsId(eventId);
-        return eventUsers.stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
+        return this.publicUserDTOSetConverter(eventUsers);
     }
 
     public boolean isUsernameInEvent(String username, UUID eventId){
@@ -77,7 +88,7 @@ public class UserService {
 
     public Set<PublicUserDTO> getInvitedUsers(UUID eventId){
         Set<UserModel> userModels = this.userRepository.findAlreadyInvitedUsersByEventId(eventId);
-        return userModels.stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet());
+        return this.publicUserDTOSetConverter(userModels);
     }
 
 
@@ -98,6 +109,22 @@ public class UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         return userRepository.findUserById(userDetails.getId());
+    }
+
+    public PublicUserDTO publicUserDTOConverter(UserModel userModel) {
+        PublicUserDTO publicUserDTO = new PublicUserDTO();
+        publicUserDTO.setUsername(userModel.getUsername());
+        publicUserDTO.setJoinDate(userModel.getJoinDate());
+        publicUserDTO.setImageString(profilePictureService.getUserImage(userModel.getUsername()));
+        //publicUserDTO.setTasksCreated(this.taskRepository.countTaskModelByOwnerUser(userModel.getUsername()));
+        //publicUserDTO.setTasksCompleted(this.taskRepository.countTaskModelByAssignedUsersAndComplete(userModel));
+        return publicUserDTO;
+    }
+
+    public Set<PublicUserDTO> publicUserDTOSetConverter(Set<UserModel> users){
+        Set<PublicUserDTO> publicUserDTOSet = new HashSet<>();
+        users.forEach(user -> publicUserDTOSet.add(this.publicUserDTOConverter(user)));
+        return publicUserDTOSet;
     }
 
 }

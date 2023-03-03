@@ -26,6 +26,12 @@ public interface TaskRepository extends JpaRepository<TaskModel, UUID> {
 
     void deleteTasksByEventId(UUID eventId);
 
+    @Query("select count(t) from TaskModel t where t.ownerUser.username = ?1")
+    int countTaskModelByOwnerUser(String username);
+
+/*    @Query("select count(t) from TaskModel t where :user IN t.assignedUsers  and t.isComplete = true")
+    int countTaskModelByAssignedUsersAndComplete(UserModel user);*/
+
 
     List<TaskModel> findTasksByAssignedUsersAndEventId(UserModel user, UUID eventId);
 

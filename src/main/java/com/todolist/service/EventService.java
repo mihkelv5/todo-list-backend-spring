@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -43,29 +44,19 @@ public class EventService {
     public EventModelDTO addEvent(EventModel event) {
         UserModel user = userService.getCurrentUser();
         event.registerUserToEvent(user);
-        return EventModelDTO.EventModelDTOConverter(this.eventRepository.save(event));
+        return this.eventModelDTOConverter(this.eventRepository.save(event));
     }
 
     //READ methods
     public EventModelDTO findEventById(UUID eventId){
         EventModel event = this.eventRepository.findEventById(eventId);
-        EventModelDTO eventModelDTO = EventModelDTO.EventModelDTOConverter(event);
-
-        Set<PublicUserDTO> invitedUsers = this.userService.getInvitedUsers(eventId);
-        invitedUsers.forEach(user -> user.setImageString(this.profilePictureService.getUserImage(user.getUsername()))); //kinda hacky way to add user images
-        eventModelDTO.setInvitedUsers(invitedUsers);
-
-        Set<PublicUserDTO> eventUsers = eventModelDTO.getEventUsers();
-        eventUsers.forEach(user -> user.setImageString(this.profilePictureService.getUserImage(user.getUsername())));
-        eventModelDTO.setEventUsers(eventUsers);
-
-        return eventModelDTO;
+        return this.eventModelDTOConverter(event);
     }
 
     public List<EventModelDTO> findEventsByUser(){
         UserModel user = this.userService.getCurrentUser();
         List<EventModel> events = eventRepository.findEventsByUser(user);
-        return events.stream().map(EventModelDTO::EventModelDTOConverter).collect(Collectors.toList());
+        return this.eventModelDTOListConverter(events);
     }
 
     //UPDATE methods
@@ -74,13 +65,13 @@ public class EventService {
         event.setTitle(updatedEvent.getTitle());
         event.setDescription(updatedEvent.getDescription());
         eventRepository.save(event);
-        return EventModelDTO.EventModelDTOConverter(event);
+        return this.eventModelDTOConverter(event);
     }
-    public EventModel saveUserToEvent(UUID eventId, String username){
+    public EventModelDTO saveUserToEvent(UUID eventId, String username){
         UserModel user = this.userRepository.findUserByUsername(username);
         EventModel event = this.eventRepository.findEventById(eventId);
         event.registerUserToEvent(user);
-        return this.eventRepository.save(event);
+        return this.eventModelDTOConverter(this.eventRepository.save(event));
     }
 
 
@@ -95,6 +86,28 @@ public class EventService {
 
     public boolean isUserInEvent(UUID eventId, UUID userId) {
         return this.eventRepository.isUserInEvent(eventId, userId);
+    }
+
+
+    public EventModelDTO eventModelDTOConverter(EventModel eventModel){
+        EventModelDTO eventModelDTO = new EventModelDTO();
+        eventModelDTO.setId(eventModel.getId());
+        eventModelDTO.setTitle(eventModel.getTitle());
+        eventModelDTO.setDescription(eventModel.getDescription());
+
+        Set<PublicUserDTO> eventUsers = this.userService.publicUserDTOSetConverter(eventModel.getEventUsers());
+        eventModelDTO.setEventUsers(eventUsers);
+
+        Set<PublicUserDTO> invitedUsers = this.userService.getInvitedUsers(eventModel.getId());
+        eventModelDTO.setInvitedUsers(invitedUsers);
+
+        return eventModelDTO;
+    }
+
+    public List<EventModelDTO> eventModelDTOListConverter(List<EventModel> eventModels){
+        List<EventModelDTO> eventModelDTOList = new ArrayList<>();
+        eventModels.forEach(eventModel -> eventModelDTOList.add(this.eventModelDTOConverter(eventModel)));
+        return eventModelDTOList;
     }
 
 

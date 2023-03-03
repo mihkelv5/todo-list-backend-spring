@@ -1,5 +1,6 @@
 package com.todolist.service;
 
+import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.entity.event.EventModel;
 import com.todolist.entity.task.TaskModel;
 import com.todolist.entity.user.UserModel;
@@ -36,19 +37,23 @@ public class TaskService {
 
 
     //CREATE methods
-    public TaskModel addTask(TaskModel task){
+    public TaskDTO addTask(TaskModel task){
         UserModel user = this.userService.getCurrentUser();
         if(task.getEventId() != null) { //if task is created for an event, sets the event title
             EventModel event = this.eventRepository.findEventById(task.getEventId());
             task.setEventName(event.getTitle());
         }
         task.setOwnerUser(user);
-        return taskRepository.save(task);
+        return this.taskDTOConverter(taskRepository.save(task));
     }
 
     //READ methods
     public TaskModel findTaskById(UUID taskId) {
         return taskRepository.findTaskById(taskId);
+    }
+
+    public TaskDTO findTaskDTOById(UUID taskId) {
+        return this.taskDTOConverter(taskRepository.findTaskById(taskId));
     }
 
     public List<TaskModel> findTaskByDates(Date before, Date after) {
@@ -58,27 +63,23 @@ public class TaskService {
     public List<TaskDTO> findTasksByUser() {
         UserModel user = this.userService.getCurrentUser();
         List<TaskModel> tasks = taskRepository.findTasksByOwnerUser(user);
-        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toList());
+        return this.taskDTOListConverter(tasks);
     }
     public List<TaskDTO> findTasksByUserWhereEventNull(){
         UserModel user = this.userService.getCurrentUser();
         List<TaskModel> tasks = taskRepository.findTasksByOwnerUserAndEventIdIsNull(user);
-        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toList());
+        return this.taskDTOListConverter(tasks);
     }
 
-    public Set<TaskDTO> findTasksByEvent(UUID eventId) {
+    public List<TaskDTO> findTasksByEvent(UUID eventId) {
         List<TaskModel> tasks = taskRepository.findTasksByEventId(eventId);
-        Set<TaskDTO> taskDTOs = tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toSet());
-        taskDTOs.forEach(task -> //not a good way to do it, as it makes many queries to db
-                task.getAssignedUsers().forEach(assignedUser ->
-                        assignedUser.setImageString(this.profilePictureService.getUserImage(assignedUser.getUsername()))));
-        return taskDTOs;
+        return this.taskDTOListConverter(tasks);
     }
 
     public List<TaskDTO> findUserTasksWithAssignedUsernamesAndEventId(UUID eventId){
         UserModel user = this.userService.getCurrentUser();
         List<TaskModel> tasks = this.taskRepository.findTasksByAssignedUsersAndEventId(user, eventId);
-        return tasks.stream().map(TaskDTO::TaskDTOConverter).collect(Collectors.toList());
+        return this.taskDTOListConverter(tasks);
     }
 
     //READ methods for security
@@ -98,14 +99,14 @@ public class TaskService {
         task.setComplete(updatedTask.isComplete());
         task.setDescription(updatedTask.getDescription());
         task.setColor(updatedTask.getColor());
-        return TaskDTO.TaskDTOConverter(taskRepository.save(task));
+        return this.taskDTOConverter(taskRepository.save(task));
 
     }
 
     public TaskDTO moveTask(UUID taskId, int xLocation, int yLocation){
         TaskModel task = this.taskRepository.findTaskById(taskId);
         task.setCoordinates(xLocation, yLocation);
-        return TaskDTO.TaskDTOConverter(this.taskRepository.save(task));
+        return this.taskDTOConverter(this.taskRepository.save(task));
     }
 
     public TaskDTO completeTask(UUID taskId, Boolean isComplete){
@@ -115,14 +116,14 @@ public class TaskService {
         }
         task.setComplete(isComplete);
         taskRepository.save(task);
-        return TaskDTO.TaskDTOConverter(task);
+        return this.taskDTOConverter(task);
     }
 
     public TaskDTO assignUsersToTask(UUID taskId, Set<String> usernames) {
         TaskModel task = this.taskRepository.findTaskById(taskId);
         Set<UserModel> userSet = this.userService.findAllUsersByUsernames(usernames);
         task.setAssignedUsers(userSet);
-        TaskDTO taskDTO=  TaskDTO.TaskDTOConverter(this.taskRepository.save(task));
+        TaskDTO taskDTO = this.taskDTOConverter(this.taskRepository.save(task));
         taskDTO.getAssignedUsers().forEach(user -> user.setImageString(this.profilePictureService.getUserImage(user.getUsername())));
         return taskDTO;
     }
@@ -136,5 +137,30 @@ public class TaskService {
     }
 
 
+
+    public TaskDTO taskDTOConverter(TaskModel task) {
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setId(task.getId());
+        taskDTO.setTitle(task.getTitle());
+        taskDTO.setDescription(task.getDescription());
+        taskDTO.setDate(task.getDate());
+        taskDTO.setComplete(task.isComplete());
+        if (task.getEventId() != null) {
+            taskDTO.setEventId(task.getEventId());
+            taskDTO.setEventName(task.getEventName());
+        }
+        taskDTO.setxLocation(task.getxLocation());
+        taskDTO.setyLocation(task.getyLocation());
+        taskDTO.setColor(task.getColor());
+        taskDTO.setOwner(this.userService.publicUserDTOConverter(task.getOwnerUser()));
+        taskDTO.setAssignedUsers(this.userService.publicUserDTOSetConverter(task.getAssignedUsers()));
+        return taskDTO;
+    }
+
+    public List<TaskDTO> taskDTOListConverter(List<TaskModel> taskModelList){
+        List<TaskDTO> taskDTOList = new ArrayList<>();
+        taskModelList.forEach(task -> taskDTOList.add(this.taskDTOConverter(task)));
+        return taskDTOList;
+    }
 
 }

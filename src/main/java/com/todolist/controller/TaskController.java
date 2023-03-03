@@ -28,7 +28,7 @@ public class TaskController {
     @PostMapping("/add")
     public ResponseEntity<TaskDTO> addTask(@RequestBody TaskModel task){
         try {
-            TaskDTO newTask = TaskDTO.TaskDTOConverter(taskService.addTask(task));
+            TaskDTO newTask = taskService.addTask(task);
             return ResponseEntity.ok(newTask);
 
         }catch (NullPointerException e){
@@ -65,15 +65,15 @@ public class TaskController {
     @GetMapping("/find/{taskId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserInTask(#taskId)")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable("taskId") UUID taskId){
-        TaskDTO task = TaskDTO.TaskDTOConverter(this.taskService.findTaskById(taskId));
+        TaskDTO task = this.taskService.findTaskDTOById(taskId);
         return ResponseEntity.ok(task);
     }
 
 
     @GetMapping("/event/{eventId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
-    public ResponseEntity<Set<TaskDTO>> getTasksByEvent(@PathVariable("eventId") UUID eventId){
-        Set<TaskDTO> taskList = taskService.findTasksByEvent(eventId);
+    public ResponseEntity<List<TaskDTO>> getTasksByEvent(@PathVariable("eventId") UUID eventId){
+        List<TaskDTO> taskList = taskService.findTasksByEvent(eventId);
         return ResponseEntity.ok(taskList);
     }
 

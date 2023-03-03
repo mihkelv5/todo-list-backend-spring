@@ -25,26 +25,6 @@ public class TaskDTO {
     public TaskDTO() {
     }
 
-    public static TaskDTO TaskDTOConverter(TaskModel task){
-        TaskDTO taskDTO = new TaskDTO();
-        taskDTO.setId(task.getId());
-        taskDTO.setTitle(task.getTitle());
-        taskDTO.setDescription(task.getDescription());
-        taskDTO.setDate(task.getDate());
-        taskDTO.setComplete(task.isComplete());
-        if(task.getEventId() != null){
-            taskDTO.setEventId(task.getEventId());
-            taskDTO.setEventName(task.getEventName());
-        }
-        taskDTO.setxLocation(task.getxLocation());
-        taskDTO.setyLocation(task.getyLocation());
-        taskDTO.setColor(task.getColor());
-        taskDTO.setOwner(PublicUserDTO.publicUserDTOConverter(task.getOwnerUser()));
-        taskDTO.setAssignedUsers(
-                task.getAssignedUsers().stream().map(PublicUserDTO::publicUserDTOConverter).collect(Collectors.toSet())
-        );
-        return taskDTO;
-    }
 
     public UUID getId() {
         return id;
