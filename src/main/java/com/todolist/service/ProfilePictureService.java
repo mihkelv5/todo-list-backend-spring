@@ -30,8 +30,8 @@ public class ProfilePictureService {
 
     @Transactional
     public String uploadImageToServer(MultipartFile image) throws IOException {
-        if(image.getSize() > 10000000){
-            throw new RuntimeException("file too big");
+        if(image.getSize() > 10485760){
+            throw new IOException("File exceeds the size of 10 MB");
         }
 
 

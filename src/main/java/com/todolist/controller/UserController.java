@@ -78,11 +78,16 @@ public class UserController {
     }
 
     @PostMapping("/profile/picture")
-    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile image) throws IOException {
-        String message = this.profilePictureService.uploadImageToServer(image);
-        Map<String, String> response = new HashMap<>();
-        response.put("response", message);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile image) {
+        try {
+
+            String message = this.profilePictureService.uploadImageToServer(image);
+            Map<String, String> response = new HashMap<>();
+            response.put("response", message);
+            return ResponseEntity.ok(response);
+        } catch (IOException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 
