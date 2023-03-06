@@ -1,17 +1,24 @@
 package com.todolist.controller;
 
 
+import com.todolist.entity.dto.response.ResponseMessage;
 import com.todolist.entity.user.Friendship;
 import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.FriendshipDTO;
 import com.todolist.entity.dto.PrivateUserDTO;
 import com.todolist.entity.dto.PublicUserDTO;
+import com.todolist.security.authentication.RefreshTokenAuthToken;
+import com.todolist.security.authentication.UsernamePasswordAuthToken;
 import com.todolist.service.FriendshipService;
 import com.todolist.service.ProfilePictureService;
 import com.todolist.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,7 +32,6 @@ public class UserController {
 
     private final UserService userService;
     private final FriendshipService friendshipService;
-
     private final ProfilePictureService profilePictureService;
 
     public UserController(UserService userService, FriendshipService friendshipService, ProfilePictureService profilePictureService) {
@@ -49,6 +55,14 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @PostMapping("/tags/add")
+    public ResponseEntity<Map<String, String>> editUserTags(@RequestBody String newTag){
+        String tag = this.userService.addUserTag(newTag);
+        Map<String, String> response = new HashMap<>();
+        response.put("response", tag);
+        return ResponseEntity.ok().body(response);
+    }
+
     @GetMapping("/notIn/event/{eventId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserInEvent(#eventId)")
     public ResponseEntity<Set<PublicUserDTO>> userSearchNoEvent(@PathVariable UUID eventId){
@@ -64,6 +78,7 @@ public class UserController {
         Set<PublicUserDTO> users = this.userService.findUsersByEventId(eventId);
         return ResponseEntity.ok(users);
     }
+
 
     @GetMapping("/friends/all")
     public ResponseEntity<?> getFriends(){

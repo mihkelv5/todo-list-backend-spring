@@ -12,8 +12,8 @@ public class PublicUserDTO {
     private String username;
     private String joinDate;
 
+    private Date lastActiveDate;
     private String imageString;
-
     private int groupsJoined;
     private int tasksCreated;
     private int tasksCompleted;
@@ -77,5 +77,13 @@ public class PublicUserDTO {
 
     public void setActiveTasks(int activeTasks) {
         this.activeTasks = activeTasks;
+    }
+
+    public Date getLastActiveDate() {
+        return lastActiveDate;
+    }
+
+    public void setLastActiveDate(Date lastActiveDate) {
+        this.lastActiveDate = lastActiveDate;
     }
 }

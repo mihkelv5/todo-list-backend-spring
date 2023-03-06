@@ -19,6 +19,8 @@ public class TaskDTO {
     private int xLocation;
     private int yLocation;
     private String color;
+
+    private String[] tags;
     private PublicUserDTO owner;
     private Set<PublicUserDTO> assignedUsers;
 
@@ -120,5 +122,17 @@ public class TaskDTO {
 
     public void setAssignedUsers(Set<PublicUserDTO> assignedUsers) {
         this.assignedUsers = assignedUsers;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        if(tags == null){
+            this.tags = new String[0];
+        } else {
+            this.tags = tags.split(", ");
+        }
     }
 }

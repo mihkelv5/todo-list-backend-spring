@@ -53,10 +53,13 @@ public class AuthController {
     }
 
     @GetMapping("/get-access")
-    public ResponseEntity<UserModel> createAuthenticationToken(HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> createAuthenticationToken(HttpServletRequest request) {
         String username = request.getHeader("username");
         UserModel user = this.userService.findUserByUsername(username);
-        return ResponseEntity.ok().body(user); //TODO: move userdata to another controller as right now it sends the data even if it is not requested.
+        this.userService.updateUserActivity(user);
+        Map<String, String> response = new HashMap<>();
+        response.put("response", "Login success");
+        return ResponseEntity.ok().body(response); //TODO: move userdata to another controller as right now it sends the data even if it is not requested.
     }
 
     @Transactional

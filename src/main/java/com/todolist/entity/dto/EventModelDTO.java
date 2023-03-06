@@ -10,6 +10,7 @@ public class EventModelDTO {
     private UUID id;
     private String title;
     private String description;
+    private String[] taskTag;
     private Set<PublicUserDTO> eventUsers;
 
     private Set<PublicUserDTO> invitedUsers;
@@ -54,5 +55,17 @@ public class EventModelDTO {
 
     public void setInvitedUsers(Set<PublicUserDTO> invitedUsers) {
         this.invitedUsers = invitedUsers;
+    }
+
+    public String[] getTaskTag() {
+        return taskTag;
+    }
+
+    public void setTaskTag(String taskTag) {
+        if(taskTag == null){
+            this.taskTag = new String[0];
+        } else {
+            this.taskTag = taskTag.split(", ");
+        }
     }
 }

@@ -31,9 +31,9 @@ public class UserModel implements Serializable {
     private String password;
     private boolean enabled;
     private String roles;
-
     private Date joinDate;
-
+    private Date LastActivity;
+    private String taskTags;
     @JsonIgnore
     @OneToMany(mappedBy = "ownerUser")
     private Set<TaskModel> tasks = new HashSet<>();
@@ -162,5 +162,21 @@ public class UserModel implements Serializable {
 
     public void setJoinDate(Date joinDate) {
         this.joinDate = joinDate;
+    }
+
+    public Date getLastActivity() {
+        return LastActivity;
+    }
+
+    public void setLastActivity(Date lastActivity) {
+        LastActivity = lastActivity;
+    }
+
+    public String getTaskTags() {
+        return taskTags;
+    }
+
+    public void setTaskTags(String taskTags) {
+        this.taskTags = taskTags;
     }
 }

@@ -1,8 +1,8 @@
 package com.todolist.security.filter;
 
-import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.todolist.constant.SecurityConstant;
 import com.todolist.service.UserDetailsServiceImpl;
+import com.todolist.service.UserService;
 import com.todolist.util.JwtUtil;
 
 import org.springframework.http.HttpStatus;
@@ -23,12 +23,14 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsServiceImpl userDetailsService;
-
     private final JwtUtil jwtUtil;
 
-    public JwtRequestFilter(UserDetailsServiceImpl userDetailsService, JwtUtil jwtUtil) {
+    private final UserService userService;
+
+    public JwtRequestFilter(UserDetailsServiceImpl userDetailsService, JwtUtil jwtUtil, UserService userService) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
 
     @Override

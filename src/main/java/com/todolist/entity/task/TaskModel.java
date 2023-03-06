@@ -32,6 +32,8 @@ public class TaskModel implements Serializable {
     private int yLocation;
     private String color;
 
+    private String tags;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
@@ -42,19 +44,6 @@ public class TaskModel implements Serializable {
     private Set<UserModel> assignedUsers = new HashSet<>();
 
     public TaskModel() {}
-
-    public TaskModel(UUID id, String title, String description, Date date, boolean isComplete, UUID eventId, int xLocation, int yLocation, String color) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.isComplete = isComplete;
-        this.eventId = eventId;
-        this.xLocation = xLocation;
-        this.yLocation = yLocation;
-        this.color = color;
-    }
-
 
 
     public UUID getId() {
@@ -155,4 +144,11 @@ public class TaskModel implements Serializable {
     }
 
 
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tag) {
+        this.tags = tag;
+    }
 }

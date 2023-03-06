@@ -22,6 +22,8 @@ public class EventModel {
 
     private String description;
 
+    private String taskTags;
+
     @ManyToMany
     @JoinTable(
             name = "user_event_registration",
@@ -101,5 +103,13 @@ public class EventModel {
 
     public void setEntries(List<EventLogEntry> entries) {
         this.entries = entries;
+    }
+
+    public String getTaskTags() {
+        return taskTags;
+    }
+
+    public void setTaskTags(String taskTags) {
+        this.taskTags = taskTags;
     }
 }

@@ -35,8 +35,8 @@ public class UserService {
         this.profilePictureService = profilePictureService;
     }
 
-    //POST method
 
+    //POST method
     public UserModel addUser(UserCreationDTO userDTO) throws CredentialNotFoundException {
         if(userDTO.getUsername() == null || userDTO.getEmail() == null || userDTO.getPassword() == null){
             throw new CredentialNotFoundException("User must have username, email and password");
@@ -59,7 +59,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public String addUserTag(String newTag) {
+        UserModel userModel = this.getCurrentUser();
+        userModel.setTaskTags(userModel.getTaskTags() + ", " + newTag);
+        this.userRepository.save(userModel);
+        return newTag;
+    }
     //GET methods
+
     public UserModel findUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
     }
@@ -92,8 +99,8 @@ public class UserService {
     }
 
 
-
     //UPDATE method
+
     public UserModel updateUser(UserModel user){
         return userRepository.save(user);
     }
@@ -104,7 +111,12 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+    public void updateUserActivity(UserModel userModel){
+        userModel.setLastActivity(new Date());
+        this.userRepository.save(userModel);
+    }
     //helper methods
+
     public UserModel getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
@@ -116,6 +128,8 @@ public class UserService {
         publicUserDTO.setUsername(userModel.getUsername());
         publicUserDTO.setJoinDate(userModel.getJoinDate());
         publicUserDTO.setImageString(profilePictureService.getUserImage(userModel.getUsername()));
+        publicUserDTO.setLastActiveDate(userModel.getLastActivity());
+
 
         publicUserDTO.setTasksCreated(this.taskRepository.countTaskModelByOwnerUser(userModel.getUsername()));
         publicUserDTO.setTasksCompleted(this.taskRepository.countTaskModelByAssignedUserAndComplete(userModel));
@@ -134,17 +148,10 @@ public class UserService {
     public PrivateUserDTO privateUserDTOConverter(UserModel userModel){
         PrivateUserDTO privateUserDTO = new PrivateUserDTO();
         privateUserDTO.setUserId(userModel.getId());
-        privateUserDTO.setUsername(userModel.getUsername());
         privateUserDTO.setEmail(userModel.getEmail());
-        privateUserDTO.setJoinDate(userModel.getJoinDate());
-        privateUserDTO.setImageString(profilePictureService.getUserImage(userModel.getUsername()));
-
-        privateUserDTO.setTasksCreated(this.taskRepository.countTaskModelByOwnerUser(userModel.getUsername()));
-        privateUserDTO.setTasksCompleted(this.taskRepository.countTaskModelByAssignedUserAndComplete(userModel));
-        privateUserDTO.setActiveTasks(this.taskRepository.countTaskModelByAssignedUserAndNotComplete(userModel));
-        privateUserDTO.setGroupsJoined(this.eventRepository.countEventModelsByUser(userModel));
+        privateUserDTO.setPublicUser(this.publicUserDTOConverter(userModel));
+        privateUserDTO.setTaskTags(userModel.getTaskTags());
 
         return privateUserDTO;
     }
-
 }
