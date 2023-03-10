@@ -8,6 +8,8 @@ import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
 import com.todolist.security.userdetails.UserDetailsImpl;
 import com.todolist.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
@@ -61,7 +63,11 @@ public class UserService {
 
     public String addUserTag(String newTag) {
         UserModel userModel = this.getCurrentUser();
-        userModel.setTaskTags(userModel.getTaskTags() + ", " + newTag);
+        if(userModel.getTaskTags() == null){
+            userModel.setTaskTags(newTag);
+        } else {
+            userModel.setTaskTags(userModel.getTaskTags() + ", " + newTag);
+        }
         this.userRepository.save(userModel);
         return newTag;
     }
@@ -115,6 +121,21 @@ public class UserService {
         userModel.setLastActivity(new Date());
         this.userRepository.save(userModel);
     }
+    @Transactional
+    public void deleteUserTag(String tag) {
+        UserModel user = this.getCurrentUser();
+        List<String> tags = new ArrayList<>(Arrays.asList(user.getTaskTags().split(", ")));
+        tags.remove(tag);
+        if(tags.size() > 0){
+            String newTags = StringUtils.join(tags, ", ");
+            user.setTaskTags(newTags);
+        } else {
+            user.setTaskTags(null);
+        }
+        this.userRepository.save(user);
+    }
+
+
     //helper methods
 
     public UserModel getCurrentUser() {
@@ -154,4 +175,5 @@ public class UserService {
 
         return privateUserDTO;
     }
+
 }

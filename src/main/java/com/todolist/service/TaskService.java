@@ -99,6 +99,7 @@ public class TaskService {
         task.setComplete(updatedTask.isComplete());
         task.setDescription(updatedTask.getDescription());
         task.setColor(updatedTask.getColor());
+        task.setTags(updatedTask.getTags());
         return this.taskDTOConverter(taskRepository.save(task));
 
     }
@@ -155,6 +156,7 @@ public class TaskService {
         taskDTO.setOwner(this.userService.publicUserDTOConverter(task.getOwnerUser()));
         taskDTO.setAssignedUsers(this.userService.publicUserDTOSetConverter(task.getAssignedUsers()));
         taskDTO.setTags(task.getTags());
+        System.out.println(taskDTO.getDate());
         return taskDTO;
     }
 
@@ -163,5 +165,6 @@ public class TaskService {
         taskModelList.forEach(task -> taskDTOList.add(this.taskDTOConverter(task)));
         return taskDTOList;
     }
+
 
 }

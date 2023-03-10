@@ -98,8 +98,8 @@ public class TaskController {
     @PutMapping("/update/{taskId}")
     @PreAuthorize("@preAuthMethodFilter.checkIfUserCreatedTask(#taskId)")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable("taskId") UUID taskId, @RequestBody TaskModel task){
-        TaskDTO updatePost = taskService.updateTask(taskId, task);
-        return ResponseEntity.ok(updatePost);
+        TaskDTO updatedTask = taskService.updateTask(taskId, task);
+        return ResponseEntity.ok(updatedTask);
     }
 
     @PutMapping("/complete/{taskId}")

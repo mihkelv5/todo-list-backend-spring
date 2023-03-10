@@ -135,5 +135,12 @@ public class UserController {
         }
     }
 
+    @Transactional
+    @DeleteMapping("/tags/delete/{tag}")
+    public ResponseEntity<Map<String, String>> deleteTag(@PathVariable String tag){
+        this.userService.deleteUserTag(tag);
+        return ResponseEntity.ok().build();
+    }
+
 
 }
