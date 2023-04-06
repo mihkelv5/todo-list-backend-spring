@@ -156,7 +156,6 @@ public class TaskService {
         taskDTO.setOwner(this.userService.publicUserDTOConverter(task.getOwnerUser()));
         taskDTO.setAssignedUsers(this.userService.publicUserDTOSetConverter(task.getAssignedUsers()));
         taskDTO.setTags(task.getTags());
-        System.out.println(taskDTO.getDate());
         return taskDTO;
     }
 
