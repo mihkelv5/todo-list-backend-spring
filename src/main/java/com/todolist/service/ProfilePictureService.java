@@ -5,6 +5,7 @@ import com.todolist.entity.user.UserModel;
 import com.todolist.repository.ProfilePictureRepository;
 import jakarta.transaction.Transactional;
 import org.aspectj.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +22,9 @@ import static com.todolist.SensitiveData.IMAGE_LOCATION;
 @Service
 public class ProfilePictureService {
 
-    private final ProfilePictureRepository profilePictureRepository;
+    private ProfilePictureRepository profilePictureRepository;
 
+    @Autowired
     public ProfilePictureService(ProfilePictureRepository profilePictureRepository) {
         this.profilePictureRepository = profilePictureRepository;
     }
@@ -60,8 +62,6 @@ public class ProfilePictureService {
 
     public String getUserImage(String username) {
         try {
-
-            ProfilePictureData savedData = this.profilePictureRepository.findByUsername(username);
             String imagePath = IMAGE_LOCATION + "/" + username + "/profile.jpg";
             File imageFile = new File(imagePath);
             if(imageFile.exists()){

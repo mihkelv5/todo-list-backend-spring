@@ -8,16 +8,13 @@ import com.todolist.repository.EventInvitationRepository;
 import com.todolist.repository.EventRepository;
 import com.todolist.repository.TaskRepository;
 import com.todolist.repository.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class EventService {
@@ -27,16 +24,16 @@ public class EventService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final ProfilePictureService profilePictureService;
+
 
     @Autowired
-    public EventService(EventRepository eventRepository, EventInvitationRepository eventInvitationRepository, TaskRepository taskRepository, UserService userService, UserRepository userRepository, ProfilePictureService profilePictureService) {
+    public EventService(EventRepository eventRepository, EventInvitationRepository eventInvitationRepository, TaskRepository taskRepository, UserService userService, UserRepository userRepository) {
         this.eventRepository = eventRepository;
         this.eventInvitationRepository = eventInvitationRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.userService = userService;
-        this.profilePictureService = profilePictureService;
+
     }
 
     //CREATE methods
@@ -45,6 +42,17 @@ public class EventService {
         UserModel user = userService.getCurrentUser();
         event.registerUserToEvent(user);
         return this.eventModelDTOConverter(this.eventRepository.save(event));
+    }
+
+    public String addEventTag(String newTag, UUID eventId) {
+        EventModel eventModel = this.eventRepository.findEventById(eventId);
+        if(eventModel.getTaskTags() == null){
+            eventModel.setTaskTags(newTag);
+        } else {
+            eventModel.setTaskTags(eventModel.getTaskTags() + ", " + newTag);
+        }
+        this.eventRepository.save(eventModel);
+        return newTag;
     }
 
     //READ methods
@@ -84,6 +92,20 @@ public class EventService {
         this.eventInvitationRepository.deleteAllByEventId(eventId);
     }
 
+    @Transactional
+    public void deleteEventTag(String tag, UUID eventId) {
+        EventModel eventModel = this.eventRepository.findEventById(eventId);
+        List<String> tags = new ArrayList<>(Arrays.asList(eventModel.getTaskTags().split(", ")));
+        tags.remove(tag);
+        if(tags.size() > 0){
+            String newTags = StringUtils.join(tags, ", ");
+            eventModel.setTaskTags(newTags);
+        } else {
+            eventModel.setTaskTags(null);
+        }
+        this.eventRepository.save(eventModel);
+    }
+
     public boolean isUserInEvent(UUID eventId, UUID userId) {
         return this.eventRepository.isUserInEvent(eventId, userId);
     }
@@ -94,6 +116,7 @@ public class EventService {
         eventModelDTO.setId(eventModel.getId());
         eventModelDTO.setTitle(eventModel.getTitle());
         eventModelDTO.setDescription(eventModel.getDescription());
+        eventModelDTO.setTaskTags(eventModel.getTaskTags());
 
         Set<PublicUserDTO> eventUsers = this.userService.publicUserDTOSetConverter(eventModel.getEventUsers());
         eventModelDTO.setEventUsers(eventUsers);

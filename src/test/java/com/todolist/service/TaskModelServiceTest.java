@@ -3,10 +3,12 @@ package com.todolist.service;
 import com.todolist.email.CustomJavaMailSender;
 import com.todolist.entity.event.EventModel;
 import com.todolist.entity.task.TaskModel;
+import com.todolist.entity.user.ProfilePictureData;
 import com.todolist.entity.user.UserModel;
 import com.todolist.entity.dto.PublicUserDTO;
 import com.todolist.entity.dto.TaskDTO;
 import com.todolist.repository.EventRepository;
+import com.todolist.repository.ProfilePictureRepository;
 import com.todolist.repository.TaskRepository;
 import com.todolist.repository.UserRepository;
 import com.todolist.security.authentication.UsernamePasswordAuthToken;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +39,9 @@ class TaskModelServiceTest {
 
     @Mock
     UserRepository userRepository;
+    @Mock
+    ProfilePictureRepository profilePictureRepository;
+
     @Mock
     TaskRepository taskRepository;
     @Mock
@@ -60,10 +66,14 @@ class TaskModelServiceTest {
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
 
+        ProfilePictureData data = new ProfilePictureData();
+        data.setImgPath("asd");
+
         UserModel user = new UserModel();
         user.setId(UUID.randomUUID());
         user.setUsername("user");
         user.setRoles("USER");
+        user.setProfilePictureData(data);
         UserDetailsImpl userDetails = new UserDetailsImpl(user);
 
         SecurityContextHolder.setContext(securityContext);
@@ -71,6 +81,8 @@ class TaskModelServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(userDetails);
         when(userService.getCurrentUser()).thenReturn(user);
+        //when(userService.publicUserDTOConverter(user)).thenReturn(new PublicUserDTO());
+        when(profilePictureService.getUserImage("user")).thenReturn("user.jpg");
     }
 
     @AfterEach
@@ -164,6 +176,7 @@ class TaskModelServiceTest {
         newTask.setComplete(true);
         newTask.setDescription("new");
         newTask.setColor("green");
+
 
         when(this.taskRepository.findTaskById(any(UUID.class))).thenReturn(oldTask);
         when(this.taskRepository.save(any(TaskModel.class))).thenReturn(oldTask);

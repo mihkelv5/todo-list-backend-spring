@@ -22,7 +22,6 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final EventRepository eventRepository;
     private final UserService userService;
-    
     private final ProfilePictureService profilePictureService;
 
 

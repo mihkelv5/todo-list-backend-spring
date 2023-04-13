@@ -1,16 +1,13 @@
 package com.todolist.entity.dto;
 
-import com.todolist.entity.event.EventModel;
-
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class EventModelDTO {
     private UUID id;
     private String title;
     private String description;
-    private String[] taskTag;
+    private String[] taskTags;
     private Set<PublicUserDTO> eventUsers;
 
     private Set<PublicUserDTO> invitedUsers;
@@ -57,15 +54,15 @@ public class EventModelDTO {
         this.invitedUsers = invitedUsers;
     }
 
-    public String[] getTaskTag() {
-        return taskTag;
+    public String[] getTaskTags() {
+        return taskTags;
     }
 
-    public void setTaskTag(String taskTag) {
+    public void setTaskTags(String taskTag) {
         if(taskTag == null){
-            this.taskTag = new String[0];
+            this.taskTags = new String[0];
         } else {
-            this.taskTag = taskTag.split(", ");
+            this.taskTags = taskTag.split(", ");
         }
     }
 }

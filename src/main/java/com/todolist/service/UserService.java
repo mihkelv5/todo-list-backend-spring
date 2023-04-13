@@ -26,7 +26,6 @@ public class UserService {
 
     private final TaskRepository taskRepository;
     private final EventRepository eventRepository;
-
     private final ProfilePictureService profilePictureService;
 
     @Autowired
@@ -148,7 +147,7 @@ public class UserService {
         PublicUserDTO publicUserDTO = new PublicUserDTO();
         publicUserDTO.setUsername(userModel.getUsername());
         publicUserDTO.setJoinDate(userModel.getJoinDate());
-        publicUserDTO.setImageString(profilePictureService.getUserImage(userModel.getUsername()));
+        publicUserDTO.setImageString(this.profilePictureService.getUserImage(userModel.getUsername()));
         publicUserDTO.setLastActiveDate(userModel.getLastActivity());
 
 
