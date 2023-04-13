@@ -39,6 +39,9 @@ public class EventService {
     //CREATE methods
 
     public EventModelDTO addEvent(EventModel event) {
+        event.setEventUsers(new HashSet<>());
+        event.setTaskTags(null);
+        event.setInvites(new HashSet<>());
         UserModel user = userService.getCurrentUser();
         event.registerUserToEvent(user);
         return this.eventModelDTOConverter(this.eventRepository.save(event));
