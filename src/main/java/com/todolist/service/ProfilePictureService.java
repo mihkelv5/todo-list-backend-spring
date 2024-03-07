@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Objects;
 
 import static com.todolist.SensitiveData.IMAGE_LOCATION;
 
@@ -69,7 +70,8 @@ public class ProfilePictureService {
                 return "data:image/jpg;base64," + Base64.getEncoder().encodeToString(image);
             }
             else {
-                byte[] image = FileUtil.readAsByteArray(new File(IMAGE_LOCATION + "/default-user.jpg"));
+                byte[] image = Objects.requireNonNull(this.getClass().getClassLoader()
+                        .getResourceAsStream("/images/default-user.jpg")).readAllBytes();
                 return "data:image/jpg;base64," + Base64.getEncoder().encodeToString(image);
             }
         } catch (IOException e) {

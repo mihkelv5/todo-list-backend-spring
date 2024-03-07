@@ -46,12 +46,15 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
         try {
             Cookie[] cookies = request.getCookies();
-            Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
             String username = request.getHeader("username");
-            String refreshToken = optionalCookie.orElseThrow().getValue();
+            if(cookies != null) {
 
-            Authentication authentication = new RefreshTokenAuthToken(username, refreshToken);
-            authenticationManager.authenticate(authentication); //throws error if user is not authenticated.
+                Optional<Cookie> optionalCookie = Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConstant.REFRESH_TOKEN)).findFirst();
+                String refreshToken = optionalCookie.orElseThrow().getValue();
+
+                Authentication authentication = new RefreshTokenAuthToken(username, refreshToken);
+                authenticationManager.authenticate(authentication); //throws error if user is not authenticated.
+            }
 
 
             //generate access token and send it
